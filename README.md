@@ -26,7 +26,14 @@ git clone https://github.com/ChoiDaeYoung-94/SuddenForce-FPS.git
 
 ## SDK, Package ...
 
-- 
+- [play games plugin](https://github.com/playgameservices/play-games-plugin-for-unity/releases)
+- [PlayFabEditorExtensions, PlayFabSDK](https://docs.microsoft.com/ko-kr/gaming/playfab/sdks/unity3d/installing-unity3d-sdk)
+- [Google Mobile Ads SDK](https://developers.google.com/admob/android/quick-start?hl=ko)
+- [DOTween](https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676)
+- [MiniJSON](https://github.com/Unity-Technologies/UnityCsReference/blob/master/External/JsonParsers/MiniJson/MiniJSON.cs)
+- [Keystore Helper](https://assetstore.unity.com/packages/tools/utilities/keystore-helper-58627)
+- [In-game Debug Console](https://assetstore.unity.com/packages/tools/gui/in-game-debug-console-68068)
+- [Safe Area Helper](https://assetstore.unity.com/packages/tools/gui/safe-area-helper-130488)
 
 
 ## Technologies and Techniques
@@ -43,6 +50,7 @@ git clone https://github.com/ChoiDaeYoung-94/SuddenForce-FPS.git
 
 
 ## Self Feedback
+
 - 
 
 
