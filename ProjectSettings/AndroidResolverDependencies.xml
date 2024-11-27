@@ -1,11 +1,14 @@
 <dependencies>
   <packages>
     <package>androidx.constraintlayout:constraintlayout:2.1.4</package>
-    <package>com.google.android.gms:play-services-ads:23.4.0</package>
-    <package>com.google.android.ump:user-messaging-platform:3.0.0</package>
+    <package>com.google.android.gms:play-services-ads:23.2.0</package>
+    <package>com.google.android.ump:user-messaging-platform:2.2.0</package>
     <package>com.google.games:gpgs-plugin-support:0.11.01</package>
   </packages>
-  <files />
+  <files>
+    <file>Assets/GeneratedLocalRepo/GooglePlayGames/com.google.play.games/Editor/m2repository/com/google/games/gpgs-plugin-support/0.11.01/gpgs-plugin-support-0.11.01.aar</file>
+    <file>Assets/GeneratedLocalRepo/GooglePlayGames/com.google.play.games/Editor/m2repository/com/google/games/gpgs-plugin-support/0.11.01/gpgs-plugin-support-0.11.01.pom</file>
+  </files>
   <settings>
     <setting name="androidAbis" value="arm64-v8a,armeabi-v7a" />
     <setting name="bundleId" value="com.AeDeong.SuddenForceFPS" />
@@ -20,7 +23,7 @@
     <setting name="patchMainTemplateGradle" value="True" />
     <setting name="projectExportEnabled" value="False" />
     <setting name="useFullCustomMavenRepoPathWhenExport" value="True" />
-    <setting name="useFullCustomMavenRepoPathWhenNotExport" value="False" />
+    <setting name="useFullCustomMavenRepoPathWhenNotExport" value="True" />
     <setting name="useJetifier" value="True" />
   </settings>
 </dependencies>
