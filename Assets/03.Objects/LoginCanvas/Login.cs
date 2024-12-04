@@ -1,6 +1,3 @@
-// 추후 IOS때 사용 할 GO의 Warning
-#pragma warning disable 0414
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,6 +8,7 @@ using UnityEngine;
 
 #if UNITY_ANDROID
 using GooglePlayGames;
+using GooglePlayGames.BasicApi;
 #endif
 
 using PlayFab;
@@ -19,10 +17,6 @@ using PlayFab.ClientModels;
 public class Login : MonoBehaviour
 {
     [Header("--- 세팅 ---")]
-    [SerializeField, Tooltip("GO - Android Login Button")]
-    GameObject _go_GooglePlay = null;
-    [SerializeField, Tooltip("GO - IOS Login Button")]
-    GameObject _go_GameCenter = null;
     [SerializeField, Tooltip("GO - Loading")]
     GameObject _go_Loading = null;
     [SerializeField, Tooltip("GO - Retry")]
@@ -42,95 +36,50 @@ public class Login : MonoBehaviour
     Coroutine _co_SaveData = null;
     Coroutine _co_Login = null;
 
-    private void Awake()
-    {
-#if UNITY_ANDROID
-        //_go_GameCenter.SetActive(false);
-
-        PlayGamesPlatform.DebugLogEnabled = true;
-        PlayGamesPlatform.Activate();
-#endif
-
-#if UNITY_IOS
-        //_go_GooglePlay.SetActive(false);
-#endif
-    }
+    private State _state = null;
 
     private void Start()
     {
-        _TMP_load.text = "LogIn...";
-        CheckConnection();
+        LoginStep();
+    }
+
+    public void SetState(State state)
+    {
+        _state = state;
+        _state.Handle();
     }
 
     #region Functions
-
-    #region Checking Connection
     /// <summary>
-    /// 인터넷 연결 확인 후 로그인 진입
-    /// * Retry 버튼 클릭시 연결 재시도
+    /// login step 진행
     /// </summary>
-    public void CheckConnection()
+    public void LoginStep()
     {
-        if (Application.internetReachability == NetworkReachability.NotReachable)
-            ActivateRetry();
+        if (_state == null)
+            _state = new CheckConnection(this);
+
+        _state.Handle();
+    }
+
+    #region Google Login
+    internal void ProcessAuthentication(SignInStatus status)
+    {
+        if (status == SignInStatus.Success)
+        {
+            // Continue with Play Games Services
+            Debug.Log("Success LoginWithGoogle");
+            SetState(new LoginPlayFab(this));
+        }
         else
-            StartLogin();
-    }
-
-    /// <summary>
-    /// Retry Panel 활성화
-    /// </summary>
-    void ActivateRetry()
-    {
-        _go_Loading.SetActive(false);
-        _go_Retry.SetActive(true);
-    }
-
-    /// <summary>
-    /// 로그인 진입
-    /// </summary>
-    void StartLogin()
-    {
-        _go_Retry.SetActive(false);
-        _go_Loading.SetActive(true);
-
-#if UNITY_EDITOR
-        LoginWithTestAccount();
-#elif UNITY_ANDROID
-        LoginWithGoogle();
-#endif
+        {
+            // Disable your integration with Play Games Services or show a login button
+            // to ask users to sign-in. Clicking it should call
+            PlayGamesPlatform.Instance.ManuallyAuthenticate(ProcessAuthentication);
+        }
     }
     #endregion
 
-    #region Login & SignUp
-    void LoginWithGoogle()
-    {
-        if (Social.localUser.authenticated == false)
-        {
-            Social.localUser.Authenticate((bool success, string error) =>
-            {
-                if (success)
-                {
-                    Debug.Log("Success LoginWithGoogle");
-                    LoginWithPlayFab();
-                }
-                else
-                {
-                    Debug.LogWarning($"Failed LoginWithGoogle -> {error}");
-                    _TMP_load.text = $"Failed LoginWithGoogle... :'( \n{error}";
-                }
-            });
-        }
-    }
-
-    void LoginWithPlayFab()
-    {
-        string id = $"{Social.localUser.id}@AeDeong.com";
-
-        var request = new LoginWithEmailAddressRequest { Email = id, Password = "AeDeong" };
-        PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginWithPlayFabSuccess, OnLoginWithPlayFabFailure);
-    }
-
+    #region PlayFab Login
     void OnLoginWithPlayFabSuccess(LoginResult result)
     {
         Debug.Log("Success LoginWithPlayFab");
@@ -156,7 +105,7 @@ public class Login : MonoBehaviour
             if (string.IsNullOrEmpty(result.PlayerProfile.DisplayName))
                 _go_NickName.SetActive(true);
             else
-                GoNext();
+                SetState(new CheckData(this));
         },
         error =>
         {
@@ -210,68 +159,27 @@ public class Login : MonoBehaviour
         if (string.IsNullOrEmpty(str_temp) || str_temp.Contains(" ") || str_temp.Length < 3 || str_temp.Length > 20)
             _go_WarningRule.SetActive(true);
         else
-            UpdateDisplayName(str_temp);
-    }
-
-    void UpdateDisplayName(string name)
-    {
-        PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest
-        {
-            DisplayName = name
-        },
-        result =>
-        {
-            _go_NickName.SetActive(false);
-            _go_WarningRule.SetActive(false);
-            _go_WarningNAE.SetActive(false);
-
-            AD.Managers.ServerM.SetData(new Dictionary<string, string> { { "NickName", name } }, GetAllData: false, Update: false);
-
-            _TMP_load.text = "Save NickName...";
-
-            _co_SaveData = StartCoroutine(SaveNickName());
-        },
-        error =>
-        {
-            //Debug.LogError(error.GenerateErrorReport());
-            _go_WarningNAE.SetActive(true);
-        });
+            SetState(new UpdateDisplayName(this, str_temp));
     }
     #endregion
 
-    #region LoginWithTestAccount
-    void LoginWithTestAccount()
+    private void GoMainScene()
     {
-        var request = new LoginWithEmailAddressRequest { Email = "testAccount@AeDeong.com", Password = "TestAccount" };
-        PlayFabClientAPI.LoginWithEmailAddress(request,
-            (success) =>
-            {
-                AD.Managers.DataM.StrID = success.PlayFabId;
-                GoNext();
-            },
-            (failed) => SignUpWithTestAccount());
+        AD.Managers.SceneM.NextScene(AD.Define.Scenes.Main);
     }
 
-    void SignUpWithTestAccount()
-    {
-        var request = new RegisterPlayFabUserRequest { Email = "testAccount@AeDeong.com", Password = "TestAccount", RequireBothUsernameAndEmail = false };
-        PlayFabClientAPI.RegisterPlayFabUser(request,
-            (success) =>
-            {
-                AD.Managers.DataM.StrID = success.PlayFabId;
-                UpdateDisplayName("testAccount");
-            },
-            (failed) => Debug.Log("Failed SignUpWithTestAccount  " + failed.ErrorMessage));
-    }
+    public void ClickedOK() => AD.Managers.SoundM.UI_Ok();
     #endregion
 
-    #region ETC
+    #region Coroutines
     IEnumerator SaveNickName()
     {
         while (AD.Managers.ServerM.isInprogress)
             yield return null;
 
         StopSaveNickNameCoroutine();
+
+        SetState(new CheckData(this));
     }
 
     void StopSaveNickNameCoroutine()
@@ -280,18 +188,7 @@ public class Login : MonoBehaviour
         {
             StopCoroutine(_co_SaveData);
             _co_SaveData = null;
-
-            GoNext();
         }
-    }
-
-    void GoNext()
-    {
-        _TMP_load.text = "Check Data...";
-
-        AD.Managers.DataM.UpdatePlayerData();
-
-        _co_Login = StartCoroutine(InitPlayerData());
     }
 
     IEnumerator InitPlayerData()
@@ -300,6 +197,8 @@ public class Login : MonoBehaviour
             yield return null;
 
         StopInitPlayerDataCoroutine();
+
+        GoMainScene();
     }
 
     void StopInitPlayerDataCoroutine()
@@ -308,16 +207,169 @@ public class Login : MonoBehaviour
         {
             StopCoroutine(_co_Login);
             _co_Login = null;
-
-            //if (!AD.Managers.DataM._dic_player["Sex"].Equals("null"))
-            //    AD.Managers.SceneM.NextScene(AD.Define.Scenes.Main);
-            //else
-            //    AD.Managers.SceneM.NextScene(AD.Define.Scenes.SetCharacter);
         }
     }
     #endregion
 
-    public void ClickedOK() => AD.Managers.SoundM.UI_Ok();
+    #region Login Step State Class
+    /// <summary>
+    /// 여러 상태를 정의하기 위해 abstract 사용
+    /// 아래 State를 상속 받는 class들의 순서대로 상태 진입
+    /// </summary>
+    public abstract class State
+    {
+        protected Login _loginStep;
+
+        public State(Login loginStep)
+        {
+            _loginStep = loginStep;
+        }
+
+        public abstract void Handle();
+    }
+
+    class CheckConnection : State
+    {
+        public CheckConnection(Login loginStep) : base(loginStep) { }
+
+        /// <summary>
+        /// 인터넷 연결 확인 후 로그인 진입
+        /// * Retry 버튼 클릭시 연결 재시도
+        /// </summary>
+        public override void Handle()
+        {
+            _loginStep._TMP_load.text = "LogIn...";
+
+            if (Application.internetReachability == NetworkReachability.NotReachable)
+            {
+                _loginStep._go_Loading.SetActive(false);
+                _loginStep._go_Retry.SetActive(true);
+            }
+            else
+                _loginStep.SetState(new StartLogin(_loginStep));
+        }
+    }
+
+    class StartLogin : State
+    {
+        public StartLogin(Login loginStep) : base(loginStep) { }
+
+        /// <summary>
+        /// login 진입
+        /// </summary>
+        public override void Handle()
+        {
+            _loginStep._go_Retry.SetActive(false);
+            _loginStep._go_Loading.SetActive(true);
+
+#if UNITY_EDITOR
+            _loginStep.SetState(new LoginPlayFabTestAccount(_loginStep));
+#elif UNITY_ANDROID
+            _loginStep.SetState(new LoginGoogle(_loginStep));
+#endif
+        }
+    }
+
+    class LoginPlayFabTestAccount : State
+    {
+        public LoginPlayFabTestAccount(Login loginStep) : base(loginStep) { }
+
+        public override void Handle()
+        {
+            var request = new LoginWithEmailAddressRequest { Email = "testAccount@AeDeong.com", Password = "TestAccount" };
+            PlayFabClientAPI.LoginWithEmailAddress(request,
+                (success) =>
+                {
+                    AD.Managers.DataM.StrID = success.PlayFabId;
+                    _loginStep.SetState(new CheckData(_loginStep));
+                },
+                (failed) =>
+                // SignUpWithTestAccount
+                {
+                    var request = new RegisterPlayFabUserRequest { Email = "testAccount@AeDeong.com", Password = "TestAccount", RequireBothUsernameAndEmail = false };
+                    PlayFabClientAPI.RegisterPlayFabUser(request,
+                        (success) =>
+                        {
+                            AD.Managers.DataM.StrID = success.PlayFabId;
+                            _loginStep.SetState(new UpdateDisplayName(_loginStep, "testAccount"));
+                        },
+                        (failed) => Debug.Log("Failed SignUpWithTestAccount  " + failed.ErrorMessage));
+                });
+        }
+    }
+
+    class LoginPlayFab : State
+    {
+        public LoginPlayFab(Login loginStep) : base(loginStep) { }
+
+        public override void Handle()
+        {
+            string id = $"{Social.localUser.id}@AeDeong.com";
+
+            var request = new LoginWithEmailAddressRequest { Email = id, Password = "AeDeong" };
+            PlayFabClientAPI.LoginWithEmailAddress(request, _loginStep.OnLoginWithPlayFabSuccess, _loginStep.OnLoginWithPlayFabFailure);
+        }
+    }
+
+    class LoginGoogle : State
+    {
+        public LoginGoogle(Login loginStep) : base(loginStep) { }
+
+        public override void Handle()
+        {
+            PlayGamesPlatform.Instance.Authenticate(_loginStep.ProcessAuthentication);
+        }
+    }
+
+    class UpdateDisplayName : State
+    {
+        string displayName = string.Empty;
+
+        public UpdateDisplayName(Login loginStep, string displayName) : base(loginStep) { this.displayName = displayName; }
+
+        public override void Handle()
+        {
+            PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest
+            {
+                DisplayName = displayName
+            },
+            result =>
+            {
+                _loginStep._go_NickName.SetActive(false);
+                _loginStep._go_WarningRule.SetActive(false);
+                _loginStep._go_WarningNAE.SetActive(false);
+
+                AD.Managers.ServerM.SetData(new Dictionary<string, string> { { "NickName", displayName } }, GetAllData: false, Update: false);
+
+                _loginStep._TMP_load.text = "Save NickName...";
+
+                // SaveNickName 후 CheckData 진입
+                _loginStep._co_SaveData = _loginStep.StartCoroutine(_loginStep.SaveNickName());
+            },
+            error =>
+            {
+                //Debug.LogError(error.GenerateErrorReport());
+                _loginStep._go_WarningNAE.SetActive(true);
+            }); ;
+        }
+    }
+
+    class CheckData : State
+    {
+        public CheckData(Login loginStep) : base(loginStep) { }
+
+        /// <summary>
+        /// Login 마지막 Step
+        /// </summary>
+        public override void Handle()
+        {
+            _loginStep._TMP_load.text = "Check Data...";
+
+            //AD.Managers.DataM.UpdatePlayerData();
+
+            _loginStep._co_Login = _loginStep.StartCoroutine(_loginStep.InitPlayerData());
+        }
+    }
     #endregion
 
 #if UNITY_EDITOR
@@ -326,7 +378,7 @@ public class Login : MonoBehaviour
     {
         public override void OnInspectorGUI()
         {
-            EditorGUILayout.HelpBox("Login with PlayFab", MessageType.Info);
+            EditorGUILayout.HelpBox("Google Login with PlayFab", MessageType.Info);
 
             base.OnInspectorGUI();
         }

@@ -91,7 +91,7 @@ namespace AD
         /// </summary>
         private void InitM()
         {
-            //DataM.Init();
+            DataM.Init();
             //PoolM.Init();
             //PopupM.Init();
             //GoogleAdMobM.Init();

@@ -17,10 +17,6 @@ namespace AD
         public Dictionary<string, UserDataRecord> _dic_PlayFabPlayerData = null;
         [Tooltip("Dictionary<string, string> - 로컬에서 사용할 PlayerData (local data)")]
         public Dictionary<string, string> _dic_player = null;
-        [Tooltip("Dictionary<string, object> - monster data")]
-        public Dictionary<string, object> _dic_monsters = null;
-        [Tooltip("Dictionary<string, object> - item data")]
-        public Dictionary<string, object> _dic_items = null;
 
         [Header("--- 참고용 ---")]
         [Tooltip("현재 Player가 PlayFab에 접속한 ID")]
@@ -42,11 +38,9 @@ namespace AD
         /// </summary>
         internal void Init()
         {
-            LoadPlayerData();
-            LoadMonstersData();
-            LoadItemsData();
+            //LoadPlayerData();
 
-            StartCoroutine(Co_UpdateFewMinutes());
+            //StartCoroutine(Co_UpdateFewMinutes());
         }
 
         #region Functions
@@ -94,20 +88,6 @@ namespace AD
                     if (!_dic_player.ContainsKey(newdata.Key))
                         _dic_player.Add(newdata.Key, newdata.Value.ToString());
             }
-        }
-
-        private void LoadMonstersData()
-        {
-            _str_reMonstersData = Managers.ResourceM.Load<TextAsset>("DataManager", "Data/MonstersData").ToString();
-
-            _dic_monsters = AD.Utils.JsonToObject(_str_reMonstersData) as Dictionary<string, object>;
-        }
-
-        private void LoadItemsData()
-        {
-            _str_reMonstersData = Managers.ResourceM.Load<TextAsset>("DataManager", "Data/ItemsData").ToString();
-
-            _dic_items = AD.Utils.JsonToObject(_str_reMonstersData) as Dictionary<string, object>;
         }
 
         #region Local Data

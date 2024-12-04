@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/01.Scenes/NextScene.unity
-    guid: 4ac7add413d180d43b28b213579bcbf5
-  - enabled: 1
     path: Assets/01.Scenes/Login.unity
     guid: 8f03aacfa561f7648bf4a4bcac88edae
   - enabled: 1
@@ -20,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01.Scenes/Game/DesertHouse.unity
     guid: 130de191e9bf7de41a659f68e5741ed0
+  - enabled: 1
+    path: Assets/01.Scenes/NextScene.unity
+    guid: 4ac7add413d180d43b28b213579bcbf5
   m_configObjects: {}
