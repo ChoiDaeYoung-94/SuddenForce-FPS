@@ -38,6 +38,11 @@ public class Login : MonoBehaviour
 
     private State _state = null;
 
+    private void Awake()
+    {
+        PlayGamesPlatform.Activate();
+    }
+
     private void Start()
     {
         LoginStep();
@@ -67,14 +72,16 @@ public class Login : MonoBehaviour
         if (status == SignInStatus.Success)
         {
             // Continue with Play Games Services
-            Debug.Log("Success LoginWithGoogle");
+            Debug.Log("Success LoginGoogle");
             SetState(new LoginPlayFab(this));
         }
         else
         {
             // Disable your integration with Play Games Services or show a login button
             // to ask users to sign-in. Clicking it should call
-            PlayGamesPlatform.Instance.ManuallyAuthenticate(ProcessAuthentication);
+            // PlayGamesPlatform.Instance.ManuallyAuthenticate(ProcessAuthentication);
+
+            Debug.Log($"Failed LoginGoogle{status}");
         }
     }
     #endregion

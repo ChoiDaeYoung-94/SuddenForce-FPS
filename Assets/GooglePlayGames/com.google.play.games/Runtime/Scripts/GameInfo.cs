@@ -36,10 +36,10 @@ namespace GooglePlayGames {
         private const string UnescapedWebClientId = "WEB_CLIENTID";
         private const string UnescapedNearbyServiceId = "NEARBY_SERVICE_ID";
 
-        public const string ApplicationId = "807437370303"; // Filled in automatically
+        public const string ApplicationId = "311409806449"; // Filled in automatically
         public const string IosClientId = "__IOS_CLIENTID__"; // Filled in automatically
-        public const string WebClientId = "807437370303-1r2i9mgv4l14k9j4gogn2c49ocicph1o.apps.googleusercontent.com"; // Filled in automatically
-        public const string NearbyConnectionServiceId = "";
+        public const string WebClientId = "311409806449-pgjn23o8blq9tjtbqql4598ltnhbi1mj.apps.googleusercontent.com"; // Filled in automatically
+        public const string NearbyConnectionServiceId = "com.AeDeong.SuddenForceFPS";
 
         public static bool ApplicationIdInitialized() {
             return !string.IsNullOrEmpty(ApplicationId) && !ApplicationId.Equals(ToEscapedToken(UnescapedApplicationId));
