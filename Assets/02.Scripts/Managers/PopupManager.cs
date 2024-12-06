@@ -19,8 +19,8 @@ namespace AD
         GameObject _go_popupLobby = null;
         [SerializeField, Tooltip("게임 종료 팝업")]
         GameObject _go_popupExit = null;
-        [SerializeField, Tooltip("게임씬 힐 보상 팝업")]
-        GameObject _go_popupHeal = null;
+        [SerializeField, Tooltip("광고 리워드 보상 팝업")]
+        GameObject _go_popupADReward = null;
         [SerializeField, Tooltip("게임 오버 팝업")]
         GameObject _go_popupGameOver = null;
         [SerializeField, Tooltip("세팅 팝업")]
@@ -143,7 +143,7 @@ namespace AD
             _go_popupExit.SetActive(true);
         }
 
-        internal void PopupHeal() => _go_popupHeal.SetActive(true);
+        internal void PopupHeal() => _go_popupADReward.SetActive(true);
 
         internal void PopupGameOver() => _go_popupGameOver.SetActive(true);
 
@@ -179,7 +179,7 @@ namespace AD
 
         public void ExitGame() => Application.Quit();
 
-        public void Heal()
+        public void Rewards()
         {
             if (!AD.Managers.GoogleAdMobM.isInprogress)
                 AD.Managers.GoogleAdMobM.ShowRewardedAd();
