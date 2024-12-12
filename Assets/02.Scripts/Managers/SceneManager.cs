@@ -45,8 +45,6 @@ namespace AD
             while (AD.Managers.ServerM.isInprogress)
                 yield return null;
 
-            AD.Managers.DataM.SaveLocalData();
-
             if (_co_UpdateData != null)
             {
                 StopCoroutine(_co_UpdateData);

@@ -23,7 +23,7 @@ namespace AD
         private string _str_ID = string.Empty;
         public string StrID { get { return _str_ID; } set { _str_ID = value; } }
         [Tooltip("PlayerData 초기화 시 server, local 충돌 여부")]
-        internal bool _isConflict = false;
+        bool _isConflict = false;
         [Tooltip("Application.persistentDataPath.PlayerData.json 위치")]
         private string _str_apPlayerDataPath = string.Empty;
         [Tooltip("Resources/Data/PlayerData.json 내용")]
@@ -162,6 +162,7 @@ namespace AD
             }
 
             SanitizeData();
+            SaveLocalData();
         }
 
         IEnumerator Co_NewData()
@@ -172,6 +173,7 @@ namespace AD
             StopNewDataCoroutine();
 
             SanitizeData();
+            SaveLocalData();
         }
 
         void StopNewDataCoroutine()
@@ -205,6 +207,8 @@ namespace AD
                 AD.Managers.ServerM.SetData(_dic_player, GetAllData: true, Update: false);
             else
                 AD.Managers.ServerM.isInprogress = false;
+
+            _isConflict = false;
         }
 
         private int CompareValues<T>(T value1, T value2) where T : System.IComparable

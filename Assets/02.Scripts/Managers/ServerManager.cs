@@ -45,8 +45,6 @@ namespace AD
                         AD.Managers.DataM.UpdateData();
                         return;
                     }
-                    else
-                        AD.Managers.DataM._isConflict = false;
 
                     isInprogress = false;
                 },
