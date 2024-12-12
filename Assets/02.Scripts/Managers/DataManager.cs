@@ -28,9 +28,7 @@ namespace AD
         private string _str_apPlayerDataPath = string.Empty;
         [Tooltip("Resources/Data/PlayerData.json 내용")]
         private string _str_rePlayerData = string.Empty;
-        [Tooltip("Resources/Data/MonstersData.json 내용")]
-        private string _str_reMonstersData = string.Empty;
-        Coroutine _co_refreshData = null;
+        Coroutine _co_newData = null;
 
         /// <summary>
         /// Managers - Awake() -> Init()
@@ -38,9 +36,9 @@ namespace AD
         /// </summary>
         internal void Init()
         {
-            //LoadPlayerData();
+            LoadPlayerData();
 
-            //StartCoroutine(Co_UpdateFewMinutes());
+            StartCoroutine(Co_UpdateFewMinutes());
         }
 
         #region Functions
@@ -71,7 +69,7 @@ namespace AD
             if (File.Exists(_str_apPlayerDataPath))
                 CheckNewPlayerData();
 
-            File.WriteAllText(_str_apPlayerDataPath, data);
+            SaveLocalData();
 
             AD.Debug.Log("DataManager", "InitPlayerData() -> PlayerData 초기화 완료");
         }
@@ -129,7 +127,7 @@ namespace AD
         #region Server Data
         /// <summary>
         /// 서버에 존재하는 플레이어 데이터 받아옴
-        /// * 게임 씬 진입 전, 씬 전환 시 데이터를 갱신하기 위해 호출 됨
+        /// * Main 씬 진입 전, 씬 전환 시 데이터를 갱신하기 위해 호출 됨
         /// </summary>
         internal void UpdatePlayerData()
         {
@@ -140,8 +138,7 @@ namespace AD
 
         /// <summary>
         /// server data, local data를 비교하여 최신화
-        /// _dic_PlayFabPlayerData.Count가 1인 경우 -> NickName data만 가지고 있는 경우 -> 케릭터 선택 전 이기 때문에 무시
-        /// _dic_PlayFabPlayerData.Count가 2인 경우 -> NickName, Sex data 가지고 있기 때문에 게임 씬 진입 -> 기본 데이터 세팅
+        /// _dic_PlayFabPlayerData.Count가 1인 경우 -> NickName만 가지고 있기 때문에 메인 씬 진입 -> 기본 데이터 세팅
         /// 만약 데이터가 추가 된다면(10개 이상 추가되지 않는다고 가정) PlayerData.json을 통해 데이터를 추가하고 이 경우 서버에 데이터를 다시 세팅
         /// RefreshData() 후 데이터가 다를 경우 데이터 갱신
         /// </summary>
@@ -149,47 +146,40 @@ namespace AD
         {
             if (_dic_PlayFabPlayerData.Count == 1)
             {
-                AD.Managers.ServerM.isInprogress = false;
-                return;
-            }
-
-            if (_dic_PlayFabPlayerData.Count == 2)
-            {
                 _dic_player["NickName"] = _dic_PlayFabPlayerData["NickName"].Value;
-                _dic_player["Sex"] = _dic_PlayFabPlayerData["Sex"].Value;
 
-                AD.Managers.ServerM.SetData(_dic_player, GetAllData: true, Update: true);
-
-                _co_refreshData = StartCoroutine(RefreshData());
+                AD.Managers.ServerM.SetData(_dic_player, GetAllData: false, Update: false);
 
                 return;
             }
 
-            if (_dic_PlayFabPlayerData.Count > 2 && _dic_player.Count > _dic_PlayFabPlayerData.Count)
+            if (_dic_player.Count > _dic_PlayFabPlayerData.Count)
             {
                 AD.Managers.ServerM.NewData();
+                StartCoroutine(Co_NewData());
+
                 return;
             }
 
             SanitizeData();
         }
 
-        IEnumerator RefreshData()
+        IEnumerator Co_NewData()
         {
-            while (AD.Managers.ServerM.isInprogress)
+            while (AD.Managers.ServerM.isNewDataInprogress)
                 yield return null;
 
-            StopRefreshDataCoroutine();
+            StopNewDataCoroutine();
+
+            SanitizeData();
         }
 
-        void StopRefreshDataCoroutine()
+        void StopNewDataCoroutine()
         {
-            if (_co_refreshData != null)
+            if (_co_newData != null)
             {
-                StopCoroutine(_co_refreshData);
-                _co_refreshData = null;
-
-                SanitizeData();
+                StopCoroutine(_co_newData);
+                _co_newData = null;
             }
         }
         #endregion
@@ -204,15 +194,7 @@ namespace AD
 
             int temp_result;
 
-            _dic_player["NickName"] = _dic_PlayFabPlayerData["NickName"].Value;
-            _dic_player["Sex"] = _dic_PlayFabPlayerData["Sex"].Value;
-            _dic_player["Tutorial"] = _dic_PlayFabPlayerData["Tutorial"].Value;
-
             CompareValues(int.Parse(_dic_player["Gold"]), int.Parse(_dic_PlayFabPlayerData["Gold"].Value));
-            CompareValues(float.Parse(_dic_player["Power"]), float.Parse(_dic_PlayFabPlayerData["Power"].Value));
-            CompareValues(float.Parse(_dic_player["AttackSpeed"]), float.Parse(_dic_PlayFabPlayerData["AttackSpeed"].Value));
-            CompareValues(float.Parse(_dic_player["MoveSpeed"]), float.Parse(_dic_PlayFabPlayerData["MoveSpeed"].Value));
-            CompareValues(_dic_player["AllyMonsters"], _dic_PlayFabPlayerData["AllyMonsters"].Value.ToString());
 
             string temp_str = _dic_PlayFabPlayerData["GooglePlay"].Value.ToString();
             temp_result = CompareValues(_dic_player["GooglePlay"], temp_str);

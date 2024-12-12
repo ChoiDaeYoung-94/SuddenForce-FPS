@@ -37,26 +37,23 @@ namespace AD
 
         IEnumerator Co_UpdateData()
         {
-            yield return null; // 임시
+            AD.Debug.Log("SceneManager", "Co_UpdateData() -> 데이터 처리 작업 진행");
 
+            AD.Managers.DataM.UpdateLocalData(key: "null", value: "null", all: true);
+            AD.Managers.DataM.UpdatePlayerData();
 
-            //AD.Debug.Log("SceneManager", "Co_UpdateData() -> 데이터 처리 작업 진행");
+            while (AD.Managers.ServerM.isInprogress)
+                yield return null;
 
-            //AD.Managers.DataM.UpdateLocalData(key: "null", value: "null", all: true);
-            //AD.Managers.DataM.UpdatePlayerData();
+            AD.Managers.DataM.SaveLocalData();
 
-            //while (AD.Managers.ServerM.isInprogress)
-            //    yield return null;
+            if (_co_UpdateData != null)
+            {
+                StopCoroutine(_co_UpdateData);
+                _co_UpdateData = null;
 
-            //AD.Managers.DataM.SaveLocalData();
-
-            //if (_co_UpdateData != null)
-            //{
-            //    StopCoroutine(_co_UpdateData);
-            //    _co_UpdateData = null;
-
-            //    _co_GoScene = StartCoroutine(Co_GoScene());
-            //}
+                _co_GoScene = StartCoroutine(Co_GoScene());
+            }
         }
 
 
