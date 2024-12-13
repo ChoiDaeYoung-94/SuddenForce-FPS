@@ -372,7 +372,7 @@ public class Login : MonoBehaviour
         {
             _loginStep._TMP_load.text = "Check Data...";
 
-            //AD.Managers.DataM.UpdatePlayerData();
+            AD.Managers.DataM.UpdatePlayerData();
 
             _loginStep._co_Login = _loginStep.StartCoroutine(_loginStep.InitPlayerData());
         }

@@ -15,6 +15,8 @@ namespace AD
     {
         [Tooltip("Server 통신 확인 용")]
         internal bool isInprogress = false;
+        [Tooltip("Server new data 통신 확인 용")]
+        internal bool isNewDataInprogress = false;
         [Header("초기 데이터 세팅 시 10개를 초과하는 데이터를 보낼 시 오류 방지")]
         int _curindex = 0;
         Dictionary<string, string> _tempData = new Dictionary<string, string>();
@@ -43,8 +45,6 @@ namespace AD
                         AD.Managers.DataM.UpdateData();
                         return;
                     }
-                    else
-                        AD.Managers.DataM._isConflict = false;
 
                     isInprogress = false;
                 },
@@ -111,6 +111,8 @@ namespace AD
         /// </summary>
         internal void NewData()
         {
+            isNewDataInprogress = true;
+
             _tempData.Clear();
 
             foreach (KeyValuePair<string, string> data in AD.Managers.DataM._dic_player)
@@ -124,8 +126,10 @@ namespace AD
                 (result) =>
                 {
                     AD.Debug.Log("ServerManager", "Successfully NewData with PlayFab");
+
                     _tempData.Clear();
-                    GetAllData(Update: false);
+
+                    isNewDataInprogress = false;
                 },
                 (error) =>
                     AD.Debug.LogWarning("ServerManager", "Failed to NewData with PlayFab - " + error));
