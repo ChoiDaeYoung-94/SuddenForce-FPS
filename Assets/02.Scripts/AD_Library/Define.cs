@@ -20,6 +20,7 @@ namespace AD
             NextScene,
             Login,
             Main,
+            Lobby,
             Room,
             Game
         }
