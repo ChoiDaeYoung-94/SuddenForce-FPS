@@ -16,7 +16,7 @@ public class ContentManage : MonoBehaviour
     [Header("--- 세팅 [ Content ] ---")]
     [SerializeField, Tooltip("GO - 사용 될 content item")]
     GameObject _go_item = null;
-    [SerializeField, Tooltip("필요한 item의 amount - 높이 계산에 필요")]
+    [SerializeField, Tooltip("필요한 Room의 amount - 높이 계산에 필요, room의 수는 지속적으로 변하기 때문에 접근 가능")]
     float _amount = 0;
     [SerializeField, Tooltip("사용 될 ScrollView의 부모 패널 - [ 최대 사이즈(sizeDelta.y)를 알기 위함 ]")]
     RectTransform _RTR_parentView = null;
@@ -35,9 +35,9 @@ public class ContentManage : MonoBehaviour
 
     [Header("--- 참고용 [ Content ] ---")]
     [SerializeField, Tooltip("최소 생성 itemList")]
-    LinkedList<AD.Level> _LL_items = new LinkedList<AD.Level>();
+    LinkedList<AD.RoomObject> _LL_items = new LinkedList<AD.RoomObject>();
     [SerializeField, Tooltip("비활성 itemList")]
-    LinkedList<AD.Level> _LL_enabledItems = new LinkedList<AD.Level>();
+    LinkedList<AD.RoomObject> _LL_enabledItems = new LinkedList<AD.RoomObject>();
     [Header("--- 참고용 [ Content ] ---")]
     [SerializeField, Tooltip("Content의 PosY 변화 계산 위함")]
     float _curPosY = 0;
@@ -85,11 +85,8 @@ public class ContentManage : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
-        {
-            GameObject go = gameObject;
-            instance = go.GetComponent<ContentManage>();
-        }
+        instance = this;
+        Init(102);
     }
 
     private void OnDestroy()
@@ -98,11 +95,11 @@ public class ContentManage : MonoBehaviour
     }
 
     /// <summary>
-    /// Initialize.cs 에서 호출
+    /// 호출 필요
     /// </summary>
-    internal void Init()
+    private void Init(int amount)
     {
-        SetContentHeight();
+        SetRoomAmount(amount);
         CreateTarget();
         MoveCurLevel();
     }
@@ -124,6 +121,12 @@ public class ContentManage : MonoBehaviour
     #region Functions
 
     #region Init
+    public void SetRoomAmount(int amount)
+    {
+        _amount = amount;
+        SetContentHeight();
+    }
+
     /// <summary>
     /// Item, spacing, padding을 고려한 Content의 총 Height 계산
     /// 그외 필요한 부분 계산
@@ -163,7 +166,7 @@ public class ContentManage : MonoBehaviour
             GameObject item = Instantiate(_go_item, _RTR_content);
             item.SetActive(true);
 
-            AD.Level level_item = item.GetComponent<AD.Level>();
+            AD.RoomObject level_item = item.GetComponent<AD.RoomObject>();
             level_item.SetLevel(i + 1);
 
             _LL_items.AddLast(level_item);
@@ -250,7 +253,7 @@ public class ContentManage : MonoBehaviour
         if (_endIndex + 1 > _amount)
             return;
 
-        foreach (AD.Level item in _LL_items)
+        foreach (AD.RoomObject item in _LL_items)
         {
             if (item._RTR_this.anchoredPosition.y - _intervalHeight >= -_RTR_content.anchoredPosition.y)
             {
@@ -264,10 +267,10 @@ public class ContentManage : MonoBehaviour
         // 비활성화 한 item들을 _LL_items에서 지운 뒤 위치 조절 후 활성화
         if (_LL_enabledItems != null && _LL_enabledItems.Count > 0)
         {
-            foreach (AD.Level item in _LL_enabledItems)
+            foreach (AD.RoomObject item in _LL_enabledItems)
                 _LL_items.Remove(item);
 
-            foreach (AD.Level item in _LL_enabledItems)
+            foreach (AD.RoomObject item in _LL_enabledItems)
             {
                 if (_endIndex + 1 <= _amount)
                 {
@@ -293,7 +296,7 @@ public class ContentManage : MonoBehaviour
                     break;
             }
 
-            foreach (AD.Level item in _LL_items)
+            foreach (AD.RoomObject item in _LL_items)
                 _LL_enabledItems.Remove(item);
         }
 
@@ -334,7 +337,7 @@ public class ContentManage : MonoBehaviour
                     _endAnchorX_index = i;
 
             int x = _GLG_content.constraintCount;
-            foreach (AD.Level item in _LL_enabledItems)
+            foreach (AD.RoomObject item in _LL_enabledItems)
             {
                 if (--x >= 0)
                 {
@@ -348,7 +351,7 @@ public class ContentManage : MonoBehaviour
                 }
             }
 
-            foreach (AD.Level item in _LL_items)
+            foreach (AD.RoomObject item in _LL_items)
                 _LL_enabledItems.Remove(item);
         }
     }

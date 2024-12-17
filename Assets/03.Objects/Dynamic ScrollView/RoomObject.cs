@@ -10,7 +10,7 @@ using TMPro;
 
 namespace AD
 {
-    public class Level : MonoBehaviour
+    public class RoomObject : MonoBehaviour
     {
         [Header("--- 세팅 ---")]
         [SerializeField, Tooltip("Content에 RectTransform을 넘겨주기 위함")]
@@ -34,12 +34,12 @@ namespace AD
     }
 
 #if UNITY_EDITOR
-    [CustomEditor(typeof(Level))]
+    [CustomEditor(typeof(RoomObject))]
     public class customEditor : Editor
     {
         public override void OnInspectorGUI()
         {
-            EditorGUILayout.HelpBox("레벨 관련", MessageType.Info);
+            EditorGUILayout.HelpBox("Room 관련", MessageType.Info);
 
             base.OnInspectorGUI();
         }
