@@ -40,37 +40,59 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (startResult.Ok)
         {
-            AD.Debug.Log("Canvas_Main", "Connected and game started successfully.");
+            AD.Debug.Log("NetworkRunnerM", "Connected and game started successfully.");
         }
         else
         {
-            AD.Debug.LogError("Canvas_Main", $"Failed to start the game: {startResult.ShutdownReason}");
+            AD.Debug.LogError("NetworkRunnerM", $"Failed to start the game: {startResult.ShutdownReason}");
         }
     }
 
     #region Photon Fusion
     private async Task<StartGameResult> ConnectToPhotonFusionServer()
     {
-        _runner.ProvideInput = false;
         _runner.AddCallbacks(this);
-
-        var scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        _runner.ProvideInput = false;
 
         var result = await _runner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Shared,
             SessionName = null,
-            Scene = scene,
+            Scene = SceneRef.FromIndex(2),
             SceneManager = _networkSceneM
         });
 
         return result;
+    }
+
+    public async void JoinRoom(SessionInfo info)
+    {
+        AD.Debug.Log("NetworkRunnerM", $"Attempting to join session: {info.Name}");
+
+        var joinResult = await _runner.StartGame(new StartGameArgs()
+        {
+            GameMode = GameMode.Client,
+            SessionName = info.Name,
+            Scene = SceneRef.FromIndex(3),
+            SceneManager = _networkSceneM
+        });
+
+        if (joinResult.Ok)
+        {
+            AD.Debug.Log("NetworkRunnerM", $"Joined session successfully: {info.Name}");
+        }
+        else
+        {
+            AD.Debug.LogError("NetworkRunnerM", "Failed to join session: " + joinResult.ShutdownReason);
+        }
     }
     #endregion
 
     #region Public Methods
     public void Shutdown()
     {
+        AD.Managers.PopupM.PopupLoading();
+
         _runner.Shutdown();
     }
     #endregion
@@ -83,10 +105,14 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-        AD.Debug.Log("NetworkM", $"OnShutdown - {shutdownReason}");
+        AD.Debug.Log("NetworkRunnerM", $"OnShutdown - {shutdownReason}");
 
         AD.Managers.PopupM.ClosePopupLoading();
-        AD.Managers.SceneM.NextScene(AD.Define.Scenes.Main);
+
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.Define.Scenes.Lobby.ToString())
+            AD.Managers.SceneM.NextScene(AD.Define.Scenes.Main);
+        else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.Define.Scenes.Room.ToString())
+            AD.Managers.SceneM.NextScene(AD.Define.Scenes.Lobby);
     }
 
     public void OnConnectedToServer(NetworkRunner runner) { }
@@ -94,7 +120,14 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
-    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
+
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
+    {
+        AD.Debug.Log("NetworkRunnerM", $"Session list updated. Count: {sessionList.Count}");
+
+        //룸 목록 정리 후 세션 목록을 최신화하여 UI를 갱신해야 함
+    }
+
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
     public void OnSceneLoadDone(NetworkRunner runner) { }

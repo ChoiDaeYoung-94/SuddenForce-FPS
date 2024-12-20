@@ -15,8 +15,6 @@ public class Canvas_Lobby : MonoBehaviour
 
     public void GoMainScene()
     {
-        AD.Managers.PopupM.PopupLoading();
-
         NetworkRunnerManager.Instance.Shutdown();
     }
 

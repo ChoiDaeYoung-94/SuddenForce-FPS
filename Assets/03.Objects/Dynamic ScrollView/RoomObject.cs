@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Fusion;
+
 using TMPro;
 
 namespace AD
@@ -15,21 +17,22 @@ namespace AD
         [Header("--- 세팅 ---")]
         [SerializeField, Tooltip("Content에 RectTransform을 넘겨주기 위함")]
         internal RectTransform _RTR_this = null;
-        [SerializeField, Tooltip("TMP_Text - level표기 위함")]
-        TMP_Text _TMP_level = null;
+        [SerializeField] TMP_Text _TMP_roomName = null;
+        [SerializeField] TMP_Text _TMP_gameSceneName = null;
+        [SerializeField] TMP_Text _TMP_roomPlayerCount = null;
+
         [Header("--- 참고용 ---")]
-        [SerializeField, Tooltip("현재 이 object의 level")]
-        internal int _curLevel = 0;
+        public SessionInfo _sessionInfo = null;
+        public int _sessionIndex = 0;
 
-        internal void SetLevel(int level)
+        internal void SetRoom(SessionInfo sessionInfo, int index)
         {
-            _curLevel = level;
-            _TMP_level.text = level.ToString();
-        }
+            _sessionInfo = sessionInfo;
+            _sessionIndex = index;
 
-        internal int GetLevel()
-        {
-            return _curLevel;
+            _TMP_roomName.text = _sessionInfo.Name;
+            _TMP_roomPlayerCount.text = $"{_sessionInfo.PlayerCount} / {_sessionInfo.MaxPlayers}";
+            _TMP_gameSceneName.text = $"{_sessionInfo.Properties["Map"]}";
         }
     }
 
