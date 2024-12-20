@@ -15,6 +15,8 @@ namespace AD
     public class PopupManager : MonoBehaviour
     {
         [Header("--- 세팅 ---")]
+        [SerializeField, Tooltip("로딩 팝업")]
+        GameObject _go_popupLoading = null;
         [SerializeField, Tooltip("로비 팝업")]
         GameObject _go_popupLobby = null;
         [SerializeField, Tooltip("게임 종료 팝업")]
@@ -128,6 +130,9 @@ namespace AD
                 //}
             }
         }
+
+        internal void PopupLoading() => _go_popupLoading.SetActive(true);
+        internal void ClosePopupLoading() => _go_popupLoading.SetActive(false);
 
         internal void PopupGoLobby()
         {

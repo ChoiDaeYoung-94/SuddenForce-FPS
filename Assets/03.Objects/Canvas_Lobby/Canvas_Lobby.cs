@@ -13,6 +13,13 @@ public class Canvas_Lobby : MonoBehaviour
 
     #region Functions
 
+    public void GoMainScene()
+    {
+        AD.Managers.PopupM.PopupLoading();
+
+        NetworkRunnerManager.Instance.Shutdown();
+    }
+
     #region Panel_SideMenu
     public void Rooms()
     {
@@ -57,9 +64,5 @@ public class Canvas_Lobby : MonoBehaviour
     }
     #endregion
 
-    public void GoMainScene()
-    {
-        AD.Managers.SceneM.NextScene(AD.Define.Scenes.Main);
-    }
     #endregion
 }
