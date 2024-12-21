@@ -1,7 +1,3 @@
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +8,7 @@ using TMPro;
 
 namespace AD
 {
-    public class RoomObject : MonoBehaviour
+    public class Room : MonoBehaviour
     {
         [Header("--- 세팅 ---")]
         [SerializeField, Tooltip("Content에 RectTransform을 넘겨주기 위함")]
@@ -25,27 +21,21 @@ namespace AD
         public SessionInfo _sessionInfo = null;
         public int _sessionIndex = 0;
 
-        internal void SetRoom(SessionInfo sessionInfo, int index)
+        internal void SetRoom(SessionInfo sessionInfo, int sessionIndex)
         {
             _sessionInfo = sessionInfo;
-            _sessionIndex = index;
+            _sessionIndex = sessionIndex;
+
+            _TMP_roomName.text = _sessionIndex.ToString();
 
             _TMP_roomName.text = _sessionInfo.Name;
+            _TMP_gameSceneName.text = _sessionInfo.Properties["Map"];
             _TMP_roomPlayerCount.text = $"{_sessionInfo.PlayerCount} / {_sessionInfo.MaxPlayers}";
-            _TMP_gameSceneName.text = $"{_sessionInfo.Properties["Map"]}";
         }
-    }
 
-#if UNITY_EDITOR
-    [CustomEditor(typeof(RoomObject))]
-    public class customEditor : Editor
-    {
-        public override void OnInspectorGUI()
+        internal int GetIndex()
         {
-            EditorGUILayout.HelpBox("Room 관련", MessageType.Info);
-
-            base.OnInspectorGUI();
+            return _sessionIndex;
         }
     }
-#endif
 }

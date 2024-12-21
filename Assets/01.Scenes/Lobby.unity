@@ -571,6 +571,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 132676518704476317, guid: 5773ac727b1cfb5429db59fa5f4ee4b5,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2375887269732898879, guid: 5773ac727b1cfb5429db59fa5f4ee4b5,
         type: 3}
       propertyPath: m_Camera
@@ -680,11 +685,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Canvas_Lobby
-      objectReference: {fileID: 0}
-    - target: {fileID: 6800114274704351807, guid: 5773ac727b1cfb5429db59fa5f4ee4b5,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

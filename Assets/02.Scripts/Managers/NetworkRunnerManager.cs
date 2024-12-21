@@ -18,6 +18,8 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private void Awake()
     {
+        instance = this;
+
         Init();
     }
 
@@ -30,8 +32,6 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private async void Init()
     {
-        instance = this;
-
         AD.Managers.PopupM.PopupLoading();
 
         var startResult = await ConnectToPhotonFusionServer();
@@ -125,7 +125,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         AD.Debug.Log("NetworkRunnerM", $"Session list updated. Count: {sessionList.Count}");
 
-        //룸 목록 정리 후 세션 목록을 최신화하여 UI를 갱신해야 함
+        RoomManage.Instance.Init(sessionList);
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
