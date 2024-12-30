@@ -65,6 +65,38 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         return result;
     }
 
+    public async void CreateRoom(string roomName, int maxPlayer, string mapName, bool isPrivateRoom)
+    {
+        Dictionary<string, SessionProperty> sessionProperties = new Dictionary<string, SessionProperty>()
+        {
+            { "Map", mapName },
+            { "MaxPlayers", maxPlayer }
+        };
+
+        AD.Managers.PopupM.PopupLoading();
+
+        var startGameResult = await _runner.StartGame(new StartGameArgs()
+        {
+            GameMode = GameMode.Host,
+            SessionName = roomName,
+            SessionProperties = sessionProperties,
+            IsVisible = isPrivateRoom,
+            Scene = SceneRef.FromIndex(3),
+            SceneManager = _networkSceneM
+        });
+
+        AD.Managers.PopupM.ClosePopupLoading();
+
+        if (startGameResult.Ok)
+        {
+            AD.Debug.Log("NetworkRunnerM", $"세션 생성 성공: {roomName}");
+        }
+        else
+        {
+            AD.Debug.LogError("NetworkRunnerM", $"세션 생성 실패: {startGameResult.ShutdownReason}");
+        }
+    }
+
     public async void JoinRoom(SessionInfo info)
     {
         AD.Debug.Log("NetworkRunnerM", $"Attempting to join session: {info.Name}");

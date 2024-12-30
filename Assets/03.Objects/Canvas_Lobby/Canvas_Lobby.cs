@@ -1,15 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
+using TMPro;
 
 public class Canvas_Lobby : MonoBehaviour
 {
-    [Header("--- ¼¼ÆÃ ---")]
-    [SerializeField] GameObject _go_Rooms = null;
-    [SerializeField] GameObject _go_CreateRoom = null;
+    [Header("--- ì„¸íŒ… ---")]
+    [SerializeField] GameObject _go_rooms = null;
+    [SerializeField] GameObject _go_createRoom = null;
+    [SerializeField] TMP_Text _TMP_roomName = null;
+    [SerializeField] TMP_Dropdown _DD_maxPlayer = null;
+    [SerializeField] Toggle _tg_privateRoom = null;
+    [SerializeField] TMP_Text _TMP_mapName = null;
 
-    [Header("--- Âü°í¿ë ---")]
+    [Header("--- ì°¸ê³ ìš© ---")]
     [SerializeField] int _sideIndex = 0;    // 0 - Rooms, 1 - Create Room
+
+    const string _str_roomName = "Please enter the room name...";
+    const string _str_mapName = "Please select a map...";
 
     #region Functions
 
@@ -51,14 +61,39 @@ public class Canvas_Lobby : MonoBehaviour
 
     private void Panel_Room()
     {
-        _go_Rooms.SetActive(true);
-        _go_CreateRoom.SetActive(false);
+        _go_rooms.SetActive(true);
+        _go_createRoom.SetActive(false);
     }
 
     private void Panel_CreateRoom()
     {
-        _go_CreateRoom.SetActive(true);
-        _go_Rooms.SetActive(false);
+        _go_createRoom.SetActive(true);
+        _go_rooms.SetActive(false);
+    }
+    #endregion
+
+    #region CreateRoom
+    public void Confirm()
+    {
+        if (string.IsNullOrEmpty(_TMP_roomName.text) || _TMP_roomName.text == "" || _TMP_roomName.text.Length <= 1)
+        {
+            AD.Managers.PopupM.PopupMessage(_str_roomName);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(_TMP_mapName.text) || _TMP_mapName.text == "none...")
+        {
+            AD.Managers.PopupM.PopupMessage(_str_mapName);
+            return;
+        }
+
+        int maxPlayer = int.Parse(_DD_maxPlayer.options[_DD_maxPlayer.value].text);
+        NetworkRunnerManager.Instance.CreateRoom(roomName: _TMP_roomName.text, maxPlayer: maxPlayer, mapName: _TMP_mapName.text, isPrivateRoom: _tg_privateRoom.isOn);
+    }
+
+    public void SelectMap(string mapName)
+    {
+        _TMP_mapName.text = mapName;
     }
     #endregion
 
