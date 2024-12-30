@@ -46,7 +46,7 @@ namespace AD
                 PlayBGM(_AC_bgm_login);
             else if (temp_scene.Equals(AD.Define.Scenes.Main.ToString()))
                 PlayBGM(_AC_bgm_main);
-            else if (temp_scene.Equals(AD.Define.Scenes.Game.ToString()))
+            else if (temp_scene.Equals(AD.Define.Scenes.DesertHouse.ToString()))
                 PlayBGM(_AC_bgm_game);
         }
 

@@ -22,7 +22,12 @@ namespace AD
             Main,
             Lobby,
             Room,
-            Game
+            DesertHouse
+        }
+
+        public enum Maps
+        {
+            DesertHouse
         }
 
         /// <summary>
