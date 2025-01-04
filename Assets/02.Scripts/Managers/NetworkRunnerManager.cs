@@ -12,6 +12,9 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     static NetworkRunnerManager instance;
     public static NetworkRunnerManager Instance { get { return instance; } }
 
+    private AD.Define.State _state;
+    private object _value;
+
     [Header("--- 세팅 ---")]
     [SerializeField] NetworkRunner _runner = null;
     [SerializeField] NetworkSceneManagerDefault _networkSceneM = null;
@@ -19,8 +22,6 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private void Awake()
     {
         instance = this;
-
-        Init();
     }
 
     private void OnDestroy()
@@ -29,29 +30,22 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     #region Functions
-
-    private async void Init()
+    public void Init(AD.Define.State state, object value = null)
     {
         AD.Managers.PopupM.PopupLoading();
+        _runner.AddCallbacks(this);
 
-        var startResult = await ConnectToPhotonFusionServer();
-
-        AD.Managers.PopupM.ClosePopupLoading();
-
-        if (startResult.Ok)
-        {
-            AD.Debug.Log("NetworkRunnerM", "Connected and game started successfully.");
-        }
-        else
-        {
-            AD.Debug.LogError("NetworkRunnerM", $"Failed to start the game: {startResult.ShutdownReason}");
-        }
+        if (state == AD.Define.State.ConnectServer)
+            ConnectToPhotonFusionServer();
+        else if (state == AD.Define.State.CreateRoom)
+            CreateRoom(value);
+        else if (state == AD.Define.State.JoinRoom)
+            JoinRoom(value);
     }
 
     #region Photon Fusion
-    private async Task<StartGameResult> ConnectToPhotonFusionServer()
+    public async void ConnectToPhotonFusionServer()
     {
-        _runner.AddCallbacks(this);
         _runner.ProvideInput = false;
 
         var result = await _runner.StartGame(new StartGameArgs()
@@ -62,25 +56,34 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager = _networkSceneM
         });
 
-        return result;
+        AD.Managers.PopupM.ClosePopupLoading();
+
+        if (result.Ok)
+        {
+            AD.Debug.Log("NetworkRunnerM", "Connected and game started successfully.");
+        }
+        else
+        {
+            AD.Debug.LogError("NetworkRunnerM", $"Failed to start the game: {result.ShutdownReason}");
+        }
     }
 
-    public async void CreateRoom(string roomName, int maxPlayer, string mapName, bool isPrivateRoom)
+    public async void CreateRoom(object value)
     {
+        Dictionary<string, object> temp_value = value as Dictionary<string, object>;
+
         Dictionary<string, SessionProperty> sessionProperties = new Dictionary<string, SessionProperty>()
         {
-            { "Map", mapName },
-            { "MaxPlayers", maxPlayer }
+            { "MapName", temp_value["MapName"].ToString() }
         };
-
-        AD.Managers.PopupM.PopupLoading();
 
         var startGameResult = await _runner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Host,
-            SessionName = roomName,
+            SessionName = temp_value["RoomName"].ToString(),
+            PlayerCount = int.Parse(temp_value["MaxPlayers"].ToString()),
             SessionProperties = sessionProperties,
-            IsVisible = isPrivateRoom,
+            IsVisible = bool.Parse(temp_value["IsPrivateRoom"].ToString()),
             Scene = SceneRef.FromIndex(3),
             SceneManager = _networkSceneM
         });
@@ -89,7 +92,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (startGameResult.Ok)
         {
-            AD.Debug.Log("NetworkRunnerM", $"세션 생성 성공: {roomName}");
+            AD.Debug.Log("NetworkRunnerM", $"세션 생성 성공: {temp_value["RoomName"]}");
         }
         else
         {
@@ -97,21 +100,25 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    public async void JoinRoom(SessionInfo info)
+    public async void JoinRoom(object value)
     {
-        AD.Debug.Log("NetworkRunnerM", $"Attempting to join session: {info.Name}");
+        SessionInfo temp_info = value as SessionInfo;
+
+        AD.Debug.Log("NetworkRunnerM", $"Attempting to join session: {temp_info.Name}");
 
         var joinResult = await _runner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Client,
-            SessionName = info.Name,
+            SessionName = temp_info.Name,
             Scene = SceneRef.FromIndex(3),
             SceneManager = _networkSceneM
         });
 
+        AD.Managers.PopupM.ClosePopupLoading();
+
         if (joinResult.Ok)
         {
-            AD.Debug.Log("NetworkRunnerM", $"Joined session successfully: {info.Name}");
+            AD.Debug.Log("NetworkRunnerM", $"Joined session successfully: {temp_info.Name}");
         }
         else
         {
@@ -121,8 +128,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     #endregion
 
     #region Public Methods
-    public void Shutdown()
+    public void Shutdown(AD.Define.State state, object value = null)
     {
+        _state = state;
+        _value = value;
+
         AD.Managers.PopupM.PopupLoading();
 
         _runner.Shutdown();
@@ -139,12 +149,17 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         AD.Debug.Log("NetworkRunnerM", $"OnShutdown - {shutdownReason}");
 
-        AD.Managers.PopupM.ClosePopupLoading();
+        if (_state == AD.Define.State.LeaveScene)
+        {
+            AD.Managers.PopupM.ClosePopupLoading();
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.Define.Scenes.Lobby.ToString())
-            AD.Managers.SceneM.NextScene(AD.Define.Scenes.Main);
-        else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.Define.Scenes.Room.ToString())
-            AD.Managers.SceneM.NextScene(AD.Define.Scenes.Lobby);
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.Define.Scenes.Lobby.ToString())
+                AD.Managers.SceneM.NextScene(AD.Define.Scenes.Main);
+            else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.Define.Scenes.Room.ToString())
+                AD.Managers.SceneM.NextScene(AD.Define.Scenes.Lobby);
+        }
+        else
+            AD.Managers.CreateNetworkRunnerM(_state, _value);
     }
 
     public void OnConnectedToServer(NetworkRunner runner) { }

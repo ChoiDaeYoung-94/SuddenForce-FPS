@@ -37,5 +37,16 @@ namespace AD
         {
             PRODUCT_NO_ADS
         }
+
+        /// <summary>
+        /// NetworkRunnerM state
+        /// </summary>
+        public enum State
+        {
+            ConnectServer,
+            CreateRoom,
+            JoinRoom,
+            LeaveScene
+        }
     }
 }

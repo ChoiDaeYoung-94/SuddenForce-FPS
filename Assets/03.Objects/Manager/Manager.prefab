@@ -1394,6 +1394,8 @@ MonoBehaviour:
   _sceneM: {fileID: 1361109501700885724}
   _googleAdMobM: {fileID: 6179718557516177910}
   _soundM: {fileID: 5955854799130765890}
+  _go_networkRunnerM: {fileID: 4772859800932114892, guid: fa035c28b86d4a94581288901fa5e7ab,
+    type: 3}
   _go_poolGOs: []
   _go_poolUIs: []
 --- !u!114 &7786132074681424376

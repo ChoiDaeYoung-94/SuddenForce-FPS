@@ -28,7 +28,7 @@ namespace AD
             _TMP_roomName.text = _sessionIndex.ToString();
 
             _TMP_roomName.text = _sessionInfo.Name;
-            _TMP_gameSceneName.text = _sessionInfo.Properties["Map"];
+            _TMP_gameSceneName.text = _sessionInfo.Properties["MapName"];
             _TMP_roomPlayerCount.text = $"{_sessionInfo.PlayerCount} / {_sessionInfo.MaxPlayers}";
         }
     }

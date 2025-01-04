@@ -25,7 +25,7 @@ public class Canvas_Lobby : MonoBehaviour
 
     public void GoMainScene()
     {
-        NetworkRunnerManager.Instance.Shutdown();
+        NetworkRunnerManager.Instance.Shutdown(AD.Define.State.LeaveScene);
     }
 
     #region Panel_SideMenu
@@ -88,7 +88,15 @@ public class Canvas_Lobby : MonoBehaviour
         }
 
         int maxPlayer = int.Parse(_DD_maxPlayer.options[_DD_maxPlayer.value].text);
-        NetworkRunnerManager.Instance.CreateRoom(roomName: _TMP_roomName.text, maxPlayer: maxPlayer, mapName: _TMP_mapName.text, isPrivateRoom: _tg_privateRoom.isOn);
+
+        Dictionary<string, object> temp_value = new Dictionary<string, object>(){
+            { "RoomName", _TMP_roomName.text },
+            { "MaxPlayers", maxPlayer },
+            { "MapName", _TMP_mapName.text },
+            { "IsPrivateRoom", !_tg_privateRoom.isOn },
+        };
+
+        NetworkRunnerManager.Instance.Shutdown(AD.Define.State.CreateRoom, temp_value);
     }
 
     public void SelectMap(string mapName)

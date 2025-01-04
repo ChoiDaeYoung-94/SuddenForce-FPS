@@ -51,6 +51,8 @@ namespace AD
         [SerializeField] SoundManager _soundM = null;
         public static SoundManager SoundM { get { return instance._soundM; } }
 
+        [SerializeField] GameObject _go_networkRunnerM = null;
+
         [Header("--- 미리 가지고 있어야 할 data ---")]
         [Tooltip("Pool에 사용할 GameObject")]
         public GameObject[] _go_poolGOs = null;
@@ -83,6 +85,13 @@ namespace AD
         private void Update()
         {
             _updateM.OnUpdate();
+        }
+
+        public static void CreateNetworkRunnerM(AD.Define.State state, object value = null)
+        {
+            Instantiate(instance._go_networkRunnerM);
+
+            NetworkRunnerManager.Instance.Init(state, value);
         }
 
         /// <summary>
