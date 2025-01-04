@@ -24,7 +24,7 @@ public class Initialize_Lobby : MonoBehaviour
 
     private void Awake()
     {
-        AD.Managers.CreateNetworkRunnerM(AD.Define.State.ConnectServer);
+        AD.Managers.CreateNetworkRunnerM();
     }
 
     private void Start()

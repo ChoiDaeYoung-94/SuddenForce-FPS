@@ -87,11 +87,9 @@ namespace AD
             _updateM.OnUpdate();
         }
 
-        public static void CreateNetworkRunnerM(AD.Define.State state, object value = null)
+        public static void CreateNetworkRunnerM()
         {
             Instantiate(instance._go_networkRunnerM);
-
-            NetworkRunnerManager.Instance.Init(state, value);
         }
 
         /// <summary>

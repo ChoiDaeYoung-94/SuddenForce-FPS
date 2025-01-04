@@ -31,5 +31,10 @@ namespace AD
             _TMP_gameSceneName.text = _sessionInfo.Properties["MapName"];
             _TMP_roomPlayerCount.text = $"{_sessionInfo.PlayerCount} / {_sessionInfo.MaxPlayers}";
         }
+
+        public void JoinRoom()
+        {
+            NetworkRunnerManager.Instance.JoinRoom(_sessionInfo);
+        }
     }
 }

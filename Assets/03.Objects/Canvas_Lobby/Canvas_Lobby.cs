@@ -25,7 +25,7 @@ public class Canvas_Lobby : MonoBehaviour
 
     public void GoMainScene()
     {
-        NetworkRunnerManager.Instance.Shutdown(AD.Define.State.LeaveScene);
+        NetworkRunnerManager.Instance.Shutdown();
     }
 
     #region Panel_SideMenu
@@ -72,7 +72,7 @@ public class Canvas_Lobby : MonoBehaviour
     }
     #endregion
 
-    #region CreateRoom
+    #region Rooms
     public void Confirm()
     {
         if (string.IsNullOrEmpty(_TMP_roomName.text) || _TMP_roomName.text == "" || _TMP_roomName.text.Length <= 1)
@@ -96,7 +96,7 @@ public class Canvas_Lobby : MonoBehaviour
             { "IsPrivateRoom", !_tg_privateRoom.isOn },
         };
 
-        NetworkRunnerManager.Instance.Shutdown(AD.Define.State.CreateRoom, temp_value);
+        NetworkRunnerManager.Instance.CreateRoom(temp_value);
     }
 
     public void SelectMap(string mapName)

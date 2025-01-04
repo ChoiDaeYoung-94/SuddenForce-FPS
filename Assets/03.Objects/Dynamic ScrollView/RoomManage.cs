@@ -414,8 +414,16 @@ public class RoomManage : MonoBehaviour
             }
         }
 
-        _activeItemFirstIndex = _LL_activeItems.First.Value._sessionIndex;
-        _activeItemLastIndex = _LL_activeItems.Last.Value._sessionIndex;
+        if (_LL_activeItems.Count > 0)
+        {
+            _activeItemFirstIndex = _LL_activeItems.First.Value._sessionIndex;
+            _activeItemLastIndex = _LL_activeItems.Last.Value._sessionIndex;
+        }
+        else
+        {
+            _activeItemFirstIndex = 0;
+            _activeItemLastIndex = 0;
+        }
     }
 
     /// <summary>
