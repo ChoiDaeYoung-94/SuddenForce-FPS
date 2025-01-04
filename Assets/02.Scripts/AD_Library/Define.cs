@@ -20,8 +20,14 @@ namespace AD
             NextScene,
             Login,
             Main,
+            Lobby,
             Room,
-            Game
+            DesertHouse
+        }
+
+        public enum Maps
+        {
+            DesertHouse
         }
 
         /// <summary>

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 namespace AD
 {
     /// <summary>
@@ -15,6 +17,11 @@ namespace AD
     public class PopupManager : MonoBehaviour
     {
         [Header("--- 세팅 ---")]
+        [SerializeField, Tooltip("로딩 팝업")]
+        GameObject _go_popupLoading = null;
+        [SerializeField, Tooltip("메세지 팝업")]
+        GameObject _go_popupCommon = null;
+        [SerializeField] TMP_Text _TMP_message = null;
         [SerializeField, Tooltip("로비 팝업")]
         GameObject _go_popupLobby = null;
         [SerializeField, Tooltip("게임 종료 팝업")]
@@ -127,6 +134,15 @@ namespace AD
                 //        PopupGoLobby();
                 //}
             }
+        }
+
+        internal void PopupLoading() => _go_popupLoading.SetActive(true);
+        internal void ClosePopupLoading() => _go_popupLoading.SetActive(false);
+
+        internal void PopupMessage(string message)
+        {
+            _TMP_message.text = message;
+            _go_popupCommon.SetActive(true);
         }
 
         internal void PopupGoLobby()

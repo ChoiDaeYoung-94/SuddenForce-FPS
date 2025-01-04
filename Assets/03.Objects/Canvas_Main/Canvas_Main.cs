@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class Canvas_Main : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    #region Functions
+    public void GoLobbyScene()
     {
-        
+        AD.Managers.SceneM.NextScene(AD.Define.Scenes.Lobby);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    #endregion
 }
