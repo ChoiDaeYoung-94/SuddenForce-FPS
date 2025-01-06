@@ -1,6 +1,6 @@
 # SuddenForce-FPS
 
-unity(2022.3.43f1 LTS) 3d FPS game project
+A 3D FPS unity(2022.3.52f1 LTS) game with multiplayer features, developed using Photon Fusion.
 
 
 ### Trailer
@@ -14,18 +14,37 @@ TODO
 ~~~
 git clone https://github.com/ChoiDaeYoung-94/SuddenForce-FPS.git
 ~~~
-2. [Download Assets]()
-3. Open Project in Unity
+2. Open Project in Unity
 
 
 ## Download
 
 - TODO > GOOGLE PLAY
-- [APK]()
+- [APK](https://drive.google.com/file/d/1SQojyQafq9IdmNvTONF80G8ri3QPqeXk/view?usp=sharing)
+
+
+## Technologies and Techniques (링크 클릭 시 해당 내용 코드로 이동합니다.)
+
+- [google v2, PlayFab login code](https://github.com/ChoiDaeYoung-94/SuddenForce-FPS/blob/main/Assets/03.Objects/LoginCanvas/Login.cs)
+- [dynamic scrollview code](https://github.com/ChoiDaeYoung-94/SuddenForce-FPS/blob/main/Assets/03.Objects/Dynamic%20ScrollView/RoomManage.cs)
+
+
+## Project Goals
+
+- [x] 멀티 플레이 게임 (Photon Fusion 사용)
+- skill system, equipment system 구현
+- [x] 구글 플레이 v2(https://developer.android.com/games/pgs/android/android-signin?hl=ko) 사용
+- prefab 아름답게 사용
+
+
+## Self Feedback
+
+- 
 
 
 ## SDK, Package ...
 
+- [Photon Fusion](https://doc.photonengine.com/fusion/current/getting-started/sdk-download)
 - [play games plugin](https://github.com/playgameservices/play-games-plugin-for-unity/releases)
 - [PlayFabEditorExtensions, PlayFabSDK](https://docs.microsoft.com/ko-kr/gaming/playfab/sdks/unity3d/installing-unity3d-sdk)
 - [Google Mobile Ads SDK](https://developers.google.com/admob/android/quick-start?hl=ko)
@@ -36,32 +55,14 @@ git clone https://github.com/ChoiDaeYoung-94/SuddenForce-FPS.git
 - [Safe Area Helper](https://assetstore.unity.com/packages/tools/gui/safe-area-helper-130488)
 
 
-## Technologies and Techniques
-
-- 
-
-
-## Project Goals
-
-- 멀티 플레이 게임 (Photon Fusion 사용)
-- skill system, equipment system 구현
-- 구글 플레이 v2(https://developer.android.com/games/pgs/android/android-signin?hl=ko) 사용
-- prefab 아름답게 사용
-
-
-## Self Feedback
-
-- 
-
 
 ## Build
 
 | platform  | output   |
 | --------- | -------- |
 | AOS       | apk, aab |
-| iOS       |   TODO   |
 
-build 추출물은 Project root/Build/AOS, Project root/Build/iOS 에 위치한다.
+build 추출물은 Project root/Build/AOS에 위치한다.
 
 
 ### Unity Scenario
