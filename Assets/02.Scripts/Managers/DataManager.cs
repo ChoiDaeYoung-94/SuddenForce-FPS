@@ -156,7 +156,7 @@ namespace AD
             if (_dic_player.Count > _dic_PlayFabPlayerData.Count)
             {
                 AD.Managers.ServerM.NewData();
-                StartCoroutine(Co_NewData());
+                _co_newData = StartCoroutine(Co_NewData());
 
                 return;
             }
