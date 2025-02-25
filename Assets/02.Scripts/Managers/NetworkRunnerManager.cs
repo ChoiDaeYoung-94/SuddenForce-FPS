@@ -48,11 +48,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (result.Ok)
         {
-            AD.Debug.Log("NetworkRunnerM", "JoinSessionLobby successfully.");
+            AD.DebugLogger.Log("NetworkRunnerM", "JoinSessionLobby successfully.");
         }
         else
         {
-            AD.Debug.LogError("NetworkRunnerM", $"Failed to JoinSessionLobby: {result.ShutdownReason}");
+            AD.DebugLogger.LogError("NetworkRunnerM", $"Failed to JoinSessionLobby: {result.ShutdownReason}");
         }
     }
 
@@ -82,11 +82,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (startGameResult.Ok)
         {
-            AD.Debug.Log("NetworkRunnerM", $"세션 생성 성공: {temp_value["RoomName"]}");
+            AD.DebugLogger.Log("NetworkRunnerM", $"세션 생성 성공: {temp_value["RoomName"]}");
         }
         else
         {
-            AD.Debug.LogError("NetworkRunnerM", $"세션 생성 실패: {startGameResult.ShutdownReason}");
+            AD.DebugLogger.LogError("NetworkRunnerM", $"세션 생성 실패: {startGameResult.ShutdownReason}");
         }
     }
 
@@ -94,7 +94,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         AD.Managers.PopupM.PopupLoading();
 
-        AD.Debug.Log("NetworkRunnerM", $"Attempting to join session: {sessionInfo.Name}");
+        AD.DebugLogger.Log("NetworkRunnerM", $"Attempting to join session: {sessionInfo.Name}");
 
         var joinResult = await _runner.StartGame(new StartGameArgs()
         {
@@ -108,11 +108,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (joinResult.Ok)
         {
-            AD.Debug.Log("NetworkRunnerM", $"Joined session successfully: {sessionInfo.Name}");
+            AD.DebugLogger.Log("NetworkRunnerM", $"Joined session successfully: {sessionInfo.Name}");
         }
         else
         {
-            AD.Debug.LogError("NetworkRunnerM", "Failed to join session: " + joinResult.ShutdownReason);
+            AD.DebugLogger.LogError("NetworkRunnerM", "Failed to join session: " + joinResult.ShutdownReason);
         }
     }
     #endregion
@@ -134,7 +134,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-        AD.Debug.Log("NetworkRunnerM", $"OnShutdown - {shutdownReason}");
+        AD.DebugLogger.Log("NetworkRunnerM", $"OnShutdown - {shutdownReason}");
 
         AD.Managers.PopupM.ClosePopupLoading();
 
@@ -152,7 +152,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        AD.Debug.Log("NetworkRunnerM", $"Session list updated. Count: {sessionList.Count}");
+        AD.DebugLogger.Log("NetworkRunnerM", $"Session list updated. Count: {sessionList.Count}");
 
         RoomManage.Instance.Init(sessionList);
     }

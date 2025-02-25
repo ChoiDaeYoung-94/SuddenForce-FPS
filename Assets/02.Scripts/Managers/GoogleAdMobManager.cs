@@ -63,7 +63,7 @@ namespace AD
                 _rewardedAd = null;
             }
 
-            AD.Debug.Log("GoogleAdMobManager", "Loading the rewarded ad.");
+            AD.DebugLogger.Log("GoogleAdMobManager", "Loading the rewarded ad.");
 
             // create our request used to load the ad.
             var adRequest = new AdRequest();
@@ -75,11 +75,11 @@ namespace AD
                     // if error is not null, the load request failed.
                     if (error != null || ad == null)
                     {
-                        AD.Debug.LogError("GoogleAdMobManager", "Rewarded ad failed to load an ad " + "with error : " + error);
+                        AD.DebugLogger.LogError("GoogleAdMobManager", "Rewarded ad failed to load an ad " + "with error : " + error);
                         return;
                     }
 
-                    AD.Debug.Log("GoogleAdMobManager", "Rewarded ad loaded with response : " + ad.GetResponseInfo());
+                    AD.DebugLogger.Log("GoogleAdMobManager", "Rewarded ad loaded with response : " + ad.GetResponseInfo());
 
                     _rewardedAd = ad;
 
@@ -110,7 +110,7 @@ namespace AD
                 AD.Managers.SoundM.PauseBGM();
                 _rewardedAd.Show((Reward reward) =>
                 {
-                    AD.Debug.Log("GoogleAdMobManager", String.Format(rewardMsg, reward.Type, reward.Amount));
+                    AD.DebugLogger.Log("GoogleAdMobManager", String.Format(rewardMsg, reward.Type, reward.Amount));
 
                     AD.Managers.SoundM.UnpauseBGM();
 
@@ -137,7 +137,7 @@ namespace AD
             {
                 isInprogress = false;
 
-                AD.Debug.Log("GoogleAdMobManager", "Rewarded Ad full screen content closed.");
+                AD.DebugLogger.Log("GoogleAdMobManager", "Rewarded Ad full screen content closed.");
 
                 // Reload the ad so that we can show another as soon as possible.
                 LoadRewardedAd();
@@ -149,7 +149,7 @@ namespace AD
                 isInprogress = false;
                 isReceive = false;
 
-                AD.Debug.LogError("GoogleAdMobManager", "Rewarded ad failed to open full screen content " +
+                AD.DebugLogger.LogError("GoogleAdMobManager", "Rewarded ad failed to open full screen content " +
                                "with error : " + error);
 
                 // Reload the ad so that we can show another as soon as possible.

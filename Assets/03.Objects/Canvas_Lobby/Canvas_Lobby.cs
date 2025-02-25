@@ -54,7 +54,7 @@ public class Canvas_Lobby : MonoBehaviour
                 Panel_CreateRoom();
                 break;
             default:
-                AD.Debug.LogError("Canvas_Lobby", "UpdatePanel_Main, index error");
+                AD.DebugLogger.LogError("Canvas_Lobby", "UpdatePanel_Main, index error");
                 break;
         }
     }

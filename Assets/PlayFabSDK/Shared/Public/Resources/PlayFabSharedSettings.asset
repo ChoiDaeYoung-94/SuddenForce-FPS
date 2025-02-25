@@ -15,7 +15,7 @@ MonoBehaviour:
   TitleId: DBBBE
   DeveloperSecretKey: 4TYCAWH75AY4STSEFOEOOXGNN6IOX18ZYDXN3544W57Y3W3ZWD
   ProductionEnvironmentUrl: 
-  RequestType: 2
+  RequestType: 0
   DisableDeviceInfo: 0
   DisableFocusTimeCollection: 0
   RequestTimeout: 2000
