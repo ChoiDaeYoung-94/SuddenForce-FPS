@@ -138,10 +138,10 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         AD.Managers.PopupM.ClosePopupLoading();
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.Define.Scenes.Lobby.ToString())
-            AD.Managers.SceneM.NextScene(AD.Define.Scenes.Main);
-        else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.Define.Scenes.Room.ToString())
-            AD.Managers.SceneM.NextScene(AD.Define.Scenes.Lobby);
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.GameConstants.Scene.Lobby.ToString())
+            AD.Managers.SceneM.NextScene(AD.GameConstants.Scene.Main);
+        else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.GameConstants.Scene.Room.ToString())
+            AD.Managers.SceneM.NextScene(AD.GameConstants.Scene.Lobby);
     }
 
     public void OnConnectedToServer(NetworkRunner runner) { }

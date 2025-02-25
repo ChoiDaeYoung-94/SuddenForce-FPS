@@ -7,7 +7,7 @@ public class Canvas_Main : MonoBehaviour
     #region Functions
     public void GoLobbyScene()
     {
-        AD.Managers.SceneM.NextScene(AD.Define.Scenes.Lobby);
+        AD.Managers.SceneM.NextScene(AD.GameConstants.Scene.Lobby);
     }
     #endregion
 }

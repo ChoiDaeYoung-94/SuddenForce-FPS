@@ -42,11 +42,11 @@ namespace AD
         {
             string temp_scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
-            if (temp_scene.Equals(AD.Define.Scenes.Login.ToString()))
+            if (temp_scene.Equals(AD.GameConstants.Scene.Login.ToString()))
                 PlayBGM(_AC_bgm_login);
-            else if (temp_scene.Equals(AD.Define.Scenes.Main.ToString()))
+            else if (temp_scene.Equals(AD.GameConstants.Scene.Main.ToString()))
                 PlayBGM(_AC_bgm_main);
-            else if (temp_scene.Equals(AD.Define.Scenes.DesertHouse.ToString()))
+            else if (temp_scene.Equals(AD.GameConstants.Scene.DesertHouse.ToString()))
                 PlayBGM(_AC_bgm_game);
         }
 

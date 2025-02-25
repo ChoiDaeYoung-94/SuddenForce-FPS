@@ -112,7 +112,7 @@ namespace AD
             AD.DebugLogger.Log("IAPManager", $"OnPurchaseFailed: FAIL. Product: '{product.definition.storeSpecificId}', PurchaseFailureReason: {failureReason}");
         }
 
-        private void RegisterIAPData(AD.Define.IAPItems IAPitem)
+        private void RegisterIAPData(AD.GameConstants.IAPItems IAPitem)
         {
             string temp_str = AD.Managers.DataM._dic_player["GooglePlay"];
             if (string.IsNullOrEmpty(temp_str))
@@ -125,7 +125,7 @@ namespace AD
 
         private void GrantNoAds()
         {
-            RegisterIAPData(AD.Define.IAPItems.PRODUCT_NO_ADS);
+            RegisterIAPData(AD.GameConstants.IAPItems.ProductNoAds);
             //AD.Managers.DataM.UpdatePlayerData();
         }
     }

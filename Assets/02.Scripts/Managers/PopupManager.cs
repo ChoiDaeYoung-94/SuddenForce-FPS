@@ -188,7 +188,7 @@ namespace AD
         {
             UnityEngine.Time.timeScale = 1;
 
-            //AD.Managers.GameM.SwitchMainOrGameScene(AD.Define.Scenes.Main);
+            //AD.Managers.GameM.SwitchMainOrGameScene(AD.GameConstants.Scenes.Main);
         }
 
         //public void GameOver() => AD.Managers.GameM.GameOverGoLobby();

@@ -172,7 +172,7 @@ public class Login : MonoBehaviour
 
     private void GoMainScene()
     {
-        AD.Managers.SceneM.NextScene(AD.Define.Scenes.Main);
+        AD.Managers.SceneM.NextScene(AD.GameConstants.Scene.Main);
     }
 
     public void ClickedOK() => AD.Managers.SoundM.UI_Ok();
