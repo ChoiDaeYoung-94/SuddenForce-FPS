@@ -32,26 +32,8 @@ namespace AD
         {
             AD.DebugLogger.Log("SceneManager", "GoScene() -> " + _scene.ToString() + "씬으로 전환");
 
-            _co_UpdateData = StartCoroutine(Co_UpdateData());
-        }
 
-        IEnumerator Co_UpdateData()
-        {
-            AD.DebugLogger.Log("SceneManager", "Co_UpdateData() -> 데이터 처리 작업 진행");
-
-            AD.Managers.DataM.UpdateLocalData(key: "null", value: "null", all: true);
-            AD.Managers.DataM.UpdatePlayerData();
-
-            while (AD.Managers.ServerM.isInprogress)
-                yield return null;
-
-            if (_co_UpdateData != null)
-            {
-                StopCoroutine(_co_UpdateData);
-                _co_UpdateData = null;
-
-                _co_GoScene = StartCoroutine(Co_GoScene());
-            }
+            _co_GoScene = StartCoroutine(Co_GoScene());
         }
 
 

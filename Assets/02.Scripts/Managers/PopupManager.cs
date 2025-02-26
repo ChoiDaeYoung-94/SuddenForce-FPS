@@ -197,8 +197,7 @@ namespace AD
 
         public void Rewards()
         {
-            if (!AD.Managers.GoogleAdMobM.isInprogress)
-                AD.Managers.GoogleAdMobM.ShowRewardedAd();
+
         }
 
         internal void SetException() => isException = true;

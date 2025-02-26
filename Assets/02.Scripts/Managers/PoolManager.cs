@@ -133,11 +133,11 @@ namespace AD
             _root_Player = new GameObject { name = "Pool_Player" }.transform;
             Object.DontDestroyOnLoad(_root_Player);
 
-            for (int i = -1; ++i < Managers.Instance._go_poolGOs.Length;)
-                CreatePool(Managers.Instance._go_poolGOs[i], isGO: true, count: 20);
+            for (int i = -1; ++i < Managers.Instance.PoolGameObjects.Length;)
+                CreatePool(Managers.Instance.PoolGameObjects[i], isGO: true, count: 20);
 
-            for (int i = -1; ++i < Managers.Instance._go_poolUIs.Length;)
-                CreatePool(Managers.Instance._go_poolUIs[i], isGO: false, count: 50);
+            for (int i = -1; ++i < Managers.Instance.PoolUIs.Length;)
+                CreatePool(Managers.Instance.PoolUIs[i], isGO: false, count: 50);
         }
 
         /// <summary>

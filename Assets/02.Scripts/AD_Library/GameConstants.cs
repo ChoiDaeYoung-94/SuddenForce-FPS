@@ -30,13 +30,5 @@ namespace AD
         {
             DesertHouse
         }
-
-        /// <summary>
-        /// 인앱 결제 아이템
-        /// </summary>
-        public enum IAPItems
-        {
-            ProductNoAds
-        }
     }
 }
