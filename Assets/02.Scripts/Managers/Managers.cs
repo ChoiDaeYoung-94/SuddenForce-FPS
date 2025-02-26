@@ -14,9 +14,6 @@ namespace AD
         private static Managers _instance;
         public static Managers Instance { get { return _instance; } }
 
-        //private GameManager _gameM = new GameManager();
-        //public static GameManager GameM { get { return _instance._gameM; } }
-
         private PoolManager _poolM = new PoolManager();
         public static PoolManager PoolM { get { return _instance._poolM; } }
 
@@ -32,7 +29,7 @@ namespace AD
         [SerializeField] private SoundManager _soundM = null;
         public static SoundManager SoundM { get { return _instance._soundM; } }
 
-        private UpdateManager _updateM = new UpdateManager();
+        [SerializeField] private UpdateManager _updateM = null;
         public static UpdateManager UpdateM { get { return _instance._updateM; } }
 
         [SerializeField] private GameObject _networkRunnerObject = null;
@@ -57,11 +54,6 @@ namespace AD
         private void OnDestroy()
         {
             _instance = null;
-        }
-
-        private void Update()
-        {
-            _updateM.OnUpdate();
         }
 
         public static void CreateNetworkRunner()

@@ -1,17 +1,20 @@
-using System.Collections;
+using System;
+using System.Threading;
 
 using UnityEngine;
+
+using Cysharp.Threading.Tasks;
 
 namespace AD
 {
     /// <summary>
     /// Scene 관리
+    /// NextScene이라는 중간 씬을 거쳐서 최종 target 씬으로 전환하는 역할
     /// </summary>
     public class SceneManager : MonoBehaviour
     {
-        AD.GameConstants.Scene _scene;
-        Coroutine _co_UpdateData = null;
-        Coroutine _co_GoScene = null;
+        private AD.GameConstants.Scene _scene;
+        private CancellationTokenSource _ctsGoScene;
 
         public void NextScene(AD.GameConstants.Scene scene)
         {
@@ -25,47 +28,48 @@ namespace AD
         }
 
         /// <summary>
-        /// NextScene씬에 도달 후 호출
-        /// PlayerData 정리 후 씬 이동
+        /// NextScene 씬에 도달 후 호출
+        /// 씬 전환 작업
         /// </summary>
         public void GoScene()
         {
             AD.DebugLogger.Log("SceneManager", "GoScene() -> " + _scene.ToString() + "씬으로 전환");
 
-
-            _co_GoScene = StartCoroutine(Co_GoScene());
+            _ctsGoScene = new CancellationTokenSource();
+            GoSceneAsync(_ctsGoScene.Token).Forget();
         }
 
-
-        IEnumerator Co_GoScene()
+        private async UniTask GoSceneAsync(CancellationToken cancellationToken)
         {
-            AsyncOperation ao = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(_scene.ToString());
-
-            ao.allowSceneActivation = false;
-
-            while (!ao.isDone)
-            {
-                AD.DebugLogger.Log("SceneManager", $"{ao.progress} - progress");
-
-                if (ao.progress >= 0.9f)
-                {
-                    yield return new WaitForSeconds(2f);
-
-                    ao.allowSceneActivation = true;
-                }
-
-                yield return null;
-            }
-
-            if (_co_GoScene != null)
-            {
-                StopCoroutine(_co_GoScene);
-                _co_GoScene = null;
-
-                Resources.UnloadUnusedAssets();
-            }
+            await LoadTargetSceneAsync(_scene, cancellationToken);
 
             AD.Managers.SoundM.UnpauseBGM();
+        }
+
+        private async UniTask LoadTargetSceneAsync(AD.GameConstants.Scene targetScene, CancellationToken cancellationToken)
+        {
+            AsyncOperation asyncOp = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(targetScene.ToString());
+            asyncOp.allowSceneActivation = false;
+
+            while (!asyncOp.isDone && !cancellationToken.IsCancellationRequested)
+            {
+                AD.DebugLogger.Log("SceneManager", $"{asyncOp.progress} - progress");
+
+                if (asyncOp.progress >= 0.9f)
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: cancellationToken);
+                    asyncOp.allowSceneActivation = true;
+                }
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+            }
+
+            await Resources.UnloadUnusedAssets().ToUniTask(cancellationToken: cancellationToken);
+        }
+
+        private void OnDestroy()
+        {
+            _ctsGoScene?.Cancel();
+            _ctsGoScene?.Dispose();
         }
     }
 }

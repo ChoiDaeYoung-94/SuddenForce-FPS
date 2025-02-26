@@ -1,26 +1,25 @@
 using UnityEngine;
 using UnityEngine.Audio;
-using System.Collections.Generic;
 
 namespace AD
 {
     public class SoundManager : MonoBehaviour
     {
         [Header("Audio Mixers")]
-        [SerializeField] internal AudioMixer _audioMixer = null;
+        [SerializeField] private AudioMixer _audioMixer = null;
 
         [Header("Audio Sources")]
-        [SerializeField] internal AudioSource _AS_bgm = null;
-        [SerializeField] internal AudioSource _AS_sfx = null;
+        [SerializeField] private AudioSource _bgmAudioSource = null;
+        [SerializeField] private AudioSource _sfxAudioSource = null;
 
         [Header("Audio Clips")]
-        [SerializeField] internal AudioClip _AC_bgm_login = null;
-        [SerializeField] internal AudioClip _AC_bgm_main = null;
-        [SerializeField] internal AudioClip _AC_bgm_game = null;
-        [SerializeField] internal AudioClip _AC_sfxUI_click = null;
-        [SerializeField] internal AudioClip _AC_sfxUI_ok = null;
+        public AudioClip BgmLoginClip = null;
+        public AudioClip BgmMainClip = null;
+        public AudioClip BgmGameClip = null;
+        public AudioClip SFXUIClickClip = null;
+        public AudioClip SFXUIOkClip = null;
 
-        internal void Init()
+        public void Init()
         {
             float bgm = PlayerPrefs.GetFloat("BGM", 1f);
             float sfx = PlayerPrefs.GetFloat("SFX", 1f);
@@ -30,44 +29,44 @@ namespace AD
         }
 
         #region Functions
-        internal void PlayBGM(AudioClip clip)
+        public void PlayBGM(AudioClip clip)
         {
-            _AS_bgm.clip = clip;
-            _AS_bgm.Play();
+            _bgmAudioSource.clip = clip;
+            _bgmAudioSource.Play();
         }
 
-        internal void PauseBGM() => _AS_bgm.Pause();
+        public void PauseBGM() => _bgmAudioSource.Pause();
 
-        internal void UnpauseBGM()
+        public void UnpauseBGM()
         {
             string temp_scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
             if (temp_scene.Equals(AD.GameConstants.Scene.Login.ToString()))
-                PlayBGM(_AC_bgm_login);
+                PlayBGM(BgmLoginClip);
             else if (temp_scene.Equals(AD.GameConstants.Scene.Main.ToString()))
-                PlayBGM(_AC_bgm_main);
+                PlayBGM(BgmMainClip);
             else if (temp_scene.Equals(AD.GameConstants.Scene.DesertHouse.ToString()))
-                PlayBGM(_AC_bgm_game);
+                PlayBGM(BgmGameClip);
         }
 
-        internal void PlaySFX(AudioClip clip)
+        public void PlaySFX(AudioClip clip)
         {
-            _AS_sfx.clip = clip;
-            _AS_sfx.Play();
+            _sfxAudioSource.clip = clip;
+            _sfxAudioSource.Play();
         }
 
-        public void UI_Ok() => PlaySFX(_AC_sfxUI_ok);
+        public void UI_Ok() => PlaySFX(SFXUIOkClip);
 
-        public void UI_Click() => PlaySFX(_AC_sfxUI_click);
+        public void UI_Click() => PlaySFX(SFXUIClickClip);
 
-        internal void SetBGMVolume(float volume)
+        public void SetBGMVolume(float volume)
         {
             _audioMixer.SetFloat("BGM", Mathf.Log10(Mathf.Clamp(volume, 0.0001f, 1f)) * 20);
 
             PlayerPrefs.SetFloat("BGM", volume);
         }
 
-        internal void SetSFXVolume(float volume)
+        public void SetSFXVolume(float volume)
         {
             _audioMixer.SetFloat("SFX", Mathf.Log10(Mathf.Clamp(volume, 0.0001f, 1f)) * 20);
 
