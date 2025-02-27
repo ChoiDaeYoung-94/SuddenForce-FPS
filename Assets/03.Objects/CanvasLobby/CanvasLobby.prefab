@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 925070245009352559}
   - component: {fileID: 8222219410987973634}
   m_Layer: 5
-  m_Name: Button_CreateRoom
+  m_Name: ButtonCreateRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -334,6 +334,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1351467017517075944}
         m_TargetAssemblyTypeName: Canvas_Lobby, Assembly-CSharp
         m_MethodName: CreateRoom
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1351467017517075944}
+        m_TargetAssemblyTypeName: CanvasLobby, Assembly-CSharp
+        m_MethodName: ClickedUI
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -481,7 +493,7 @@ GameObject:
   - component: {fileID: 7437286864398394886}
   - component: {fileID: 2748168328751198367}
   m_Layer: 5
-  m_Name: TMP_RoomName
+  m_Name: TMPRoomName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -750,7 +762,7 @@ GameObject:
   - component: {fileID: 8227660955005642134}
   - component: {fileID: 1940169470740405418}
   m_Layer: 5
-  m_Name: TMP_GameSceneName
+  m_Name: TMPGameSceneName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1021,7 +1033,7 @@ GameObject:
   - component: {fileID: 9214311905180004316}
   - component: {fileID: 1468858194919897459}
   m_Layer: 5
-  m_Name: Button_Exit
+  m_Name: ButtonExit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1130,8 +1142,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1351467017517075944}
-        m_TargetAssemblyTypeName: Canvas_Lobby, Assembly-CSharp
-        m_MethodName: GoMainScene
+        m_TargetAssemblyTypeName: CanvasLobby, Assembly-CSharp
+        m_MethodName: ExitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1351467017517075944}
+        m_TargetAssemblyTypeName: CanvasLobby, Assembly-CSharp
+        m_MethodName: ClickedUI
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1289,7 +1313,7 @@ GameObject:
   - component: {fileID: 3263558536346068532}
   - component: {fileID: 2011785620930962035}
   m_Layer: 5
-  m_Name: Button_Rooms
+  m_Name: ButtonRooms
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1409,6 +1433,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1351467017517075944}
+        m_TargetAssemblyTypeName: CanvasLobby, Assembly-CSharp
+        m_MethodName: ClickedUI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1563017482709135255
 GameObject:
   m_ObjectHideFlags: 0
@@ -1421,7 +1457,7 @@ GameObject:
   - component: {fileID: 4355354153490216264}
   - component: {fileID: 7560388691701418872}
   m_Layer: 5
-  m_Name: TMP_SelectedMap
+  m_Name: TMPSelectedMap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2020,11 +2056,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbc25e68d2a0f8b4faf1433054cc7d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _RTR_this: {fileID: 8506418619199274624}
-  _TMP_roomName: {fileID: 2748168328751198367}
-  _TMP_gameSceneName: {fileID: 1940169470740405418}
-  _TMP_roomPlayerCount: {fileID: 4999804390534235919}
+  _thisRect: {fileID: 8506418619199274624}
   _sessionIndex: 0
+  _roomNameText: {fileID: 2748168328751198367}
+  _gameSceneNameText: {fileID: 1940169470740405418}
+  _roomPlayerCountText: {fileID: 4999804390534235919}
 --- !u!114 &3025002909017516631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2072,6 +2108,18 @@ MonoBehaviour:
       - m_Target: {fileID: 6911866985071641421}
         m_TargetAssemblyTypeName: AD.Room, Assembly-CSharp
         m_MethodName: JoinRoom
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1351467017517075944}
+        m_TargetAssemblyTypeName: CanvasLobby, Assembly-CSharp
+        m_MethodName: ClickedUI
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2168,7 +2216,7 @@ GameObject:
   - component: {fileID: 5304006405100122206}
   - component: {fileID: 4999804390534235919}
   m_Layer: 5
-  m_Name: TMP_RoomPlayerCount
+  m_Name: TMPRoomPlayerCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2459,7 +2507,7 @@ GameObject:
   - component: {fileID: 3292015635970664343}
   - component: {fileID: 2957881536578941175}
   m_Layer: 5
-  m_Name: Panel_Maps
+  m_Name: PanelMaps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2751,7 +2799,7 @@ GameObject:
   - component: {fileID: 1683491386910453775}
   - component: {fileID: 8462193355023082250}
   m_Layer: 5
-  m_Name: Panel_Settings
+  m_Name: PanelSettings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3210,7 +3258,7 @@ GameObject:
   - component: {fileID: 1238725016194631980}
   - component: {fileID: 742110415704340052}
   m_Layer: 5
-  m_Name: TMP_PrivateRoom
+  m_Name: TMPPrivateRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3570,7 +3618,7 @@ GameObject:
   - component: {fileID: 8882424210750026771}
   - component: {fileID: 6882269232890163737}
   m_Layer: 5
-  m_Name: TMP_Maps
+  m_Name: TMPMaps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3706,7 +3754,7 @@ GameObject:
   - component: {fileID: 3357866183257617637}
   - component: {fileID: 5581597684167160269}
   m_Layer: 5
-  m_Name: Button_Confirm
+  m_Name: ButtonConfirm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3817,6 +3865,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1351467017517075944}
         m_TargetAssemblyTypeName: Canvas_Lobby, Assembly-CSharp
         m_MethodName: Confirm
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1351467017517075944}
+        m_TargetAssemblyTypeName: CanvasLobby, Assembly-CSharp
+        m_MethodName: ClickedOK
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4031,7 +4091,7 @@ GameObject:
   - component: {fileID: 1434898578067752016}
   - component: {fileID: 605166353260340733}
   m_Layer: 5
-  m_Name: Dropdown_MaxPlayer
+  m_Name: DropdownMaxPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4171,7 +4231,7 @@ GameObject:
   - component: {fileID: 372037660613436108}
   - component: {fileID: 3302622985976639993}
   m_Layer: 5
-  m_Name: TMP_MaxPlayer
+  m_Name: TMPMaxPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4306,7 +4366,7 @@ GameObject:
   - component: {fileID: 3836881302371138857}
   - component: {fileID: 7355947453779881917}
   m_Layer: 5
-  m_Name: Canvas_Lobby
+  m_Name: CanvasLobby
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4559,23 +4619,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5844a75519427dc498f9ecc54b7ca9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _go_item: {fileID: 2947764460333416294}
-  _RTR_parentView: {fileID: 4813137259310240988}
-  _RTR_content: {fileID: 132676518704476317}
-  _GLG_content: {fileID: 991676320673422074}
-  _CSF_content: {fileID: 3670166194443091181}
-  _minPlusLine: 4
-  _go_moveToTop: {fileID: 5339108312721879307}
-  _go_blockScroll: {fileID: 1603508199798072363}
+  _contentItem: {fileID: 2947764460333416294}
+  _scrollViewParentRect: {fileID: 4813137259310240988}
+  _contentRect: {fileID: 132676518704476317}
+  _contentGridLayoutGroup: {fileID: 991676320673422074}
+  _contentContentSizeFitter: {fileID: 3670166194443091181}
+  _minimumPlusLine: 4
+  _moveToTop: {fileID: 5339108312721879307}
+  _blockScroll: {fileID: 1603508199798072363}
   _lerp: 0.15
-  _contentHeight: 0
-  _intervalHeight: 0
-  _list_anchorX: []
-  _activeItemFirstLineAnchorY: 0
-  _activeItemLastLineAnchorY: 0
-  _anchorXIndexOflastActiveItem: 0
-  _activeItemFirstIndex: 0
-  _activeItemLastIndex: 0
 --- !u!1 &7119505059508219455
 GameObject:
   m_ObjectHideFlags: 0
@@ -4589,7 +4641,7 @@ GameObject:
   - component: {fileID: 3102106651891662815}
   - component: {fileID: 3745225321057516408}
   m_Layer: 5
-  m_Name: InputField_RoomName
+  m_Name: InputFieldRoomName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4763,7 +4815,7 @@ GameObject:
   - component: {fileID: 1267910602140541468}
   - component: {fileID: 5497223906564248286}
   m_Layer: 5
-  m_Name: Panel_CreateRoom
+  m_Name: PanelCreateRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4840,7 +4892,7 @@ GameObject:
   - component: {fileID: 3032004877023627668}
   - component: {fileID: 4749549734826772684}
   m_Layer: 5
-  m_Name: Image_DesertHouse
+  m_Name: ImageDesertHouse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5098,7 +5150,7 @@ GameObject:
   - component: {fileID: 1506070638189593017}
   - component: {fileID: 161004236988483208}
   m_Layer: 5
-  m_Name: Panel_Main
+  m_Name: PanelMain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5310,7 +5362,7 @@ GameObject:
   - component: {fileID: 8628807939202043191}
   - component: {fileID: 7815747037671285091}
   m_Layer: 5
-  m_Name: Panel_Rooms
+  m_Name: PanelRooms
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5612,7 +5664,7 @@ GameObject:
   - component: {fileID: 5643564583516006135}
   - component: {fileID: 1690512230913029901}
   m_Layer: 5
-  m_Name: Panel_SideMenu
+  m_Name: PanelSideMenus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

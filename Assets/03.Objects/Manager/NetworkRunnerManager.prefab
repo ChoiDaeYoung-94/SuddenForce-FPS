@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 941acfb1386b62f4bb171d8548f96ca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _runner: {fileID: 2996439234815567227}
+  _networkRunner: {fileID: 2996439234815567227}
   _networkSceneM: {fileID: 5806804645447503643}
 --- !u!114 &2996439234815567227
 MonoBehaviour:

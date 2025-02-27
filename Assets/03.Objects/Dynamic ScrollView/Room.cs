@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 using Fusion;
@@ -10,26 +8,25 @@ namespace AD
 {
     public class Room : MonoBehaviour
     {
-        [Header("--- 세팅 ---")]
-        [SerializeField] public RectTransform _RTR_this = null;
-        [SerializeField] TMP_Text _TMP_roomName = null;
-        [SerializeField] TMP_Text _TMP_gameSceneName = null;
-        [SerializeField] TMP_Text _TMP_roomPlayerCount = null;
-
-        [Header("--- 참고용 ---")]
-        public SessionInfo _sessionInfo = null;
+        public RectTransform _thisRect;
         public int _sessionIndex = 0;
 
-        internal void SetRoom(SessionInfo sessionInfo, int sessionIndex)
+        // 그 외 접근 불가 데이터
+        private SessionInfo _sessionInfo;
+        [SerializeField] private TMP_Text _roomNameText;
+        [SerializeField] private TMP_Text _gameSceneNameText;
+        [SerializeField] private TMP_Text _roomPlayerCountText;
+        
+        public void SetRoom(SessionInfo sessionInfo, int sessionIndex)
         {
             _sessionInfo = sessionInfo;
             _sessionIndex = sessionIndex;
 
-            _TMP_roomName.text = _sessionIndex.ToString();
+            _roomNameText.text = _sessionIndex.ToString();
 
-            _TMP_roomName.text = _sessionInfo.Name;
-            _TMP_gameSceneName.text = _sessionInfo.Properties["MapName"];
-            _TMP_roomPlayerCount.text = $"{_sessionInfo.PlayerCount} / {_sessionInfo.MaxPlayers}";
+            _roomNameText.text = _sessionInfo.Name;
+            _gameSceneNameText.text = _sessionInfo.Properties["MapName"];
+            _roomPlayerCountText.text = $"{_sessionInfo.PlayerCount} / {_sessionInfo.MaxPlayers}";
         }
 
         public void JoinRoom()

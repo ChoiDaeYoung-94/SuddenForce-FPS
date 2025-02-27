@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+
 using UnityEngine;
 
 using Fusion;
@@ -9,40 +8,42 @@ using Fusion.Sockets;
 
 public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 {
-    static NetworkRunnerManager instance;
-    public static NetworkRunnerManager Instance { get { return instance; } }
+    private static NetworkRunnerManager _instance;
+    public static NetworkRunnerManager Instance { get { return _instance; } }
 
     [Header("--- 세팅 ---")]
-    [SerializeField] NetworkRunner _runner = null;
-    [SerializeField] NetworkSceneManagerDefault _networkSceneM = null;
+    [SerializeField] private NetworkRunner _networkRunner = null;
+    [SerializeField] private NetworkSceneManagerDefault _networkSceneM = null;
 
     private void Awake()
     {
-        instance = this;
+        _instance = this;
 
         Init();
     }
 
     private void OnDestroy()
     {
-        instance = null;
+        _instance = null;
     }
 
     #region Functions
+
     private void Init()
     {
         AD.Managers.PopupM.PopupLoading();
-        _runner.AddCallbacks(this);
+        _networkRunner.AddCallbacks(this);
 
         JoinSessionLobby();
     }
 
     #region Photon Fusion
+
     public async void JoinSessionLobby()
     {
-        _runner.ProvideInput = false;
+        _networkRunner.ProvideInput = false;
 
-        var result = await _runner.JoinSessionLobby(SessionLobby.ClientServer);
+        var result = await _networkRunner.JoinSessionLobby(SessionLobby.ClientServer);
 
         AD.Managers.PopupM.ClosePopupLoading();
 
@@ -67,7 +68,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             { "MapName", temp_value["MapName"].ToString() }
         };
 
-        var startGameResult = await _runner.StartGame(new StartGameArgs()
+        var startGameResult = await _networkRunner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Host,
             SessionName = temp_value["RoomName"].ToString(),
@@ -96,11 +97,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         AD.DebugLogger.Log("NetworkRunnerM", $"Attempting to join session: {sessionInfo.Name}");
 
-        var joinResult = await _runner.StartGame(new StartGameArgs()
+        var joinResult = await _networkRunner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Client,
             SessionName = sessionInfo.Name,
-            Scene = SceneRef.FromIndex(3),
+            Scene = SceneRef.FromIndex(2),
             SceneManager = _networkSceneM
         });
 
@@ -115,18 +116,22 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             AD.DebugLogger.LogError("NetworkRunnerM", "Failed to join session: " + joinResult.ShutdownReason);
         }
     }
+
     #endregion
 
     #region Public Methods
+
     public void Shutdown()
     {
         AD.Managers.PopupM.PopupLoading();
 
-        _runner.Shutdown();
+        _networkRunner.Shutdown();
     }
+
     #endregion
 
     #region INetworkRunnerCallbacks
+
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
@@ -138,9 +143,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         AD.Managers.PopupM.ClosePopupLoading();
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.GameConstants.Scene.Lobby.ToString())
-            AD.Managers.SceneM.NextScene(AD.GameConstants.Scene.Main);
-        else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.GameConstants.Scene.Room.ToString())
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.GameConstants.Scene.Room.ToString())
             AD.Managers.SceneM.NextScene(AD.GameConstants.Scene.Lobby);
     }
 
@@ -165,6 +168,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
     public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) { }
     public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
+
     #endregion
 
     #endregion
