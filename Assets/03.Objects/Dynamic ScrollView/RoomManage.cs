@@ -1,71 +1,71 @@
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 using System;
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 
 using UnityEngine;
 using UnityEngine.UI;
+
+using Cysharp.Threading.Tasks;
 
 using Fusion;
 
 public class RoomManage : MonoBehaviour
 {
-    static RoomManage instance;
-    public static RoomManage Instance { get { return instance; } }
+    private static RoomManage _instance;
+    public static RoomManage Instance { get { return _instance; } }
 
-    [Header("--- 세팅 [ Content ] ---")]
-    [SerializeField, Tooltip("content item")] GameObject _go_item = null;
-    [SerializeField, Tooltip("사용 될 ScrollView의 부모 패널 - [ 최대 사이즈(sizeDelta.y)를 알기 위함 ]")]
-    RectTransform _RTR_parentView = null;
-    [SerializeField] RectTransform _RTR_content = null;
-    [SerializeField] GridLayoutGroup _GLG_content = null;
-    [SerializeField] ContentSizeFitter _CSF_content = null;
-    [SerializeField] int _minPlusLine = 4;
+    [Header("--- RoomManage data ---")]
+    [SerializeField] private GameObject _contentItem;
+    [SerializeField] private RectTransform _scrollViewParentRect; // 최대 사이즈(sizeDelta.y)
+    [SerializeField] private RectTransform _contentRect;
+    [SerializeField] private GridLayoutGroup _contentGridLayoutGroup;
+    [SerializeField] private ContentSizeFitter _contentContentSizeFitter;
+    [SerializeField] private int _minimumPlusLine = 4;
+    [SerializeField] private GameObject _moveToTop;
+    [SerializeField] private GameObject _blockScroll;
+    [SerializeField, Range(0f, 1f)] private float _lerp = 0f;   // MoveToTop lerp에 사용 될 값
+    private CancellationTokenSource _ctsMoveToTop;
 
-    [Header("--- 세팅 [ Scroll Effect ] ---")]
-    [SerializeField] GameObject _go_moveToTop = null;
-    [SerializeField] GameObject _go_blockScroll = null;
-    [SerializeField, Range(0f, 1f), Tooltip("_co_moveToTop 실행 시 lerp에 사용 될 값")] float _lerp = 0f;
-    Coroutine _co_moveToTop = null;
-
-    [Header("--- 참고용 ---")]
-    List<AD.Room> _list_leastItemObject = new List<AD.Room>();
-    LinkedList<AD.Room> _LL_activeItems = new LinkedList<AD.Room>();
-    LinkedList<AD.Room> _LL_inActiveItems = new LinkedList<AD.Room>();
-    [SerializeField] float _contentHeight = 0;
-    [SerializeField] float _intervalHeight = 0;
-    [SerializeField] List<float> _list_anchorX = new List<float>();
-    [SerializeField] float _activeItemFirstLineAnchorY = 0;
-    [SerializeField] float _activeItemLastLineAnchorY = 0;
-    [SerializeField] float _anchorXIndexOflastActiveItem = 0;
-    [SerializeField] int _activeItemFirstIndex = 0;
-    [SerializeField] int _activeItemLastIndex = 0;
+    // 그 외 접근 불가 데이터
+    private List<AD.Room> _leastItemObjectList = new List<AD.Room>();
+    private LinkedList<AD.Room> _activeItemsList = new LinkedList<AD.Room>();
+    private LinkedList<AD.Room> _inActiveItemsList = new LinkedList<AD.Room>();
+    private float _contentHeight = 0f;
+    private float _intervalHeight = 0f;
+    private List<float> _anchorXList = new List<float>();
+    private float _activeItemFirstLineAnchorY = 0f;
+    private float _activeItemLastLineAnchorY = 0f;
+    private float _anchorXIndexOflastActiveItem = 0f;
+    private int _activeItemFirstIndex = 0;
+    private int _activeItemLastIndex = 0;
 
     // Session
-    List<SessionInfo> _list_sessionList = null;
+    private List<SessionInfo> _sessionList = null;
 
     private void Awake()
     {
-        instance = this;
+        _instance = this;
+
+        _ctsMoveToTop = new CancellationTokenSource();
     }
 
     private void OnDestroy()
     {
-        instance = null;
+        _ctsMoveToTop?.Cancel();
+        _ctsMoveToTop?.Dispose();
+        _ctsMoveToTop = null;
+
+        _instance = null;
     }
 
     public void Init(List<SessionInfo> sessionList)
     {
-        if (sessionList.Count == 0 && _list_leastItemObject.Count == 0)
+        if (sessionList.Count == 0 && _leastItemObjectList.Count == 0)
             return;
 
-        if (_list_leastItemObject.Count == 0)
+        if (_leastItemObjectList.Count == 0)
         {
-            _list_sessionList = sessionList;
+            _sessionList = sessionList;
 
             Settings();
             SetAnchorX();
@@ -77,12 +77,12 @@ public class RoomManage : MonoBehaviour
 
     private void Update()
     {
-        if (_RTR_content.anchoredPosition.y >= 1000f)
-            _go_moveToTop.SetActive(true);
+        if (_contentRect.anchoredPosition.y >= 1000f)
+            _moveToTop.SetActive(true);
         else
-            _go_moveToTop.SetActive(false);
+            _moveToTop.SetActive(false);
 
-        if (_LL_activeItems.Count > 0)
+        if (_activeItemsList.Count > 0)
         {
             ScrollDown();
             ScrollUp();
@@ -92,32 +92,33 @@ public class RoomManage : MonoBehaviour
     #region Functions
 
     #region Init
+
     /// <summary>
     /// Item, spacing, padding을 고려한 Content의 총 Height 계산
     /// 그외 필요한 부분 계산
     /// </summary>
     private void Settings()
     {
-        var lineCount = Math.Ceiling((float)_list_sessionList.Count / _GLG_content.constraintCount);
+        var lineCount = Math.Ceiling((float)_sessionList.Count / _contentGridLayoutGroup.constraintCount);
 
-        float contentSize = (float)lineCount * _GLG_content.cellSize.y;
-        float contentSpacingSize = (float)(lineCount - 1) * _GLG_content.spacing.y;
-        float GLGTopBotPadding = _GLG_content.padding.top + _GLG_content.padding.bottom;
+        float contentSize = (float)lineCount * _contentGridLayoutGroup.cellSize.y;
+        float contentSpacingSize = (float)(lineCount - 1) * _contentGridLayoutGroup.spacing.y;
+        float GLGTopBotPadding = _contentGridLayoutGroup.padding.top + _contentGridLayoutGroup.padding.bottom;
 
         _contentHeight = contentSize + contentSpacingSize + GLGTopBotPadding;
 
-        _RTR_content.sizeDelta = new Vector2(_RTR_content.sizeDelta.x, _contentHeight);
+        _contentRect.sizeDelta = new Vector2(_contentRect.sizeDelta.x, _contentHeight);
 
         // cellSizeY + spacingY => 각 item의 간격
-        _intervalHeight = _GLG_content.cellSize.y + _GLG_content.spacing.y;
+        _intervalHeight = _contentGridLayoutGroup.cellSize.y + _contentGridLayoutGroup.spacing.y;
     }
 
     private void SetAnchorX()
     {
-        for (int i = -1; ++i < _GLG_content.constraintCount;)
+        for (int i = 0; i < _contentGridLayoutGroup.constraintCount; i++)
         {
-            float anchor = _GLG_content.padding.left + (_GLG_content.cellSize.x * i) + (_GLG_content.spacing.x * i);
-            _list_anchorX.Add(anchor);
+            float anchor = _contentGridLayoutGroup.padding.left + (_contentGridLayoutGroup.cellSize.x * i) + (_contentGridLayoutGroup.spacing.x * i);
+            _anchorXList.Add(anchor);
         }
     }
 
@@ -128,62 +129,64 @@ public class RoomManage : MonoBehaviour
     /// </summary>
     private void CreateContentItems()
     {
-        float height = _RTR_parentView.sizeDelta.y - _GLG_content.padding.top;
+        float height = _scrollViewParentRect.sizeDelta.y - _contentGridLayoutGroup.padding.top;
 
-        int minLine = (int)Math.Truncate(height / (_GLG_content.cellSize.y + _GLG_content.spacing.y)) + _minPlusLine;
+        int minLine = (int)Math.Truncate(height / (_contentGridLayoutGroup.cellSize.y + _contentGridLayoutGroup.spacing.y)) + _minimumPlusLine;
 
-        int settingAmount = minLine * _GLG_content.constraintCount;
-        for (int i = -1; ++i < settingAmount;)
+        int settingAmount = minLine * _contentGridLayoutGroup.constraintCount;
+        for (int i = 0; i < settingAmount; i++)
         {
-            AD.Room temp_room = Instantiate(_go_item, _RTR_content).GetComponent<AD.Room>();
-            _list_leastItemObject.Add(temp_room);
+            AD.Room temp_room = Instantiate(_contentItem, _contentRect).GetComponent<AD.Room>();
+            _leastItemObjectList.Add(temp_room);
 
-            _LL_inActiveItems.AddLast(temp_room);
+            _inActiveItemsList.AddLast(temp_room);
 
             temp_room.gameObject.SetActive(false);
         }
 
-        settingAmount = settingAmount > _list_sessionList.Count ? _list_sessionList.Count : settingAmount;
-        for (int i = -1; ++i < settingAmount;)
+        settingAmount = settingAmount > _sessionList.Count ? _sessionList.Count : settingAmount;
+        for (int i = 0; i < settingAmount; i++)
         {
-            _list_leastItemObject[i].gameObject.SetActive(true);
+            _leastItemObjectList[i].gameObject.SetActive(true);
 
-            AD.Room item_room = _list_leastItemObject[i];
-            item_room.SetRoom(_list_sessionList[i], i);
+            AD.Room item_room = _leastItemObjectList[i];
+            item_room.SetRoom(_sessionList[i], i);
 
-            _LL_activeItems.AddLast(item_room);
+            _activeItemsList.AddLast(item_room);
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_RTR_content);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_contentRect);
         }
 
-        foreach (AD.Room room in _LL_activeItems)
-            _LL_inActiveItems.Remove(room);
+        foreach (AD.Room room in _activeItemsList)
+            _inActiveItemsList.Remove(room);
 
         _activeItemFirstIndex = 0;
         _activeItemLastIndex = settingAmount - 1;
 
-        for (int i = -1; ++i < _list_anchorX.Count;)
-            if (_list_anchorX[i] == _LL_activeItems.Last.Value._RTR_this.anchoredPosition.x)
+        for (int i = 0; i < _anchorXList.Count; i++)
+            if (_anchorXList[i] == _activeItemsList.Last.Value._thisRect.anchoredPosition.x)
             {
                 _anchorXIndexOflastActiveItem = i;
                 break;
             }
 
-        _GLG_content.enabled = false;
-        _CSF_content.enabled = false;
+        _contentGridLayoutGroup.enabled = false;
+        _contentContentSizeFitter.enabled = false;
     }
+
     #endregion
 
     #region Scroll
+
     /// <summary>
     /// ScrollRect -> On Value Changed에서 호출
     /// </summary>
     public void SetContentItems()
     {
-        if (_LL_activeItems.Count > 0)
+        if (_activeItemsList.Count > 0)
         {
-            _activeItemFirstLineAnchorY = _LL_activeItems.First.Value._RTR_this.anchoredPosition.y;
-            _activeItemLastLineAnchorY = _LL_activeItems.Last.Value._RTR_this.anchoredPosition.y;
+            _activeItemFirstLineAnchorY = _activeItemsList.First.Value._thisRect.anchoredPosition.y;
+            _activeItemLastLineAnchorY = _activeItemsList.Last.Value._thisRect.anchoredPosition.y;
         }
     }
 
@@ -192,35 +195,35 @@ public class RoomManage : MonoBehaviour
     /// </summary>
     void ScrollDown()
     {
-        if (_activeItemLastIndex + 1 >= _list_sessionList.Count)
+        if (_activeItemLastIndex + 1 >= _sessionList.Count)
             return;
 
-        foreach (AD.Room item in _LL_activeItems)
+        foreach (AD.Room item in _activeItemsList)
         {
-            if (item._RTR_this.anchoredPosition.y - _intervalHeight >= -_RTR_content.anchoredPosition.y)
+            if (item._thisRect.anchoredPosition.y - _intervalHeight >= -_contentRect.anchoredPosition.y)
             {
-                _LL_inActiveItems.AddLast(item);
+                _inActiveItemsList.AddLast(item);
                 item.gameObject.SetActive(false);
             }
             else
                 break;
         }
 
-        foreach (AD.Room item in _LL_inActiveItems)
-            _LL_activeItems.Remove(item);
+        foreach (AD.Room item in _inActiveItemsList)
+            _activeItemsList.Remove(item);
 
-        if (_LL_inActiveItems.Count > 0)
+        if (_inActiveItemsList.Count > 0)
         {
-            foreach (AD.Room item in _LL_inActiveItems)
+            foreach (AD.Room item in _inActiveItemsList)
             {
-                if (_activeItemLastIndex + 1 < _list_sessionList.Count)
+                if (_activeItemLastIndex + 1 < _sessionList.Count)
                 {
                     ++_activeItemLastIndex;
 
-                    item.SetRoom(_list_sessionList[_activeItemLastIndex], _activeItemLastIndex);
-                    _LL_activeItems.AddLast(item);
+                    item.SetRoom(_sessionList[_activeItemLastIndex], _activeItemLastIndex);
+                    _activeItemsList.AddLast(item);
 
-                    if (_anchorXIndexOflastActiveItem + 1 >= _list_anchorX.Count)
+                    if (_anchorXIndexOflastActiveItem + 1 >= _anchorXList.Count)
                     {
                         _anchorXIndexOflastActiveItem = 0;
                         _activeItemLastLineAnchorY -= _intervalHeight;
@@ -228,7 +231,7 @@ public class RoomManage : MonoBehaviour
                     else
                         ++_anchorXIndexOflastActiveItem;
 
-                    item._RTR_this.anchoredPosition = new Vector2(_list_anchorX[(int)_anchorXIndexOflastActiveItem], _activeItemLastLineAnchorY);
+                    item._thisRect.anchoredPosition = new Vector2(_anchorXList[(int)_anchorXIndexOflastActiveItem], _activeItemLastLineAnchorY);
 
                     item.gameObject.SetActive(true);
                 }
@@ -237,10 +240,10 @@ public class RoomManage : MonoBehaviour
             }
         }
 
-        foreach (AD.Room item in _LL_activeItems)
-            _LL_inActiveItems.Remove(item);
+        foreach (AD.Room item in _activeItemsList)
+            _inActiveItemsList.Remove(item);
 
-        _activeItemFirstIndex = _LL_activeItems.First.Value._sessionIndex;
+        _activeItemFirstIndex = _activeItemsList.First.Value._sessionIndex;
     }
 
     /// <summary>
@@ -251,102 +254,91 @@ public class RoomManage : MonoBehaviour
         if (_activeItemFirstIndex == 0)
             return;
 
-        // _LL_activeItems.First.Value가 화면의 아래로 내려가 위에 Item이 없을 경우에만 채우도록
-        if (_LL_activeItems.First.Value._RTR_this.anchoredPosition.y >= -_RTR_content.anchoredPosition.y)
+        // _activeItemsList.First.Value가 화면의 아래로 내려가 위에 Item이 없을 경우에만 채우도록
+        if (_activeItemsList.First.Value._thisRect.anchoredPosition.y >= -_contentRect.anchoredPosition.y)
             return;
 
-        // _LL_inActiveItems.Count를 _GLG_content.constraintCount와 맞춤 즉 아래 한 라인을 제거
-        while (true)
+        // _inActiveItemsList.Count를 _contentGridLayoutGroup.constraintCount와 맞춤 즉 아래 한 라인을 제거
+        while (_inActiveItemsList.Count >= _contentGridLayoutGroup.constraintCount == false)
         {
-            if (_LL_inActiveItems.Count >= _GLG_content.constraintCount)
-                break;
-
-            _LL_activeItems.Last.Value.gameObject.SetActive(false);
-            _LL_inActiveItems.AddLast(_LL_activeItems.Last.Value);
-            _LL_activeItems.RemoveLast();
+            _activeItemsList.Last.Value.gameObject.SetActive(false);
+            _inActiveItemsList.AddLast(_activeItemsList.Last.Value);
+            _activeItemsList.RemoveLast();
             --_activeItemLastIndex;
         }
 
-        for (int i = -1; ++i < _list_anchorX.Count;)
-            if (_list_anchorX[i] == _LL_activeItems.Last.Value._RTR_this.anchoredPosition.x)
+        for (int i = 0; i < _anchorXList.Count; i++)
+        {
+            if (_anchorXList[i] == _activeItemsList.Last.Value._thisRect.anchoredPosition.x)
             {
                 _anchorXIndexOflastActiveItem = i;
                 break;
             }
+        }
 
-        if (_LL_inActiveItems.Count >= _GLG_content.constraintCount)
+        if (_inActiveItemsList.Count >= _contentGridLayoutGroup.constraintCount)
         {
             _activeItemFirstLineAnchorY += _intervalHeight;
 
-            int x = _GLG_content.constraintCount;
-            foreach (AD.Room item in _LL_inActiveItems)
+            int x = _contentGridLayoutGroup.constraintCount;
+            foreach (AD.Room item in _inActiveItemsList)
             {
                 if (--x >= 0)
                 {
-                    _LL_activeItems.AddFirst(item);
+                    _activeItemsList.AddFirst(item);
 
                     --_activeItemFirstIndex;
-                    item.SetRoom(_list_sessionList[_activeItemFirstIndex], _activeItemFirstIndex);
+                    item.SetRoom(_sessionList[_activeItemFirstIndex], _activeItemFirstIndex);
 
-                    item._RTR_this.anchoredPosition = new Vector2(_list_anchorX[x], _activeItemFirstLineAnchorY);
+                    item._thisRect.anchoredPosition = new Vector2(_anchorXList[x], _activeItemFirstLineAnchorY);
                     item.gameObject.SetActive(true);
                 }
             }
 
-            foreach (AD.Room item in _LL_activeItems)
-                _LL_inActiveItems.Remove(item);
+            foreach (AD.Room item in _activeItemsList)
+                _inActiveItemsList.Remove(item);
         }
     }
+
     #endregion
 
     #region Scroll Effect
+
     /// <summary>
     /// ScrollView -> Viewport -> MoveCurLevelEffect 클릭 시 Event Trigger로 호출
     /// </summary>
-    public void MoveToTop()
-    {
-        _co_moveToTop = StartCoroutine(co_MoveToTop());
-    }
+    public void MoveToTop() => MoveToTopAsync(_ctsMoveToTop.Token).Forget();
 
-    IEnumerator co_MoveToTop()
+    private async UniTask MoveToTopAsync(CancellationToken token)
     {
-        _go_blockScroll.SetActive(true);
+        _blockScroll.SetActive(true);
 
-        while (_RTR_content.anchoredPosition.y >= 1f)
+        while (_contentRect.anchoredPosition.y >= 1f && !token.IsCancellationRequested)
         {
-            _RTR_content.anchoredPosition = Vector2.Lerp(_RTR_content.anchoredPosition, new Vector2(_RTR_content.anchoredPosition.x, 0f), _lerp);
-            yield return null;
+            _contentRect.anchoredPosition = Vector2.Lerp(_contentRect.anchoredPosition, new Vector2(_contentRect.anchoredPosition.x, 0f), _lerp);
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
 
-        StopMoveToTopCoroutine();
-    }
-
-    void StopMoveToTopCoroutine()
-    {
-        if (_co_moveToTop != null)
-        {
-            StopCoroutine(_co_moveToTop);
-            _co_moveToTop = null;
-        }
-
-        _go_blockScroll.SetActive(false);
+        _blockScroll.SetActive(false);
     }
 
     /// <summary>
     /// ScrollView -> BlockScroll 클릭 시 Event Trigger로 호출
     /// </summary>
-    public void BlockScroll() => StopMoveToTopCoroutine();
+    public void BlockScroll() => _ctsMoveToTop.Cancel();
+
     #endregion
 
     #region Refresh Items
+
     private void RefreshSessionList(List<SessionInfo> newList)
     {
-        for (int i = -1; ++i < _list_sessionList.Count;)
+        for (int i = 0; i < _sessionList.Count; i++)
         {
             bool isRemoved = true;
-            for (int j = -1; ++j < newList.Count;)
+            for (int j = 0; j < newList.Count; j++)
             {
-                if (_list_sessionList[i].Name == newList[j].Name)
+                if (_sessionList[i].Name == newList[j].Name)
                 {
                     isRemoved = false;
                     break;
@@ -356,17 +348,17 @@ public class RoomManage : MonoBehaviour
             if (isRemoved)
             {
                 RemoveSessionAt(i);
-                _list_sessionList.RemoveAt(i);
+                _sessionList.RemoveAt(i);
                 --i;
             }
         }
 
-        for (int i = -1; ++i < newList.Count;)
+        for (int i = 0; i < newList.Count; i++)
         {
             bool isAdd = true;
-            for (int j = -1; ++j < _list_sessionList.Count;)
+            for (int j = 0; j < _sessionList.Count; j++)
             {
-                if (newList[i].Name == _list_sessionList[j].Name)
+                if (newList[i].Name == _sessionList[j].Name)
                 {
                     isAdd = false;
                     break;
@@ -375,15 +367,15 @@ public class RoomManage : MonoBehaviour
 
             if (isAdd)
             {
-                _list_sessionList.Insert(0, newList[i]);
+                _sessionList.Insert(0, newList[i]);
                 AddSessionAtTop();
             }
         }
 
         Settings();
 
-        foreach (AD.Room room in _LL_activeItems)
-            room.SetRoom(_list_sessionList[room._sessionIndex], room._sessionIndex);
+        foreach (AD.Room room in _activeItemsList)
+            room.SetRoom(_sessionList[room._sessionIndex], room._sessionIndex);
     }
 
     /// <summary>
@@ -394,18 +386,18 @@ public class RoomManage : MonoBehaviour
     {
         if (removeIndex < _activeItemFirstIndex)
         {
-            foreach (AD.Room item in _LL_activeItems)
+            foreach (AD.Room item in _activeItemsList)
                 MoveActiveItemAfterRemoveItem(item);
         }
         else if (removeIndex <= _activeItemLastIndex)
         {
             AD.Room removedItem = FindItemByIndex(removeIndex);
-            _LL_activeItems.Remove(removedItem);
+            _activeItemsList.Remove(removedItem);
 
             removedItem.gameObject.SetActive(false);
-            _LL_inActiveItems.AddLast(removedItem);
+            _inActiveItemsList.AddLast(removedItem);
 
-            foreach (AD.Room item in _LL_activeItems)
+            foreach (AD.Room item in _activeItemsList)
             {
                 int oldIndex = item._sessionIndex;
 
@@ -414,10 +406,10 @@ public class RoomManage : MonoBehaviour
             }
         }
 
-        if (_LL_activeItems.Count > 0)
+        if (_activeItemsList.Count > 0)
         {
-            _activeItemFirstIndex = _LL_activeItems.First.Value._sessionIndex;
-            _activeItemLastIndex = _LL_activeItems.Last.Value._sessionIndex;
+            _activeItemFirstIndex = _activeItemsList.First.Value._sessionIndex;
+            _activeItemLastIndex = _activeItemsList.Last.Value._sessionIndex;
         }
         else
         {
@@ -432,45 +424,45 @@ public class RoomManage : MonoBehaviour
     /// </summary>
     public void AddSessionAtTop()
     {
-        foreach (AD.Room room in _LL_activeItems)
+        foreach (AD.Room room in _activeItemsList)
             MoveActiveItemBeforeAddItem(room);
 
         if (_activeItemFirstIndex == 0)
         {
-            if (_LL_inActiveItems.Count > 0)
+            if (_inActiveItemsList.Count > 0)
             {
-                AD.Room newItem = _LL_inActiveItems.First.Value;
-                _LL_inActiveItems.RemoveFirst();
+                AD.Room newItem = _inActiveItemsList.First.Value;
+                _inActiveItemsList.RemoveFirst();
 
-                newItem.SetRoom(_list_sessionList[0], 0);
+                newItem.SetRoom(_sessionList[0], 0);
                 newItem.gameObject.SetActive(true);
 
-                newItem._RTR_this.anchoredPosition =
-                    new Vector2(_list_anchorX[0], -_GLG_content.padding.top);
+                newItem._thisRect.anchoredPosition =
+                    new Vector2(_anchorXList[0], -_contentGridLayoutGroup.padding.top);
 
-                _LL_activeItems.AddFirst(newItem);
+                _activeItemsList.AddFirst(newItem);
             }
             else
             {
-                AD.Room newItem = _LL_activeItems.Last.Value;
-                _LL_activeItems.RemoveLast();
+                AD.Room newItem = _activeItemsList.Last.Value;
+                _activeItemsList.RemoveLast();
 
-                newItem.SetRoom(_list_sessionList[0], 0);
+                newItem.SetRoom(_sessionList[0], 0);
 
-                newItem._RTR_this.anchoredPosition =
-                    new Vector2(_list_anchorX[0], -_GLG_content.padding.top);
+                newItem._thisRect.anchoredPosition =
+                    new Vector2(_anchorXList[0], -_contentGridLayoutGroup.padding.top);
 
-                _LL_activeItems.AddFirst(newItem);
+                _activeItemsList.AddFirst(newItem);
             }
         }
 
-        _activeItemFirstIndex = _LL_activeItems.First.Value._sessionIndex;
-        _activeItemLastIndex = _LL_activeItems.Last.Value._sessionIndex;
+        _activeItemFirstIndex = _activeItemsList.First.Value._sessionIndex;
+        _activeItemLastIndex = _activeItemsList.Last.Value._sessionIndex;
     }
 
     private AD.Room FindItemByIndex(int index)
     {
-        foreach (AD.Room item in _LL_activeItems)
+        foreach (AD.Room item in _activeItemsList)
         {
             if (item._sessionIndex == index)
                 return item;
@@ -483,21 +475,21 @@ public class RoomManage : MonoBehaviour
     {
         item._sessionIndex = item._sessionIndex - 1;
 
-        for (int j = -1; ++j < _list_anchorX.Count;)
+        for (int j = 0; j < _anchorXList.Count; j++)
         {
-            if (item._RTR_this.anchoredPosition.x == _list_anchorX[j])
+            if (item._thisRect.anchoredPosition.x == _anchorXList[j])
             {
                 if (j == 0)
                 {
-                    item._RTR_this.anchoredPosition =
-                        new Vector2(_list_anchorX[_list_anchorX.Count - 1], item._RTR_this.anchoredPosition.y + _intervalHeight);
+                    item._thisRect.anchoredPosition =
+                        new Vector2(_anchorXList[_anchorXList.Count - 1], item._thisRect.anchoredPosition.y + _intervalHeight);
 
                     break;
                 }
                 else
                 {
-                    item._RTR_this.anchoredPosition =
-                        new Vector2(_list_anchorX[j - 1], item._RTR_this.anchoredPosition.y);
+                    item._thisRect.anchoredPosition =
+                        new Vector2(_anchorXList[j - 1], item._thisRect.anchoredPosition.y);
 
                     break;
                 }
@@ -509,21 +501,21 @@ public class RoomManage : MonoBehaviour
     {
         item._sessionIndex = item._sessionIndex + 1;
 
-        for (int j = -1; ++j < _list_anchorX.Count;)
+        for (int j = -1; j < _anchorXList.Count; j++)
         {
-            if (item._RTR_this.anchoredPosition.x == _list_anchorX[j])
+            if (item._thisRect.anchoredPosition.x == _anchorXList[j])
             {
-                if (j == _list_anchorX.Count - 1)
+                if (j == _anchorXList.Count - 1)
                 {
-                    item._RTR_this.anchoredPosition =
-                        new Vector2(_list_anchorX[0], item._RTR_this.anchoredPosition.y - _intervalHeight);
+                    item._thisRect.anchoredPosition =
+                        new Vector2(_anchorXList[0], item._thisRect.anchoredPosition.y - _intervalHeight);
 
                     break;
                 }
                 else
                 {
-                    item._RTR_this.anchoredPosition =
-                        new Vector2(_list_anchorX[j + 1], item._RTR_this.anchoredPosition.y);
+                    item._thisRect.anchoredPosition =
+                        new Vector2(_anchorXList[j + 1], item._thisRect.anchoredPosition.y);
 
                     break;
                 }
@@ -534,18 +526,4 @@ public class RoomManage : MonoBehaviour
     #endregion
 
     #endregion
-
-#if UNITY_EDITOR
-    [CustomEditor(typeof(RoomManage))]
-    public class customEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            EditorGUILayout.HelpBox("dynamic scrollview\n" +
-                "사용 할 content item과 Content의 Grid Layout Group을 세팅 뒤 사용", MessageType.Info);
-
-            base.OnInspectorGUI();
-        }
-    }
-#endif
 }
