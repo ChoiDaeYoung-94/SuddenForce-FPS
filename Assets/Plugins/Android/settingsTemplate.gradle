@@ -18,7 +18,7 @@ dependencyResolutionManagement {
         mavenCentral()
 // Android Resolver Repos Start
         maven {
-            url "file:///D:/Documents/01.Projects/01.Working/01.Unity_Projects/SuddenForce-FPS/Assets/GooglePlayGames/com.google.play.games/Editor/m2repository" // Assets/GooglePlayGames/com.google.play.games/Editor/GooglePlayGamesPluginDependencies.xml:11
+            url "file:///D:/Documents/01.Projects/01.Working/01.Unity_Projects/SuddenForce-FPS/Assets/GeneratedLocalRepo/GooglePlayGames/com.google.play.games/Editor/m2repository" // Assets/GooglePlayGames/com.google.play.games/Editor/GooglePlayGamesPluginDependencies.xml:11
         }
         mavenLocal()
 // Android Resolver Repos End

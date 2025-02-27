@@ -28,7 +28,7 @@ namespace AD
         /// 예외처리에 사용
         /// 로비씬 -> 오퍼월
         /// 게임씬에서 아이템을 선택하여서 사용 전인지에 대한 여부 판단
-        /// Flow상 MainScene 진입 시 InitializeMain.cs에서 false
+        /// Flow상 MainScene 진입 시 CanvasLobby.cs에서 false
         /// </summary>
         private bool _isException = true;
         private bool _isFlow = false;

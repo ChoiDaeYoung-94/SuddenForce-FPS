@@ -23,6 +23,7 @@ public class CanvasLobby : MonoBehaviour
     #region Functions
 
     #region Panel SideMenu
+
     public void Rooms()
     {
         _panelIndex = 0;
@@ -39,9 +40,11 @@ public class CanvasLobby : MonoBehaviour
     {
         AD.Managers.PopupM.PopupExit();
     }
+
     #endregion
 
     #region Panel Main
+
     private void UpdatePanelMain(int index)
     {
         switch (index)
@@ -69,9 +72,11 @@ public class CanvasLobby : MonoBehaviour
         _createRoomPanel.SetActive(true);
         _roomsPanel.SetActive(false);
     }
+
     #endregion
 
     #region Rooms
+
     public void Confirm()
     {
         if (string.IsNullOrEmpty(_roomNameText.text) || _roomNameText.text == "" || _roomNameText.text.Length <= 1)
@@ -102,6 +107,7 @@ public class CanvasLobby : MonoBehaviour
     {
         _mapNameText.text = mapName;
     }
+
     #endregion
 
     public void ClickedUI() => AD.Managers.SoundM.UI_Click();
