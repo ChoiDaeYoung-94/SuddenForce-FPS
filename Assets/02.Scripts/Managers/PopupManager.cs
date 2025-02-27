@@ -12,15 +12,15 @@ namespace AD
     /// </summary>
     public class PopupManager : MonoBehaviour
     {
-        [SerializeField] private GameObject _popupCommon = null;
-        [SerializeField] TMP_Text _messageText = null;
-        [SerializeField] private GameObject _popupExit = null;
-        [SerializeField] private GameObject _popupGameOver = null;
-        [SerializeField] private GameObject _popupLoading = null;
-        [SerializeField] private GameObject _popupLobby = null;
-        [SerializeField] private GameObject _popupSetting = null;
-        [SerializeField] private GameObject _bgmToggle = null;
-        [SerializeField] private GameObject _sfxToggle = null;
+        [SerializeField] private GameObject _popupCommon;
+        [SerializeField] TMP_Text _messageText;
+        [SerializeField] private GameObject _popupExit;
+        [SerializeField] private GameObject _popupGameOver;
+        [SerializeField] private GameObject _popupLoading;
+        [SerializeField] private GameObject _popupLobby;
+        [SerializeField] private GameObject _popupSetting;
+        [SerializeField] private GameObject _bgmToggle;
+        [SerializeField] private GameObject _sfxToggle;
 
         private Stack<GameObject> _popupStack = new Stack<GameObject>();
 

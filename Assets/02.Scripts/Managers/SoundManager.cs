@@ -6,18 +6,18 @@ namespace AD
     public class SoundManager : MonoBehaviour
     {
         [Header("Audio Mixers")]
-        [SerializeField] private AudioMixer _audioMixer = null;
+        [SerializeField] private AudioMixer _audioMixer;
 
         [Header("Audio Sources")]
-        [SerializeField] private AudioSource _bgmAudioSource = null;
-        [SerializeField] private AudioSource _sfxAudioSource = null;
+        [SerializeField] private AudioSource _bgmAudioSource;
+        [SerializeField] private AudioSource _sfxAudioSource;
 
         [Header("Audio Clips")]
-        public AudioClip BgmLoginClip = null;
-        public AudioClip BgmMainClip = null;
-        public AudioClip BgmGameClip = null;
-        public AudioClip SFXUIClickClip = null;
-        public AudioClip SFXUIOkClip = null;
+        public AudioClip BgmLoginClip;
+        public AudioClip BgmMainClip;
+        public AudioClip BgmGameClip;
+        public AudioClip SFXUIClickClip;
+        public AudioClip SFXUIOkClip;
 
         public void Init()
         {
