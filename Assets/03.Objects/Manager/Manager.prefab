@@ -1186,7 +1186,7 @@ MonoBehaviour:
   _bgmAudioSource: {fileID: 5423540460568587340}
   _sfxAudioSource: {fileID: 4439207811064302181}
   BgmLoginClip: {fileID: 0}
-  BgmMainClip: {fileID: 0}
+  BgmLobbyClip: {fileID: 0}
   BgmGameClip: {fileID: 0}
   SFXUIClickClip: {fileID: 0}
   SFXUIOkClip: {fileID: 0}

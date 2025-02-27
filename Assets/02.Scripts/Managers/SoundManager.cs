@@ -14,7 +14,7 @@ namespace AD
 
         [Header("Audio Clips")]
         public AudioClip BgmLoginClip;
-        public AudioClip BgmMainClip;
+        public AudioClip BgmLobbyClip;
         public AudioClip BgmGameClip;
         public AudioClip SFXUIClickClip;
         public AudioClip SFXUIOkClip;
@@ -43,8 +43,8 @@ namespace AD
 
             if (temp_scene.Equals(AD.GameConstants.Scene.Login.ToString()))
                 PlayBGM(BgmLoginClip);
-            else if (temp_scene.Equals(AD.GameConstants.Scene.Main.ToString()))
-                PlayBGM(BgmMainClip);
+            else if (temp_scene.Equals(AD.GameConstants.Scene.Lobby.ToString()))
+                PlayBGM(BgmLobbyClip);
             else if (temp_scene.Equals(AD.GameConstants.Scene.DesertHouse.ToString()))
                 PlayBGM(BgmGameClip);
         }
