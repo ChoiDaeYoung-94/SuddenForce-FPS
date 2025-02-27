@@ -1602,7 +1602,7 @@ GameObject:
   - component: {fileID: 1270408922917168641}
   - component: {fileID: 8836430150297808867}
   m_Layer: 0
-  m_Name: Soldier_Blue
+  m_Name: SoldierBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
