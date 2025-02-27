@@ -1,9 +1,3 @@
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace AD
@@ -14,30 +8,21 @@ namespace AD
     [ExecuteInEditMode]
     public class ScreenSize : MonoBehaviour
     {
-        [Header("--- 세팅 ---")]
-        [SerializeField, Tooltip("타이틀 Image RectTransform")]
-        RectTransform _RTR_title;
-        [SerializeField, Tooltip("원하는 해상도 X값")]
-        float _width = 1080;
-        [SerializeField, Tooltip("원하는 해상도 Y값")]
-        float _height = 1920;
-
-        private void Awake()
-        {
-            _RTR_title = GetComponent<RectTransform>();
-        }
+        [SerializeField] private RectTransform _titleObjectTransform;
+        [SerializeField] private float _width = 1080f;
+        [SerializeField] private float _height = 1920f;
 
         private void Update()
         {
             SetSize();
         }
 
-        void SetSize()
+        private void SetSize()
         {
             float ratio = _width / _height;
             float deviceRatio = _width / Screen.width;
 
-            float x = 0, y = 0;
+            float x = 0f, y = 0f;
 
             // 디바이스의 가로 비율이 더 높을 경우
             if ((float)Screen.width / Screen.height >= ratio)
@@ -52,20 +37,7 @@ namespace AD
                 x = _width * (y / _height);
             }
 
-            _RTR_title.sizeDelta = new Vector2(x, y);
+            _titleObjectTransform.sizeDelta = new Vector2(x, y);
         }
-
-#if UNITY_EDITOR
-        [CustomEditor(typeof(ScreenSize))]
-        public class customEditor : Editor
-        {
-            public override void OnInspectorGUI()
-            {
-                EditorGUILayout.HelpBox("기기 해상도에 따른 타이틀 사이즈 대응", MessageType.Info);
-
-                base.OnInspectorGUI();
-            }
-        }
-#endif
     }
 }
