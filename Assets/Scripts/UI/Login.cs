@@ -1,8 +1,6 @@
-using System;
-
-using UnityEngine;
-
 using Cysharp.Threading.Tasks;
+using System;
+using UnityEngine;
 
 #if UNITY_ANDROID
 using GooglePlayGames;
@@ -75,7 +73,7 @@ namespace AD
             _loading.SetActive(true);
 
 #if UNITY_EDITOR
-            GoMainScene().Forget();
+            GoLobbyScene().Forget();
 #elif UNITY_ANDROID
             LoginWithGoogle();
 #endif
@@ -94,7 +92,7 @@ namespace AD
             {
                 // Continue with Play Games Services
                 Debug.Log("Success LoginGoogle");
-                GoMainScene().Forget();
+                GoLobbyScene().Forget();
             }
             else
             {
@@ -109,7 +107,7 @@ namespace AD
 
         #endregion
 
-        private async UniTask GoMainScene()
+        private async UniTask GoLobbyScene()
         {
             await UniTask.Delay(TimeSpan.FromSeconds(3));
             AD.Managers.SceneM.ChangeScene(AD.GameConstants.Scene.Lobby);

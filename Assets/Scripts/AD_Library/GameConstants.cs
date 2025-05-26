@@ -10,18 +10,9 @@ namespace AD
         /// </summary>
         public enum Scene
         {
-            NextScene,
             Login,
             Lobby,
             Room,
-            DesertHouse
-        }
-
-        /// <summary>
-        /// 사용 중인 Map 목록
-        /// </summary>
-        public enum Map
-        {
             DesertHouse
         }
     }

@@ -1,8 +1,6 @@
-using UnityEngine;
-
 using Fusion;
-
 using TMPro;
+using UnityEngine;
 
 namespace AD
 {

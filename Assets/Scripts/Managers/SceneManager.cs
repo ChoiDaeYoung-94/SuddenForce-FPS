@@ -1,9 +1,7 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
-
 using UnityEngine;
-
-using Cysharp.Threading.Tasks;
 
 namespace AD
 {

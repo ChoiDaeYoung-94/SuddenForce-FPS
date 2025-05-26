@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
-
-using UnityEngine;
-
 using Fusion;
 using Fusion.Sockets;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -12,8 +10,8 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public static NetworkRunnerManager Instance { get { return _instance; } }
 
     [Header("--- 세팅 ---")]
-    [SerializeField] private NetworkRunner _networkRunner = null;
-    [SerializeField] private NetworkSceneManagerDefault _networkSceneM = null;
+    [SerializeField] private NetworkRunner _networkRunner;
+    [SerializeField] private NetworkSceneManagerDefault _networkSceneM;
 
     private void Awake()
     {
