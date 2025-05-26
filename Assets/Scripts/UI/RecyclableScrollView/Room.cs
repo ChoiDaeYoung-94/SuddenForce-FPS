@@ -29,7 +29,7 @@ namespace AD
 
         public void JoinRoom()
         {
-            NetworkRunnerManager.Instance.JoinRoom(_sessionInfo);
+            NetworkRunnerManager.Instance.JoinRoom(_sessionInfo.Name);
         }
     }
 }

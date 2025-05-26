@@ -1,4 +1,5 @@
 using MiniJSON;
+using TMPro;
 using UnityEngine;
 
 namespace AD
@@ -47,5 +48,17 @@ namespace AD
 
         #endregion
 
+        public static bool IsInvalid(TMP_Text text, string message)
+        {
+            if (string.IsNullOrEmpty(text.text) || text.text == "" || text.text.Length <= 1 || text.text.Replace(" ","").Length == 1)
+            {
+                AD.Managers.PopupM.PopupMessage(message);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

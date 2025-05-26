@@ -2,6 +2,7 @@ using Fusion;
 using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
@@ -12,6 +13,10 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     [Header("--- 세팅 ---")]
     [SerializeField] private NetworkRunner _networkRunner;
     [SerializeField] private NetworkSceneManagerDefault _networkSceneM;
+
+    private List<SessionInfo> _sessionList = new List<SessionInfo>();
+
+    private const string _roomNameMessage = "This room already exists...";
 
     private void Awake()
     {
@@ -71,9 +76,15 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public async void CreateRoom(object value)
     {
-        AD.Managers.PopupM.PopupLoading();
-
         Dictionary<string, object> temp_value = value as Dictionary<string, object>;
+
+        if (_sessionList.Any(s => s.Name == temp_value["RoomName"].ToString()))
+        {
+            AD.Managers.PopupM.PopupMessage(_roomNameMessage);
+            return;
+        }
+
+        AD.Managers.PopupM.PopupLoading();
 
         Dictionary<string, SessionProperty> sessionProperties = new Dictionary<string, SessionProperty>()
         {
@@ -103,16 +114,16 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    public async void JoinRoom(SessionInfo sessionInfo)
+    public async void JoinRoom(string roomName)
     {
         AD.Managers.PopupM.PopupLoading();
 
-        AD.DebugLogger.Log("NetworkRunnerM", $"Attempting to join session: {sessionInfo.Name}");
+        AD.DebugLogger.Log("NetworkRunnerM", $"Attempting to join session: {roomName}");
 
         var joinResult = await _networkRunner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Client,
-            SessionName = sessionInfo.Name,
+            SessionName = roomName,
             Scene = SceneRef.FromIndex(2),
             SceneManager = _networkSceneM
         });
@@ -123,7 +134,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             _networkRunner.ProvideInput = true;
 
-            AD.DebugLogger.Log("NetworkRunnerM", $"Joined session successfully: {sessionInfo.Name}");
+            AD.DebugLogger.Log("NetworkRunnerM", $"Joined session successfully: {roomName}");
         }
         else
         {
@@ -179,6 +190,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
         AD.DebugLogger.Log("NetworkRunnerM", $"Session list updated. Count: {sessionList.Count}");
+        _sessionList = sessionList;
 
         RoomManage.Instance.Init(sessionList);
     }

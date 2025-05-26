@@ -8,12 +8,14 @@ public class CanvasLobby : MonoBehaviour
     [Header("--- CanvasLobby data ---")]
     [SerializeField] private GameObject _roomsPanel;
     [SerializeField] private GameObject _createRoomPanel;
+    [SerializeField] private GameObject _joinPrivateRoomPanel;
     [SerializeField] private TMP_Text _roomNameText;
     [SerializeField] private TMP_Dropdown _maxPlayerDropdown;
     [SerializeField] private Toggle _privateRoomToggle;
     [SerializeField] private TMP_Text _mapNameText;
+    [SerializeField] private TMP_Text _privateRoomNameText;
 
-    private int _panelIndex = 0;    // 0 - Rooms, 1 - Create Room
+    private int _panelIndex = 0;    // 0 - Rooms, 1 - Create Room, 2 - JoinPrivateRoom
 
     private const string _roomNameMessage = "Please enter the room name...";
     private const string _mapNameMessage = "Please select a map...";
@@ -31,6 +33,12 @@ public class CanvasLobby : MonoBehaviour
     public void CreateRoom()
     {
         _panelIndex = 1;
+        UpdatePanelMain(_panelIndex);
+    }
+
+    public void JoinPrivateRoom()
+    {
+        _panelIndex = 2;
         UpdatePanelMain(_panelIndex);
     }
 
@@ -53,6 +61,9 @@ public class CanvasLobby : MonoBehaviour
             case 1:
                 PanelCreateRoom();
                 break;
+            case 2:
+                PanelJoinPrivateRoom();
+                break;
             default:
                 AD.DebugLogger.LogError("CanvasLobby", "UpdatePanelMain, index error");
                 break;
@@ -63,12 +74,21 @@ public class CanvasLobby : MonoBehaviour
     {
         _roomsPanel.SetActive(true);
         _createRoomPanel.SetActive(false);
+        _joinPrivateRoomPanel.SetActive(false);
     }
 
     private void PanelCreateRoom()
     {
         _createRoomPanel.SetActive(true);
         _roomsPanel.SetActive(false);
+        _joinPrivateRoomPanel.SetActive(false);
+    }
+
+    private void PanelJoinPrivateRoom()
+    {
+        _joinPrivateRoomPanel.SetActive(true);
+        _roomsPanel.SetActive(false);
+        _createRoomPanel.SetActive(false);
     }
 
     #endregion
@@ -77,9 +97,8 @@ public class CanvasLobby : MonoBehaviour
 
     public void Confirm()
     {
-        if (string.IsNullOrEmpty(_roomNameText.text) || _roomNameText.text == "" || _roomNameText.text.Length <= 1)
+        if (!AD.Utility.IsInvalid(_roomNameText, _roomNameMessage))
         {
-            AD.Managers.PopupM.PopupMessage(_roomNameMessage);
             return;
         }
 
@@ -104,6 +123,11 @@ public class CanvasLobby : MonoBehaviour
     public void SelectMap(string mapName)
     {
         _mapNameText.text = mapName;
+    }
+
+    public void EnterPrivateRoom()
+    {
+
     }
 
     #endregion
