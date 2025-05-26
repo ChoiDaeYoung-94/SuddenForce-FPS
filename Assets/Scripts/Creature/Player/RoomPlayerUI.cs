@@ -14,10 +14,10 @@ public class RoomPlayerUI : MonoBehaviour
         if (currentTeam != team)
         {
             currentTeam = team;
-            if (team == 1)
-                BackgroundImage.color = Color.red;
-            else if (team == 2)
-                BackgroundImage.color = Color.blue;
+            //if (team == 1)
+            //    BackgroundImage.color = Color.red;
+            //else if (team == 2)
+            //    BackgroundImage.color = Color.blue;
         }
     }
 

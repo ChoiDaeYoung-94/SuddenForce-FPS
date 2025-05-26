@@ -37,6 +37,20 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     #region Photon Fusion
 
+    public void Spawn(GameObject prefab, Transform parentTransform, PlayerRef player)
+    {
+        _networkRunner.SpawnAsync(
+            prefab,
+            Vector3.zero,
+            Quaternion.identity,
+            player,
+            onBeforeSpawned: (runner, spawnedObj) =>
+            {
+                spawnedObj.transform.SetParent(parentTransform, worldPositionStays: false);
+            }
+            );
+    }
+
     public async void JoinSessionLobby()
     {
         _networkRunner.ProvideInput = false;
@@ -73,7 +87,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             PlayerCount = int.Parse(temp_value["MaxPlayers"].ToString()),
             SessionProperties = sessionProperties,
             IsVisible = bool.Parse(temp_value["IsPrivateRoom"].ToString()),
-            Scene = SceneRef.FromIndex(3),
+            Scene = SceneRef.FromIndex(2),
             SceneManager = _networkSceneM
         });
 
@@ -107,6 +121,8 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (joinResult.Ok)
         {
+            _networkRunner.ProvideInput = true;
+
             AD.DebugLogger.Log("NetworkRunnerM", $"Joined session successfully: {sessionInfo.Name}");
         }
         else
@@ -130,7 +146,16 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     #region INetworkRunnerCallbacks
 
-    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+    {
+        if (!runner.IsServer)
+        {
+            return;
+        }
+
+        RoomManager.Instance.SpawnRoomPlayer(player);
+    }
+
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }

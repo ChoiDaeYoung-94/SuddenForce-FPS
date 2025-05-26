@@ -2,10 +2,14 @@ using Fusion;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomManager : NetworkBehaviour
+public class RoomManager : MonoBehaviour
 {
     private static RoomManager _instance;
     public static RoomManager Instance { get { return _instance; } }
+
+    [SerializeField] private GameObject _roomPlayer;
+    public Transform RedTeam;
+    public Transform BlueTeam;
 
     public List<RoomPlayerNetworkData> RoomPlayers = new List<RoomPlayerNetworkData>();
     public RoomPlayerNetworkData LocalPlayerData;
@@ -18,6 +22,11 @@ public class RoomManager : NetworkBehaviour
     private void OnDestroy()
     {
         _instance = null;
+    }
+
+    public void SpawnRoomPlayer(PlayerRef player)
+    {
+        NetworkRunnerManager.Instance.Spawn(_roomPlayer, RedTeam, player);
     }
 
     /// <summary>

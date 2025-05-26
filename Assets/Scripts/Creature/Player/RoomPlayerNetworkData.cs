@@ -7,31 +7,38 @@ public class RoomPlayerNetworkData : NetworkBehaviour
     [Networked] public bool IsReady { get; set; }
     [Networked] public int Team { get; set; }
 
-    public RoomPlayerUI PlayerUI { get; set; }
+    public RoomPlayerUI PlayerUI;
 
     public override void Spawned()
     {
         RoomManager.Instance.RegisterPlayer(this);
+        SetTeam(Team);
     }
 
-    private void OnTeamChanged()
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RpcChangeTeam(int newTeam, RpcInfo info = default)
     {
-        // UI가 할당되어 있으면 변경된 팀 값을 UI에 반영
+        if (Object.HasStateAuthority)
+        {
+            Team = newTeam;
+        }
+
         if (PlayerUI != null)
         {
             PlayerUI.UpdateTeamUI(Team);
+            SetTeam(newTeam);
         }
-    }
-
-    [Rpc]
-    public void RpcChangeTeam(int newTeam, RpcInfo info = default)
-    {
-        Team = newTeam;
     }
 
     [Rpc]
     public void RpcToggleReady(RpcInfo info = default)
     {
         IsReady = !IsReady;
+    }
+
+    private void SetTeam(int team)
+    {
+        Transform teamPos = team == 0 ? RoomManager.Instance.RedTeam : RoomManager.Instance.BlueTeam;
+        transform.SetParent(teamPos, worldPositionStays: false);
     }
 }
