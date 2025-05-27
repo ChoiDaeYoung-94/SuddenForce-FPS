@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class CanvasLobby : MonoBehaviour
 {
-    [Header("--- CanvasLobby data ---")]
     [SerializeField] private GameObject _roomsPanel;
     [SerializeField] private GameObject _createRoomPanel;
     [SerializeField] private GameObject _joinPrivateRoomPanel;

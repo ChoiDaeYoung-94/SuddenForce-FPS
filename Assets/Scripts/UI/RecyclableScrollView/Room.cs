@@ -9,7 +9,6 @@ namespace AD
         public RectTransform _thisRect;
         public int _sessionIndex = 0;
 
-        // 그 외 접근 불가 데이터
         private SessionInfo _sessionInfo;
         [SerializeField] private TMP_Text _roomNameText;
         [SerializeField] private TMP_Text _gameSceneNameText;
@@ -29,7 +28,7 @@ namespace AD
 
         public void JoinRoom()
         {
-            NetworkRunnerManager.Instance.JoinRoom(_sessionInfo.Name);
+            NetworkRunnerManager.Instance.JoinRoom(_sessionInfo);
         }
     }
 }

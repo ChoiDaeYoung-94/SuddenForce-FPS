@@ -2,7 +2,7 @@ using Fusion;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomManager : MonoBehaviour
+public class RoomManager : NetworkBehaviour
 {
     private static RoomManager _instance;
     public static RoomManager Instance { get { return _instance; } }
@@ -91,5 +91,11 @@ public class RoomManager : MonoBehaviour
     private void StartGame()
     {
 
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RpcMapChange(string mapName, RpcInfo info = default)
+    {
+        CanvasRoom.Instance.ChangeMapName(mapName);
     }
 }

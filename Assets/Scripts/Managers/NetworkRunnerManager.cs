@@ -10,11 +10,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private static NetworkRunnerManager _instance;
     public static NetworkRunnerManager Instance { get { return _instance; } }
 
-    [Header("--- 세팅 ---")]
     [SerializeField] private NetworkRunner _networkRunner;
     [SerializeField] private NetworkSceneManagerDefault _networkSceneM;
 
     private List<SessionInfo> _sessionList = new List<SessionInfo>();
+    private RoomOptions _roomOptions = new RoomOptions();
 
     private const string _roomNameMessage = "This room already exists...";
 
@@ -106,6 +106,10 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (startGameResult.Ok)
         {
+            int playerCount = int.Parse(temp_value["MaxPlayers"].ToString()) / 2;
+            _roomOptions.RoomName = temp_value["RoomName"].ToString();
+            _roomOptions.MapName = temp_value["MapName"].ToString();
+            _roomOptions.Players = $"{playerCount} vs {playerCount}";
             AD.DebugLogger.Log("NetworkRunnerM", $"세션 생성 성공: {temp_value["RoomName"]}");
         }
         else
@@ -114,16 +118,16 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    public async void JoinRoom(string roomName)
+    public async void JoinRoom(SessionInfo sessionInfo)
     {
         AD.Managers.PopupM.PopupLoading();
 
-        AD.DebugLogger.Log("NetworkRunnerM", $"Attempting to join session: {roomName}");
+        AD.DebugLogger.Log("NetworkRunnerM", $"Attempting to join session: {sessionInfo.Name}");
 
         var joinResult = await _networkRunner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Client,
-            SessionName = roomName,
+            SessionName = sessionInfo.Name,
             Scene = SceneRef.FromIndex(2),
             SceneManager = _networkSceneM
         });
@@ -132,9 +136,13 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (joinResult.Ok)
         {
+            int playerCount = sessionInfo.MaxPlayers / 2;
+            _roomOptions.RoomName = sessionInfo.Name;
+            _roomOptions.MapName = sessionInfo.Properties["MapName"];
+            _roomOptions.Players = $"{playerCount} vs {playerCount}";
             _networkRunner.ProvideInput = true;
 
-            AD.DebugLogger.Log("NetworkRunnerM", $"Joined session successfully: {roomName}");
+            AD.DebugLogger.Log("NetworkRunnerM", $"Joined session successfully: {sessionInfo.Name}");
         }
         else
         {
@@ -151,6 +159,33 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         AD.Managers.PopupM.PopupLoading();
 
         _networkRunner.Shutdown();
+    }
+
+    public void ChangeMap(string mapName)
+    {
+        string originalMap = _roomOptions.MapName;
+
+        if (string.Equals(originalMap, mapName) || !_networkRunner.IsServer)
+        {
+            return;
+        }
+
+        var customProps = new Dictionary<string, SessionProperty>()
+        {
+            ["MapName"] = mapName
+        };
+        _roomOptions.MapName = mapName;
+
+        if (_networkRunner.SessionInfo.UpdateCustomProperties(customProps))
+        {
+            RoomManager.Instance.RpcMapChange(_roomOptions.MapName);
+            AD.DebugLogger.Log("NetworkRunnerManager", $"{mapName}으로 Map 업데이트 성공");
+        }
+        else
+        {
+            _roomOptions.MapName = originalMap;
+            AD.DebugLogger.Log("NetworkRunnerManager", $"{mapName}으로 Map 업데이트 실패");
+        }
     }
 
     #endregion
@@ -177,8 +212,16 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         AD.Managers.PopupM.ClosePopupLoading();
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == AD.GameConstants.Scene.Room.ToString())
+        string name = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+        if (name == AD.GameConstants.Scene.Lobby.ToString())
+        {
+
+        }
+        else if (name == AD.GameConstants.Scene.Room.ToString())
+        {
             AD.Managers.SceneM.ChangeScene(AD.GameConstants.Scene.Lobby);
+        }
     }
 
     public void OnConnectedToServer(NetworkRunner runner) { }
@@ -192,12 +235,23 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         AD.DebugLogger.Log("NetworkRunnerM", $"Session list updated. Count: {sessionList.Count}");
         _sessionList = sessionList;
 
-        RoomManage.Instance.Init(sessionList);
+        string name = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+        if (name == AD.GameConstants.Scene.Lobby.ToString())
+        {
+            RoomManage.Instance.Init(sessionList);
+        }
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
-    public void OnSceneLoadDone(NetworkRunner runner) { }
+
+    public void OnSceneLoadDone(NetworkRunner runner)
+    {
+        _roomOptions.IsServer = runner.IsServer;
+        CanvasRoom.Instance.Init(_roomOptions);
+    }
+
     public void OnSceneLoadStart(NetworkRunner runner) { }
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
@@ -207,4 +261,12 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     #endregion
 
     #endregion
+}
+
+public class RoomOptions
+{
+    public bool IsServer { get; set; }
+    public string RoomName { get; set; }
+    public string MapName { get; set; }
+    public string Players { get; set; }
 }
