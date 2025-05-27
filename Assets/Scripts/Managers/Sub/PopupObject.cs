@@ -47,7 +47,11 @@ namespace AD
 
         private void OnDisable()
         {
-            if (_checkType == CheckType.Exception)
+            if (_checkType == CheckType.Normal)
+            {
+                AD.Managers.PopupM.DisablePop();
+            }
+            else if (_checkType == CheckType.Exception)
             {
                 AD.Managers.PopupM.ReleaseException();
             }

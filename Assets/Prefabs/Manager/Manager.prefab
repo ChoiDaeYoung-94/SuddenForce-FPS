@@ -1037,9 +1037,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2274146504843867979}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
+      - m_Target: {fileID: 2564081725672228114}
+        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
+        m_MethodName: ClosePopupSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1049,10 +1049,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2564081725672228114}
-        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
-        m_MethodName: ClosePopupSetting
-        m_Mode: 1
+      - m_Target: {fileID: 2183110993338969886}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1901,10 +1901,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5996593376574299005}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
-        m_Mode: 1
+      - m_Target: {fileID: 9072426793326423883}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2058,9 +2058,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2274146504843867979}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
+      - m_Target: {fileID: 2564081725672228114}
+        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
+        m_MethodName: ExitGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2070,10 +2070,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2564081725672228114}
-        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
-        m_MethodName: ExitGame
-        m_Mode: 1
+      - m_Target: {fileID: 2183110993338969886}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2743,9 +2743,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6828725246532103826}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
+      - m_Target: {fileID: 2564081725672228114}
+        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
+        m_MethodName: ClosePopupSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2755,10 +2755,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2564081725672228114}
-        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
-        m_MethodName: ClosePopupSetting
-        m_Mode: 1
+      - m_Target: {fileID: 4482078583990242982}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3048,9 +3048,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6828725246532103826}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
+      - m_Target: {fileID: 2564081725672228114}
+        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
+        m_MethodName: ClosePopupSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3060,10 +3060,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2564081725672228114}
-        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
-        m_MethodName: ClosePopupSetting
-        m_Mode: 1
+      - m_Target: {fileID: 4482078583990242982}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3206,10 +3206,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5528292035873015323}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
-        m_Mode: 1
+      - m_Target: {fileID: 5789577027643703045}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3364,9 +3364,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2604154541169594590}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
+      - m_Target: {fileID: 2564081725672228114}
+        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
+        m_MethodName: ClosePopupSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3376,10 +3376,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2564081725672228114}
-        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
-        m_MethodName: ClosePopupSetting
-        m_Mode: 1
+      - m_Target: {fileID: 6031923858935550562}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3522,9 +3522,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2604154541169594590}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
+      - m_Target: {fileID: 2564081725672228114}
+        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
+        m_MethodName: ClosePopupSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3534,10 +3534,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2564081725672228114}
-        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
-        m_MethodName: ClosePopupSetting
-        m_Mode: 1
+      - m_Target: {fileID: 6031923858935550562}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4404,9 +4404,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6828725246532103826}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
+      - m_Target: {fileID: 2564081725672228114}
+        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
+        m_MethodName: GoLobby
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4416,10 +4416,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2564081725672228114}
-        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
-        m_MethodName: GoLobby
-        m_Mode: 1
+      - m_Target: {fileID: 4482078583990242982}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4561,9 +4561,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2274146504843867979}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
+      - m_Target: {fileID: 2564081725672228114}
+        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
+        m_MethodName: ClosePopupSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4573,10 +4573,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2564081725672228114}
-        m_TargetAssemblyTypeName: AD.PopupManager, Assembly-CSharp
-        m_MethodName: ClosePopupSetting
-        m_Mode: 1
+      - m_Target: {fileID: 2183110993338969886}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4853,10 +4853,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5528292035873015323}
-        m_TargetAssemblyTypeName: AD.PopupObject, Assembly-CSharp
-        m_MethodName: DisablePop
-        m_Mode: 1
+      - m_Target: {fileID: 5789577027643703045}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
