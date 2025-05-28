@@ -43,7 +43,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     #region Photon Fusion
-    public void Spawn(GameObject prefab, Transform parentTransform, PlayerRef player)
+    public void Spawn(GameObject prefab, PlayerRef player)
     {
         _networkRunner.SpawnAsync(
             prefab,
@@ -52,7 +52,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             player,
             onBeforeSpawned: (runner, spawnedObj) =>
             {
-                spawnedObj.transform.SetParent(parentTransform, worldPositionStays: false);
+                Transform teamPosition = RoomManager.Instance.GetTeamPosition();
+                int team = teamPosition == RoomManager.Instance.RedTeam ? 0 : 1;
+
+                spawnedObj.transform.SetParent(teamPosition, worldPositionStays: false);
+                spawnedObj.GetComponent<RoomPlayerNetworkData>().Team = team;
             }
             );
     }
@@ -112,10 +116,10 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (startGameResult.Ok)
         {
-            int playerCount = int.Parse(temp_value["MaxPlayers"].ToString()) / 2;
+            _roomOptions.PlayerCount = int.Parse(temp_value["MaxPlayers"].ToString()) / 2;
             _roomOptions.RoomName = temp_value["RoomName"].ToString();
             _roomOptions.MapName = temp_value["MapName"].ToString();
-            _roomOptions.Players = $"{playerCount} vs {playerCount}";
+            _roomOptions.Players = $"{_roomOptions.PlayerCount} vs {_roomOptions.PlayerCount}";
             AD.DebugLogger.Log("NetworkRunnerM", $"세션 생성 성공: {temp_value["RoomName"]}");
         }
         else
@@ -142,10 +146,10 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (joinResult.Ok)
         {
-            int playerCount = sessionInfo.MaxPlayers / 2;
+            _roomOptions.PlayerCount = sessionInfo.MaxPlayers / 2;
             _roomOptions.RoomName = sessionInfo.Name;
             _roomOptions.MapName = sessionInfo.Properties["MapName"];
-            _roomOptions.Players = $"{playerCount} vs {playerCount}";
+            _roomOptions.Players = $"{_roomOptions.PlayerCount} vs {_roomOptions.PlayerCount}";
             _networkRunner.ProvideInput = true;
 
             AD.DebugLogger.Log("NetworkRunnerM", $"Joined session successfully: {sessionInfo.Name}");
@@ -200,6 +204,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public PlayerRef GetLocalPlayer()
     {
         return _networkRunner.LocalPlayer;
+    }
+
+    public RoomOptions GetRoomOptions()
+    {
+        return _roomOptions;
     }
     #endregion
 
@@ -282,4 +291,5 @@ public class RoomOptions
     public string RoomName { get; set; }
     public string MapName { get; set; }
     public string Players { get; set; }
+    public int PlayerCount { get; set; }
 }

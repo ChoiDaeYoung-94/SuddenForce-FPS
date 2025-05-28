@@ -26,7 +26,7 @@ public class RoomManager : NetworkBehaviour
 
     public void SpawnRoomPlayer(PlayerRef player)
     {
-        NetworkRunnerManager.Instance.Spawn(_roomPlayer, RedTeam, player);
+        NetworkRunnerManager.Instance.Spawn(_roomPlayer, player);
     }
 
     /// <summary>
@@ -45,9 +45,6 @@ public class RoomManager : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// 플레이어가 퇴장할 때 호출
-    /// </summary>
     public void UnregisterPlayer(RoomPlayerNetworkData player)
     {
         RoomPlayers.Remove(player);
@@ -63,6 +60,15 @@ public class RoomManager : NetworkBehaviour
 
     public void OnTeamSwitchButtonClicked(int teamId)
     {
+        int teamCount = NetworkRunnerManager.Instance.GetRoomOptions().PlayerCount;
+        (int, int) result = GetTeamCount();
+        int red = result.Item1, blue = result.Item2;
+
+        if ((teamId == 0 && teamCount == red) || (teamId == 1 && teamCount == blue))
+        {
+            return;
+        }
+
         if (LocalPlayerData != null && LocalPlayerData.Object.HasInputAuthority)
         {
             LocalPlayerData.RpcChangeTeam(teamId);
@@ -86,6 +92,33 @@ public class RoomManager : NetworkBehaviour
         {
             StartGame();
         }
+    }
+
+    public Transform GetTeamPosition()
+    {
+        (int, int) result = GetTeamCount();
+        int red = result.Item1;
+
+        return NetworkRunnerManager.Instance.GetRoomOptions().PlayerCount > red ? RedTeam : BlueTeam;
+    }
+
+    private (int, int) GetTeamCount()
+    {
+        int red = 0, blue = 0;
+
+        foreach (RoomPlayerNetworkData player in RoomPlayers)
+        {
+            if (player.Team == 0)
+            {
+                ++red;
+            }
+            else
+            {
+                ++blue;
+            }
+        }
+
+        return (red, blue);
     }
 
     private void StartGame()
