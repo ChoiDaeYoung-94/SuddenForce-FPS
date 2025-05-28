@@ -18,6 +18,7 @@ namespace AD
         [SerializeField] private GameObject _popupLobby;
         [SerializeField] private GameObject _popupSetting;
         [SerializeField] private GameObject _popupSceneLoading;
+        [SerializeField] private GameObject _popupSetNickName;
         [SerializeField] private GameObject _bgmToggle;
         [SerializeField] private GameObject _sfxToggle;
 
@@ -156,6 +157,21 @@ namespace AD
         }
 
         public void ClosePopupSetting() => UnityEngine.Time.timeScale = 1;
+
+        public void PopupSetNickName() => _popupSetNickName.SetActive(true);
+        
+        public void CheckNickName(TMP_Text nickName)
+        {
+            if (!AD.Utility.IsInvalid(nickName, "Warning: Nickname cannot be empty. Please enter your nickname."))
+            {
+                return;
+            }
+            else
+            {
+                NetworkRunnerManager.Instance.SaveNickName(nickName.text);
+                _popupSetNickName.SetActive(false);
+            }
+        }
 
         public void GoLobby()
         {

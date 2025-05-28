@@ -18,6 +18,8 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private const string _roomNameMessage = "This room already exists...";
 
+    public string _nickName;
+
     private void Awake()
     {
         _instance = this;
@@ -62,6 +64,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         var result = await _networkRunner.JoinSessionLobby(SessionLobby.ClientServer);
 
         AD.Managers.PopupM.ClosePopupLoading();
+
+        if (string.IsNullOrEmpty(_nickName))
+        {
+            AD.Managers.PopupM.PopupSetNickName();
+        }
 
         if (result.Ok)
         {
@@ -156,6 +163,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         AD.Managers.PopupM.PopupLoading();
 
         _networkRunner.Shutdown();
+    }
+
+    public void SaveNickName(string nickName)
+    {
+        _nickName = nickName;
     }
 
     public void ChangeMap(string mapName)

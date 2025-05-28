@@ -28,7 +28,7 @@ public class ChatManager : MonoBehaviour
     private void SendChat(string message)
     {
         AddMessage($"<You> {message}");
-        CanvasRoom.Instance.RpcBroadcastChat(message, NetworkRunnerManager.Instance.GetLocalPlayer());
+        CanvasRoom.Instance.RpcBroadcastChat(message, NetworkRunnerManager.Instance.GetLocalPlayer(), NetworkRunnerManager.Instance._nickName);
     }
 
     public void AddMessage(string text)

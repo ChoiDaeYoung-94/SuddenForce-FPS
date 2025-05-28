@@ -91,14 +91,14 @@ public class CanvasRoom : NetworkBehaviour
 
     #region ChatManager
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcBroadcastChat(string message, PlayerRef sender, RpcInfo info = default)
+    public void RpcBroadcastChat(string message, PlayerRef sender, string nickName, RpcInfo info = default)
     {
         if (NetworkRunnerManager.Instance.GetLocalPlayer() == sender)
         {
             return;
         }
 
-        _chatManager.AddMessage($"<Unknown> {message}");
+        _chatManager.AddMessage($"<{nickName}> {message}");
     }
     #endregion
 }
