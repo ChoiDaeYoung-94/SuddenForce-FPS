@@ -48,6 +48,7 @@ namespace AD
 
         private void Start()
         {
+            PoolM.Init();
             SoundM.Init();
         }
 

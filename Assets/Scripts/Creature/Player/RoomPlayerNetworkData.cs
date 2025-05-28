@@ -18,11 +18,7 @@ public class RoomPlayerNetworkData : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcChangeTeam(int newTeam, RpcInfo info = default)
     {
-        if (Object.HasStateAuthority)
-        {
-            Team = newTeam;
-        }
-
+        Team = newTeam;
         if (PlayerUI != null)
         {
             PlayerUI.UpdateTeamUI(Team);

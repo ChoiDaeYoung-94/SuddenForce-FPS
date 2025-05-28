@@ -1,13 +1,13 @@
+using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CanvasRoom : MonoBehaviour
+public class CanvasRoom : NetworkBehaviour
 {
     private static CanvasRoom _instance;
     public static CanvasRoom Instance { get { return _instance; } }
 
-    [Header("--- CanvasRoom data ---")]
     [SerializeField] private RectTransform _teamPanel;
     [SerializeField] private RectTransform _redTeam;
     [SerializeField] private RectTransform _blueTeam;
@@ -20,6 +20,8 @@ public class CanvasRoom : MonoBehaviour
     [SerializeField] private GameObject _mapPanel;
     [SerializeField] private GameObject _readyButton;
     [SerializeField] private GameObject _startButton;
+
+    public ChatManager _chatManager;
 
     private void Awake()
     {
@@ -84,6 +86,19 @@ public class CanvasRoom : MonoBehaviour
     public void ChangeMap(string mapName)
     {
         NetworkRunnerManager.Instance.ChangeMap(mapName);
+    }
+    #endregion
+
+    #region ChatManager
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RpcBroadcastChat(string message, PlayerRef sender, RpcInfo info = default)
+    {
+        if (NetworkRunnerManager.Instance.GetLocalPlayer() == sender)
+        {
+            return;
+        }
+
+        _chatManager.AddMessage($"<Unknown> {message}");
     }
     #endregion
 }

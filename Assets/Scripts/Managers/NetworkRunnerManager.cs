@@ -41,7 +41,6 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     #region Photon Fusion
-
     public void Spawn(GameObject prefab, Transform parentTransform, PlayerRef player)
     {
         _networkRunner.SpawnAsync(
@@ -149,11 +148,9 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             AD.DebugLogger.LogError("NetworkRunnerM", "Failed to join session: " + joinResult.ShutdownReason);
         }
     }
-
     #endregion
 
     #region Public Methods
-
     public void Shutdown()
     {
         AD.Managers.PopupM.PopupLoading();
@@ -188,6 +185,10 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    public PlayerRef GetLocalPlayer()
+    {
+        return _networkRunner.LocalPlayer;
+    }
     #endregion
 
     #region INetworkRunnerCallbacks
