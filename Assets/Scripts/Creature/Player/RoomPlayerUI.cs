@@ -1,29 +1,26 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RoomPlayerUI : MonoBehaviour
 {
-    public Text NicknameText;
-    public Text ReadyStatusText;
-    public Image BackgroundImage;
 
-    private int currentTeam;
+    [SerializeField] private TMP_Text _nickName;
+    [SerializeField] private Image _teamImage;
+    [SerializeField] private GameObject _readyStateObject;
 
     public void UpdateTeamUI(int team)
     {
-        if (currentTeam != team)
-        {
-            currentTeam = team;
-            //if (team == 1)
-            //    BackgroundImage.color = Color.red;
-            //else if (team == 2)
-            //    BackgroundImage.color = Color.blue;
-        }
+        _teamImage.color = team == 0 ? new Color(1f, 0f, 0f, 0.5f) : new Color(0f, 0f, 1f, 0.5f);
     }
 
-    public void UpdateUI(string nickname, bool isReady)
+    public void SetNickName(string nickName)
     {
-        NicknameText.text = nickname;
-        ReadyStatusText.text = isReady ? "REAEY" : "";
+        _nickName.text = nickName;
+    }
+
+    public void SetReadyState(bool active)
+    {
+        _readyStateObject.SetActive(active);
     }
 }

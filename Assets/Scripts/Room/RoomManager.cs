@@ -45,16 +45,16 @@ public class RoomManager : NetworkBehaviour
         }
     }
 
-    public void UnregisterPlayer(RoomPlayerNetworkData player)
-    {
-        RoomPlayers.Remove(player);
-    }
+    //public void UnregisterPlayer(RoomPlayerNetworkData player)
+    //{
+    //    RoomPlayers.Remove(player);
+    //}
 
     public void OnReadyButtonClicked()
     {
         if (LocalPlayerData != null && LocalPlayerData.Object.HasInputAuthority)
         {
-            LocalPlayerData.RpcToggleReady();
+            LocalPlayerData.RpcRequestToggleReady();
         }
     }
 
@@ -75,24 +75,24 @@ public class RoomManager : NetworkBehaviour
         }
     }
 
-    public void CheckTeamReadyStatus()
-    {
-        int redReadyCount = 0;
-        int blueReadyCount = 0;
+    //public void CheckTeamReadyStatus()
+    //{
+    //    int redReadyCount = 0;
+    //    int blueReadyCount = 0;
 
-        foreach (RoomPlayerNetworkData player in RoomPlayers)
-        {
-            if (player.Team == 1 && player.IsReady)
-                redReadyCount++;
-            else if (player.Team == 2 && player.IsReady)
-                blueReadyCount++;
-        }
+    //    foreach (RoomPlayerNetworkData player in RoomPlayers)
+    //    {
+    //        if (player.Team == 1 && player.IsReady)
+    //            redReadyCount++;
+    //        else if (player.Team == 2 && player.IsReady)
+    //            blueReadyCount++;
+    //    }
 
-        if (redReadyCount >= 1 && blueReadyCount >= 1)
-        {
-            StartGame();
-        }
-    }
+    //    if (redReadyCount >= 1 && blueReadyCount >= 1)
+    //    {
+    //        StartGame();
+    //    }
+    //}
 
     public Transform GetTeamPosition()
     {
@@ -121,10 +121,10 @@ public class RoomManager : NetworkBehaviour
         return (red, blue);
     }
 
-    private void StartGame()
-    {
+    //private void StartGame()
+    //{
 
-    }
+    //}
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RpcMapChange(string mapName, RpcInfo info = default)

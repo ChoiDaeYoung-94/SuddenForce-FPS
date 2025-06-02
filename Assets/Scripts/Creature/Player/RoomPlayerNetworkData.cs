@@ -12,7 +12,34 @@ public class RoomPlayerNetworkData : NetworkBehaviour
     public override void Spawned()
     {
         RoomManager.Instance.RegisterPlayer(this);
+
+        if (Object.HasInputAuthority)
+        {
+            RpcSetNickName(NetworkRunnerManager.Instance._nickName);
+        }
+
         SetTeam(Team);
+        PlayerUI.UpdateTeamUI(Team);
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RpcSetNickName(string nick, RpcInfo info = default)
+    {
+        if (Object.HasStateAuthority)
+        {
+            NickName = nick;
+        }
+
+        RpcBroadcastSetNickName(info.Source);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RpcBroadcastSetNickName(PlayerRef who, RpcInfo info = default)
+    {
+        foreach (RoomPlayerNetworkData player in RoomManager.Instance.RoomPlayers)
+        {
+            player.PlayerUI.SetNickName(player.NickName);
+        }
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
@@ -26,15 +53,29 @@ public class RoomPlayerNetworkData : NetworkBehaviour
         }
     }
 
-    [Rpc]
-    public void RpcToggleReady(RpcInfo info = default)
-    {
-        IsReady = !IsReady;
-    }
-
     private void SetTeam(int team)
     {
         Transform teamPos = team == 0 ? RoomManager.Instance.RedTeam : RoomManager.Instance.BlueTeam;
         transform.SetParent(teamPos, worldPositionStays: false);
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RpcRequestToggleReady(RpcInfo info = default)
+    {
+        IsReady = !IsReady;
+        PlayerUI.SetReadyState(IsReady);
+        RpcBroadcastReady(IsReady, info.Source);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RpcBroadcastReady(bool newState, PlayerRef who, RpcInfo info = default)
+    {
+        foreach (RoomPlayerNetworkData player in RoomManager.Instance.RoomPlayers)
+        {
+            if (player.Object.InputAuthority == who)
+            {
+                player.PlayerUI.SetReadyState(newState);
+            }
+        }
     }
 }

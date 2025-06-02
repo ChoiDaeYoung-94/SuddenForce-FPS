@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2996439234815567227}
   - component: {fileID: 8102368329696427116}
   - component: {fileID: 5806804645447503643}
+  - component: {fileID: 6401983921414393807}
   m_Layer: 0
   m_Name: NetworkRunnerManager
   m_TagString: Untagged
@@ -87,3 +88,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsSceneTakeOverEnabled: 1
   LogSceneLoadErrors: 1
+--- !u!114 &6401983921414393807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4772859800932114892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 4071780270
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours: []

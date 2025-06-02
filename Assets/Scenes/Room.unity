@@ -199,11 +199,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 242978694267329942, guid: f500b7755da9dcf4092362c6f74f8480,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 251882404}
     - target: {fileID: 2234839464577898804, guid: f500b7755da9dcf4092362c6f74f8480,
         type: 3}
       propertyPath: m_Pivot.x
@@ -314,11 +309,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CanvasRoom
       objectReference: {fileID: 0}
-    - target: {fileID: 6020879167583356129, guid: f500b7755da9dcf4092362c6f74f8480,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 251882404}
     - target: {fileID: 6516287905584895864, guid: f500b7755da9dcf4092362c6f74f8480,
         type: 3}
       propertyPath: SortKey

@@ -87,6 +87,21 @@ public class CanvasRoom : NetworkBehaviour
     {
         NetworkRunnerManager.Instance.ChangeMap(mapName);
     }
+
+    public void ReadyButtonClick()
+    {
+        RoomManager.Instance.OnReadyButtonClicked();
+    }
+
+    public void StartButtonClick()
+    {
+
+    }
+
+    public void OnTeamSwitchButtonClicked(int team)
+    {
+        RoomManager.Instance.OnTeamSwitchButtonClicked(team);
+    }
     #endregion
 
     #region ChatManager

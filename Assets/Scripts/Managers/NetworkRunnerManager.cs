@@ -18,7 +18,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private const string _roomNameMessage = "This room already exists...";
 
-    public string _nickName;
+    public string _nickName { get; set; }
 
     private void Awake()
     {
@@ -56,7 +56,8 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
                 int team = teamPosition == RoomManager.Instance.RedTeam ? 0 : 1;
 
                 spawnedObj.transform.SetParent(teamPosition, worldPositionStays: false);
-                spawnedObj.GetComponent<RoomPlayerNetworkData>().Team = team;
+                RoomPlayerNetworkData roomPlayerNetwork = spawnedObj.GetComponent<RoomPlayerNetworkData>();
+                roomPlayerNetwork.Team = team;
             }
             );
     }
