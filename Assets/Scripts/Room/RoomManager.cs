@@ -1,5 +1,6 @@
 using Fusion;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RoomManager : NetworkBehaviour
@@ -45,16 +46,58 @@ public class RoomManager : NetworkBehaviour
         }
     }
 
-    //public void UnregisterPlayer(RoomPlayerNetworkData player)
-    //{
-    //    RoomPlayers.Remove(player);
-    //}
+    public void UnregisterPlayer(PlayerRef player)
+    {
+        RoomPlayerNetworkData roomPlayer = RoomPlayers.FirstOrDefault(p => p.Object.InputAuthority == player);
+        NetworkRunnerManager.Instance.DeSpawn(roomPlayer.Object);
+        RoomPlayers.Remove(roomPlayer);
+
+        RpcBroadcastRemovePlayer(roomPlayer);
+    }
+
+    public void UnregisterAllPlayer()
+    {
+        foreach (RoomPlayerNetworkData player in RoomPlayers)
+        {
+            NetworkRunnerManager.Instance.DeSpawn(player.Object);
+        }
+    }
 
     public void OnReadyButtonClicked()
     {
         if (LocalPlayerData != null && LocalPlayerData.Object.HasInputAuthority)
         {
             LocalPlayerData.RpcRequestToggleReady();
+        }
+    }
+
+    public void OnStartButtonClicked()
+    {
+        if (LocalPlayerData != null && LocalPlayerData.Object.HasStateAuthority)
+        {
+            StartGame();
+        }
+    }
+
+    public bool IsReady()
+    {
+        int readyCount = 0;
+
+        foreach (RoomPlayerNetworkData player in RoomPlayers)
+        {
+            if (player.IsReady)
+            {
+                ++readyCount;
+            }
+        }
+
+        if (readyCount == RoomPlayers.Count - 1 && readyCount != 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -74,25 +117,6 @@ public class RoomManager : NetworkBehaviour
             LocalPlayerData.RpcChangeTeam(teamId);
         }
     }
-
-    //public void CheckTeamReadyStatus()
-    //{
-    //    int redReadyCount = 0;
-    //    int blueReadyCount = 0;
-
-    //    foreach (RoomPlayerNetworkData player in RoomPlayers)
-    //    {
-    //        if (player.Team == 1 && player.IsReady)
-    //            redReadyCount++;
-    //        else if (player.Team == 2 && player.IsReady)
-    //            blueReadyCount++;
-    //    }
-
-    //    if (redReadyCount >= 1 && blueReadyCount >= 1)
-    //    {
-    //        StartGame();
-    //    }
-    //}
 
     public Transform GetTeamPosition()
     {
@@ -121,14 +145,20 @@ public class RoomManager : NetworkBehaviour
         return (red, blue);
     }
 
-    //private void StartGame()
-    //{
-
-    //}
+    private void StartGame()
+    {
+        NetworkRunnerManager.Instance.StartGame();
+    }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RpcMapChange(string mapName, RpcInfo info = default)
     {
         CanvasRoom.Instance.ChangeMapName(mapName);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RpcBroadcastRemovePlayer(RoomPlayerNetworkData player, RpcInfo info = default)
+    {
+        RoomPlayers.Remove(player);
     }
 }

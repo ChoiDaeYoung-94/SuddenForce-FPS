@@ -9,7 +9,11 @@ namespace AD
         {
             Login,
             Lobby,
-            Room,
+            Room
+        }
+
+        public enum GameScene
+        {
             DesertHouse
         }
 

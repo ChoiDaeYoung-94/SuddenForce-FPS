@@ -19,7 +19,7 @@ public class CanvasRoom : NetworkBehaviour
     [SerializeField] private GameObject _mapChangeButton;
     [SerializeField] private GameObject _mapPanel;
     [SerializeField] private GameObject _readyButton;
-    [SerializeField] private GameObject _startButton;
+    [SerializeField] private Button _startButton;
 
     public ChatManager _chatManager;
 
@@ -67,7 +67,7 @@ public class CanvasRoom : NetworkBehaviour
         }
         else
         {
-            _startButton.SetActive(false);
+            _startButton.gameObject.SetActive(false);
             _mapChangeButton.SetActive(false);
         }
     }
@@ -88,6 +88,11 @@ public class CanvasRoom : NetworkBehaviour
         NetworkRunnerManager.Instance.ChangeMap(mapName);
     }
 
+    public void OnTeamSwitchButtonClicked(int team)
+    {
+        RoomManager.Instance.OnTeamSwitchButtonClicked(team);
+    }
+
     public void ReadyButtonClick()
     {
         RoomManager.Instance.OnReadyButtonClicked();
@@ -95,12 +100,16 @@ public class CanvasRoom : NetworkBehaviour
 
     public void StartButtonClick()
     {
-
+        if (RoomManager.Instance.IsReady())
+        {
+            _startButton.enabled = false;
+            RoomManager.Instance.OnStartButtonClicked();
+        }
     }
 
-    public void OnTeamSwitchButtonClicked(int team)
+    public void ExitButtonClick()
     {
-        RoomManager.Instance.OnTeamSwitchButtonClicked(team);
+        NetworkRunnerManager.Instance.ExitButtonClicked();
     }
     #endregion
 

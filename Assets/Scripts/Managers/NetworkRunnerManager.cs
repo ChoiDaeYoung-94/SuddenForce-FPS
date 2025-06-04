@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -60,6 +61,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
                 roomPlayerNetwork.Team = team;
             }
             );
+    }
+
+    public void DeSpawn(NetworkObject player)
+    {
+        _networkRunner.Despawn(player);
     }
 
     public async void JoinSessionLobby()
@@ -160,6 +166,24 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             AD.DebugLogger.LogError("NetworkRunnerM", "Failed to join session: " + joinResult.ShutdownReason);
         }
     }
+
+    public void StartGame()
+    {
+        int sceneIndex = Enum.GetValues(typeof(AD.GameConstants.Scene)).Length - 1;
+        foreach (AD.GameConstants.Scene scene in Enum.GetValues(typeof(AD.GameConstants.GameScene)))
+        {
+            ++sceneIndex;
+            if (_roomOptions.MapName == scene.ToString())
+            {
+                break;
+            }
+        }
+
+        RoomManager.Instance.UnregisterAllPlayer();
+        AD.Managers.PopupM.PopupSceneLoading();
+        AD.Managers.SoundM.PauseBGM();
+        _networkRunner.LoadScene(SceneRef.FromIndex(sceneIndex), LoadSceneMode.Additive);
+    }
     #endregion
 
     #region Public Methods
@@ -202,6 +226,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    public void ExitButtonClicked()
+    {
+        _networkRunner.Shutdown();
+    }
+
     public PlayerRef GetLocalPlayer()
     {
         return _networkRunner.LocalPlayer;
@@ -225,7 +254,16 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         RoomManager.Instance.SpawnRoomPlayer(player);
     }
 
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        if (!runner.IsServer)
+        {
+            return;
+        }
+
+        RoomManager.Instance.UnregisterPlayer(player);
+    }
+
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
 
@@ -271,8 +309,30 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSceneLoadDone(NetworkRunner runner)
     {
-        _roomOptions.IsServer = runner.IsServer;
-        CanvasRoom.Instance.Init(_roomOptions);
+        string name = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        int sceneCounts = UnityEngine.SceneManagement.SceneManager.sceneCount;
+
+        if (sceneCounts > 1)
+        {
+            if (name == AD.GameConstants.Scene.Room.ToString())
+            {
+                AD.Managers.PopupM.ClosePopupSceneLoading();
+                AD.Managers.SoundM.UnpauseBGM();
+                SceneManager.UnloadSceneAsync(AD.GameConstants.Scene.Room.ToString());
+            }
+            else if (isGameScene(name))
+            {
+
+            }
+        }
+        else
+        {
+            if (name == AD.GameConstants.Scene.Room.ToString())
+            {
+                _roomOptions.IsServer = runner.IsServer;
+                CanvasRoom.Instance.Init(_roomOptions);
+            }
+        }
     }
 
     public void OnSceneLoadStart(NetworkRunner runner) { }
@@ -283,6 +343,18 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     #endregion
 
+    private bool isGameScene(string sceneName)
+    {
+        foreach (AD.GameConstants.GameScene gameScene in Enum.GetValues(typeof(AD.GameConstants.GameScene)))
+        {
+            if (sceneName == gameScene.ToString())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
     #endregion
 }
 

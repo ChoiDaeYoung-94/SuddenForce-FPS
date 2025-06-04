@@ -45,7 +45,7 @@ namespace AD
                 PlayBGM(BgmLoginClip);
             else if (temp_scene.Equals(AD.GameConstants.Scene.Lobby.ToString()))
                 PlayBGM(BgmLobbyClip);
-            else if (temp_scene.Equals(AD.GameConstants.Scene.DesertHouse.ToString()))
+            else if (temp_scene.Equals(AD.GameConstants.GameScene.DesertHouse.ToString()))
                 PlayBGM(BgmGameClip);
         }
 
