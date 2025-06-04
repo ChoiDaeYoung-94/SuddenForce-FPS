@@ -25,8 +25,9 @@ git clone https://github.com/ChoiDaeYoung-94/SuddenForce-FPS.git
 
 ## Technologies and Techniques (링크 클릭 시 해당 내용 코드로 이동합니다.)
 
-- [google v2, PlayFab login code](https://github.com/ChoiDaeYoung-94/SuddenForce-FPS/blob/main/Assets/03.Objects/LoginCanvas/Login.cs)
-- [dynamic scrollview code](https://github.com/ChoiDaeYoung-94/SuddenForce-FPS/blob/main/Assets/03.Objects/Dynamic%20ScrollView/RoomManage.cs)
+- [recyclable scrollView code](https://github.com/ChoiDaeYoung-94/SuddenForce-FPS/blob/main/Assets/Scripts/UI/RecyclableScrollView/RoomManage.cs)
+- [SceneManager code](https://github.com/ChoiDaeYoung-94/SuddenForce-FPS/blob/main/Assets/Scripts/Managers/SceneManager.cs)
+  - 씬 전환 방식 변경(additive load target scene -> unload current scene)
 
 
 ## Project Goals
@@ -46,14 +47,11 @@ git clone https://github.com/ChoiDaeYoung-94/SuddenForce-FPS.git
 
 - [Photon Fusion](https://doc.photonengine.com/fusion/current/getting-started/sdk-download)
 - [play games plugin](https://github.com/playgameservices/play-games-plugin-for-unity/releases)
-- [PlayFabEditorExtensions, PlayFabSDK](https://docs.microsoft.com/ko-kr/gaming/playfab/sdks/unity3d/installing-unity3d-sdk)
-- [Google Mobile Ads SDK](https://developers.google.com/admob/android/quick-start?hl=ko)
 - [DOTween](https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676)
 - [MiniJSON](https://github.com/Unity-Technologies/UnityCsReference/blob/master/External/JsonParsers/MiniJson/MiniJSON.cs)
 - [Keystore Helper](https://assetstore.unity.com/packages/tools/utilities/keystore-helper-58627)
 - [In-game Debug Console](https://assetstore.unity.com/packages/tools/gui/in-game-debug-console-68068)
 - [Safe Area Helper](https://assetstore.unity.com/packages/tools/gui/safe-area-helper-130488)
-
 
 
 ## Build
