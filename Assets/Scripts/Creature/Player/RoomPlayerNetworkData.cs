@@ -78,4 +78,19 @@ public class RoomPlayerNetworkData : NetworkBehaviour
             }
         }
     }
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        base.Despawned(runner, hasState);
+
+        string name = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+        if (name == AD.GameConstants.Scene.Room.ToString())
+        {
+            if (!Object.HasInputAuthority)
+            {
+                RoomManager.Instance.RemovePlayer(this);
+            }
+        }
+    }
 }

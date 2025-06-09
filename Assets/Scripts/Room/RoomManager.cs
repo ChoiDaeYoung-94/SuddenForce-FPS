@@ -50,17 +50,20 @@ public class RoomManager : NetworkBehaviour
     {
         RoomPlayerNetworkData roomPlayer = RoomPlayers.FirstOrDefault(p => p.Object.InputAuthority == player);
         NetworkRunnerManager.Instance.DeSpawn(roomPlayer.Object);
-        RoomPlayers.Remove(roomPlayer);
-
-        RpcBroadcastRemovePlayer(roomPlayer);
     }
 
     public void UnregisterAllPlayer()
     {
-        foreach (RoomPlayerNetworkData player in RoomPlayers)
+        for (int i = RoomPlayers.Count - 1; i >= 0; i--)
         {
+            RoomPlayerNetworkData player = RoomPlayers[i];
             NetworkRunnerManager.Instance.DeSpawn(player.Object);
         }
+    }
+
+    public void RemovePlayer(RoomPlayerNetworkData player)
+    {
+        RoomPlayers.Remove(player);
     }
 
     public void OnReadyButtonClicked()
@@ -91,7 +94,7 @@ public class RoomManager : NetworkBehaviour
             }
         }
 
-        if (readyCount == RoomPlayers.Count - 1 && readyCount != 0)
+        if ((readyCount == (NetworkRunnerManager.Instance.GetRoomOptions().PlayerCount * 2) - 1) && readyCount != 0)
         {
             return true;
         }
@@ -154,11 +157,5 @@ public class RoomManager : NetworkBehaviour
     public void RpcMapChange(string mapName, RpcInfo info = default)
     {
         CanvasRoom.Instance.ChangeMapName(mapName);
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RpcBroadcastRemovePlayer(RoomPlayerNetworkData player, RpcInfo info = default)
-    {
-        RoomPlayers.Remove(player);
     }
 }
