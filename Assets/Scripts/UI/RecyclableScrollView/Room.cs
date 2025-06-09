@@ -13,7 +13,7 @@ namespace AD
         [SerializeField] private TMP_Text _roomNameText;
         [SerializeField] private TMP_Text _gameSceneNameText;
         [SerializeField] private TMP_Text _roomPlayerCountText;
-        
+
         public void SetRoom(SessionInfo sessionInfo, int sessionIndex)
         {
             _sessionInfo = sessionInfo;
@@ -28,6 +28,11 @@ namespace AD
 
         public void JoinRoom()
         {
+            if (_sessionInfo.PlayerCount == _sessionInfo.MaxPlayers)
+            {
+                return;
+            }
+
             NetworkRunnerManager.Instance.JoinRoom(_sessionInfo);
         }
     }

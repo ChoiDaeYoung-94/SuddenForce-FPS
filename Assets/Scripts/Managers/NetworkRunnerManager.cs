@@ -169,6 +169,8 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void StartGame()
     {
+        _networkRunner.SessionInfo.IsVisible = false;
+
         int sceneIndex = Enum.GetValues(typeof(AD.GameConstants.Scene)).Length - 1;
         foreach (AD.GameConstants.Scene scene in Enum.GetValues(typeof(AD.GameConstants.GameScene)))
         {
@@ -231,9 +233,9 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         _networkRunner.Shutdown();
     }
 
-    public PlayerRef GetLocalPlayer()
+    public NetworkRunner GetNetworkRunner()
     {
-        return _networkRunner.LocalPlayer;
+        return _networkRunner;
     }
 
     public RoomOptions GetRoomOptions()

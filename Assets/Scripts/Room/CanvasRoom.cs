@@ -117,7 +117,7 @@ public class CanvasRoom : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcBroadcastChat(string message, PlayerRef sender, string nickName, RpcInfo info = default)
     {
-        if (NetworkRunnerManager.Instance.GetLocalPlayer() == sender)
+        if (NetworkRunnerManager.Instance.GetNetworkRunner().LocalPlayer == sender)
         {
             return;
         }
