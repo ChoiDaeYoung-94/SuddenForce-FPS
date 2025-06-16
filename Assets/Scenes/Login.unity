@@ -737,6 +737,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Manager
       objectReference: {fileID: 0}
+    - target: {fileID: 3387495694317078858, guid: 84b95496f0d56e14bbd6e9fb231b31ca,
+        type: 3}
+      propertyPath: SortKey
+      value: 224052049
+      objectReference: {fileID: 0}
     - target: {fileID: 4059317841477057472, guid: 84b95496f0d56e14bbd6e9fb231b31ca,
         type: 3}
       propertyPath: m_Pivot.x
