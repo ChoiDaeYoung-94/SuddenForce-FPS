@@ -22,6 +22,16 @@ public class RoomPlayerNetworkData : NetworkBehaviour
         PlayerUI.UpdateTeamUI(Team);
     }
 
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        base.Despawned(runner, hasState);
+
+        if (!Object.HasInputAuthority)
+        {
+            RoomManager.Instance.RemovePlayer(this);
+        }
+    }
+
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RpcSetNickName(string nick, RpcInfo info = default)
     {
@@ -75,21 +85,6 @@ public class RoomPlayerNetworkData : NetworkBehaviour
             if (player.Object.InputAuthority == who)
             {
                 player.PlayerUI.SetReadyState(newState);
-            }
-        }
-    }
-
-    public override void Despawned(NetworkRunner runner, bool hasState)
-    {
-        base.Despawned(runner, hasState);
-
-        string name = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-
-        if (name == AD.GameConstants.Scene.Room.ToString())
-        {
-            if (!Object.HasInputAuthority)
-            {
-                RoomManager.Instance.RemovePlayer(this);
             }
         }
     }

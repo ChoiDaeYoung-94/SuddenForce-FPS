@@ -27,7 +27,7 @@ public class RoomManager : NetworkBehaviour
 
     public void SpawnRoomPlayer(PlayerRef player)
     {
-        NetworkRunnerManager.Instance.Spawn(_roomPlayer, player);
+        NetworkRunnerManager.Instance.RoomSceneSpawn(_roomPlayer, player);
     }
 
     /// <summary>
@@ -58,6 +58,16 @@ public class RoomManager : NetworkBehaviour
         {
             RoomPlayerNetworkData player = RoomPlayers[i];
             NetworkRunnerManager.Instance.DeSpawn(player.Object);
+        }
+    }
+
+    public void RegisterPlayerInGame()
+    {
+        foreach (RoomPlayerNetworkData player in RoomPlayers)
+        {
+            AD.Managers.GameM.Players.Add(player.Object.InputAuthority);
+            AD.Managers.GameM.NickNames.Add(player.NickName);
+            AD.Managers.GameM.Teams.Add(player.Team);
         }
     }
 

@@ -44,7 +44,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     #region Photon Fusion
-    public void Spawn(GameObject prefab, PlayerRef player)
+    public void RoomSceneSpawn(GameObject prefab, PlayerRef player)
     {
         _networkRunner.SpawnAsync(
             prefab,
@@ -55,10 +55,28 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             {
                 Transform teamPosition = RoomManager.Instance.GetTeamPosition();
                 int team = teamPosition == RoomManager.Instance.RedTeam ? 0 : 1;
-
                 spawnedObj.transform.SetParent(teamPosition, worldPositionStays: false);
-                RoomPlayerNetworkData roomPlayerNetwork = spawnedObj.GetComponent<RoomPlayerNetworkData>();
-                roomPlayerNetwork.Team = team;
+                RoomPlayerNetworkData roomPlayerNetworkData = spawnedObj.GetComponent<RoomPlayerNetworkData>();
+                roomPlayerNetworkData.Team = team;
+            }
+            );
+    }
+
+    public void GameSceneSpawn(GameObject prefab, string nickName, int team, PlayerRef player)
+    {
+        _networkRunner.SpawnAsync(
+            prefab,
+            Vector3.zero,
+            Quaternion.identity,
+            player,
+            onBeforeSpawned: (runner, spawnedObj) =>
+            {
+                GamePlayerNetworkData gamePlayerNetworkData = spawnedObj.GetComponent<GamePlayerNetworkData>();
+                gamePlayerNetworkData.NickName = nickName;
+                gamePlayerNetworkData.Team = team;
+                int randomPoint = UnityEngine.Random.Range(0, 4);
+                gamePlayerNetworkData.transform.position = team == 0 ?
+                SpawnPoints.Instance.RedTeamSpawnPoints[randomPoint].position : SpawnPoints.Instance.BlueTeamSpawnPoints[randomPoint].position;
             }
             );
     }
@@ -157,7 +175,6 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             _roomOptions.RoomName = sessionInfo.Name;
             _roomOptions.MapName = sessionInfo.Properties["MapName"];
             _roomOptions.Players = $"{_roomOptions.PlayerCount} vs {_roomOptions.PlayerCount}";
-            _networkRunner.ProvideInput = true;
 
             AD.DebugLogger.Log("NetworkRunnerM", $"Joined session successfully: {sessionInfo.Name}");
         }
@@ -181,6 +198,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             }
         }
 
+        RoomManager.Instance.RegisterPlayerInGame();
         RoomManager.Instance.UnregisterAllPlayer();
         AD.Managers.PopupM.PopupSceneLoading();
         AD.Managers.SoundM.PauseBGM();
@@ -266,7 +284,30 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         RoomManager.Instance.UnregisterPlayer(player);
     }
 
-    public void OnInput(NetworkRunner runner, NetworkInput input) { }
+    public void OnInput(NetworkRunner runner, NetworkInput input)
+    {
+        if (runner.LocalPlayer == PlayerRef.None)
+        {
+            return;
+        }
+
+        CustomPlayerInput data = new CustomPlayerInput();
+
+        var dir = UIManager.Instance.JoyStick.Direction;
+        data.MoveX = dir.x;
+        data.MoveZ = dir.y;
+
+        if (UIManager.Instance.JoyStick.Magnitude < 5f)
+        {
+            data.MoveX = 0f;
+            data.MoveZ = 0f;
+        }
+
+        //data.Fire = JoyStick.Instance.IsPointerDown;
+
+        input.Set(data);
+    }
+
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
@@ -318,9 +359,15 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             if (name == AD.GameConstants.Scene.Room.ToString())
             {
-                AD.Managers.PopupM.ClosePopupSceneLoading();
                 AD.Managers.SoundM.UnpauseBGM();
+                _networkRunner.ProvideInput = true;
+
+                if (_networkRunner.IsServer)
+                {
+                    AD.Managers.GameM.Init();
+                }
                 SceneManager.UnloadSceneAsync(AD.GameConstants.Scene.Room.ToString());
+                AD.Managers.PopupM.ClosePopupSceneLoading();
             }
             else if (isGameScene(name))
             {
@@ -367,4 +414,11 @@ public class RoomOptions
     public string MapName { get; set; }
     public string Players { get; set; }
     public int PlayerCount { get; set; }
+}
+
+public struct CustomPlayerInput : INetworkInput
+{
+    public float MoveX;
+    public float MoveZ;
+    public bool Fire;
 }
