@@ -12,25 +12,28 @@ namespace AD
         /// Manager관련 script 모두 등록
         /// </summary>
         private static Managers _instance;
-        public static Managers Instance { get { return _instance; } }
+        public static Managers Instance => _instance;
+
+        [SerializeField] private GameManager _gameM;
+        public static GameManager GameM => _instance._gameM;
 
         private PoolManager _poolM = new PoolManager();
-        public static PoolManager PoolM { get { return _instance._poolM; } }
+        public static PoolManager PoolM => _instance._poolM;
 
         [SerializeField] private PopupManager _popupM = null;
-        public static PopupManager PopupM { get { return _instance._popupM; } }
+        public static PopupManager PopupM => _instance._popupM;
 
         private ResourceManager _resourceM = new ResourceManager();
-        public static ResourceManager ResourceM { get { return _instance._resourceM; } }
+        public static ResourceManager ResourceM => _instance._resourceM;
 
         [SerializeField] private SceneManager _sceneM = null;
-        public static SceneManager SceneM { get { return _instance._sceneM; } }
+        public static SceneManager SceneM => _instance._sceneM;
 
         [SerializeField] private SoundManager _soundM = null;
-        public static SoundManager SoundM { get { return _instance._soundM; } }
+        public static SoundManager SoundM => _instance._soundM;
 
         [SerializeField] private UpdateManager _updateM = null;
-        public static UpdateManager UpdateM { get { return _instance._updateM; } }
+        public static UpdateManager UpdateM => _instance._updateM;
 
         [SerializeField] private GameObject _networkRunnerObject = null;
 

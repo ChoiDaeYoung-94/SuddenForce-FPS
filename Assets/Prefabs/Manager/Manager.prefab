@@ -1669,6 +1669,7 @@ GameObject:
   - component: {fileID: 249553731693565790}
   - component: {fileID: 4554939920798393435}
   - component: {fileID: 2814803996975980489}
+  - component: {fileID: 7415708239090244906}
   - component: {fileID: 2564081725672228114}
   - component: {fileID: 1361109501700885724}
   - component: {fileID: 5955854799130765890}
@@ -1677,6 +1678,7 @@ GameObject:
   - component: {fileID: 8559495826788004472}
   - component: {fileID: 6325146981239158050}
   - component: {fileID: 8846493753371702281}
+  - component: {fileID: 3387495694317078858}
   m_Layer: 5
   m_Name: Manager
   m_TagString: Untagged
@@ -1787,6 +1789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59837e5cd4df59b47847240430f20bf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameM: {fileID: 7415708239090244906}
   _popupM: {fileID: 2564081725672228114}
   _sceneM: {fileID: 1361109501700885724}
   _soundM: {fileID: 5955854799130765890}
@@ -1796,6 +1799,24 @@ MonoBehaviour:
   PoolGameObjects: []
   PoolUIs:
   - {fileID: 8011118036421736625, guid: 0b06c67aac1723b469a76ffc8d8d9e91, type: 3}
+--- !u!114 &7415708239090244906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2690547222155295020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 729214e090cccb3488a47d4b78affe08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gamePlayerObject:
+  - {fileID: 237131049092180482, guid: ea5b000d4cd56c948b055fbace73594f, type: 3}
+  - {fileID: 4219630284990525383, guid: 302f86ad684657e44b844d9d02c1f1c8, type: 3}
+  Players: []
+  NickNames: []
+  Teams: 
 --- !u!114 &2564081725672228114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2083,6 +2104,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _fps: 60
+--- !u!114 &3387495694317078858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2690547222155295020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 453695090
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 7415708239090244906}
 --- !u!1 &2736553671630229550
 GameObject:
   m_ObjectHideFlags: 0
