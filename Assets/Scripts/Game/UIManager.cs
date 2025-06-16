@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,8 +8,8 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance => _instance;
 
     public JoyStick JoyStick;
-    [SerializeField] private Slider _healthBar;
-    [SerializeField] private Text _ammoText;
+    [SerializeField] private Image _healthBar;
+    [SerializeField] private TMP_Text _ammoText;
 
     private void Awake()
     {
@@ -20,14 +21,13 @@ public class UIManager : MonoBehaviour
         _instance = null;
     }
 
-    public void UpdateHealthBar(int current, int max = 100)
+    public void UpdateHealthBar(int current)
     {
-        _healthBar.maxValue = max;
-        _healthBar.value = current;
+        _healthBar.fillAmount = current / 100f;
     }
 
     public void UpdateAmmoCount(int ammo)
     {
-        _ammoText.text = ammo.ToString();
+        _ammoText.text = $"{ammo} / ∞";
     }
 }

@@ -22,10 +22,9 @@ public class JoyStick : MonoBehaviour
     private Vector3 _firstTouchPosition = Vector3.zero;
     private Vector3 _distanceVector = Vector3.zero;
 
-    #region Functions
-    public void StartInit()
+    private void Awake()
     {
-        _handleAreaRadius = _handleAreaTransform.sizeDelta.y * 0.5f;
+        _handleAreaRadius = _handleAreaTransform.sizeDelta.y * 1.3f;
         _firstTouchPosition = _handleTransform.position;
         _distanceVector = _handleTransform.position - _handleAreaTransform.position;
 
@@ -38,7 +37,6 @@ public class JoyStick : MonoBehaviour
             _handleAreaTransform.gameObject.SetActive(false);
         }
     }
-    #endregion
 
     #region EventTrigger
     public void PointDown(BaseEventData baseEventData)
