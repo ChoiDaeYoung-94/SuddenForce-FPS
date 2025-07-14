@@ -7,7 +7,7 @@ namespace AD
     /// 풀 관리 클래스
     /// 다양한 GameObject/UI 풀을 생성 및 관리하며 재사용성을 높임
     /// </summary>
-    public class PoolManager
+    public class PoolManager : ISubManager
     {
         #region Nested Pool Class
 
@@ -156,7 +156,7 @@ namespace AD
         {
             if (prefab == null)
             {
-                AD.DebugLogger.LogError("PoolManager", "Prefab is null when creating pool.");
+                AD.DebugLogger.LogError("Prefab is null when creating pool.");
                 return;
             }
 
@@ -176,7 +176,7 @@ namespace AD
             }
             else
             {
-                AD.DebugLogger.LogError("PoolManager", $"Pool for {prefab.name} already exists.");
+                AD.DebugLogger.LogError($"Pool for {prefab.name} already exists.");
             }
         }
 
@@ -213,7 +213,7 @@ namespace AD
         {
             if (!PoolDictionary.ContainsKey(poolName))
             {
-                AD.DebugLogger.LogNotFound("PoolManager", $"{poolName} not found in pool dictionary.");
+                AD.DebugLogger.LogNotFound($"{poolName} not found in pool dictionary.");
                 return null;
             }
 

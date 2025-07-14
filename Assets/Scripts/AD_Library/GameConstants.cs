@@ -17,6 +17,13 @@ namespace AD
             DesertHouse
         }
 
+        public static readonly string[] ResourcesPath =
+        {
+            "",
+            "Managers/"
+        };
+
+        
         public enum PoolObjects
         {
             Message

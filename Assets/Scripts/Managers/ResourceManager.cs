@@ -5,27 +5,32 @@ namespace AD
     /// <summary>
     /// Resources 관리
     /// </summary>
-    public class ResourceManager
+    public class ResourceManager : ISubManager
     {
-        public T Load<T>(string where, string path) where T : Object
+        public T Load<T>(string path) where T : Object
         {
             T resource = Resources.Load<T>(path);
             if (resource == null)
-                AD.DebugLogger.LogLoadError(where, path);
+                AD.DebugLogger.LogLoadError(path);
 
             return resource;
         }
 
-        public GameObject InstantiatePrefab(string where, string path, Transform parent = null)
+        public GameObject InstantiatePrefab(string path, Transform parent = null)
         {
-            GameObject prefab = Load<GameObject>(where, "Prefabs/" + path);
+            GameObject prefab = Load<GameObject>("Prefabs/" + path);
             if (prefab == null)
             {
-                AD.DebugLogger.LogInstantiateError(where, path);
+                AD.DebugLogger.LogInstantiateError(path);
                 return null;
             }
 
             return Object.Instantiate(prefab, parent);
+        }
+
+        public void Init()
+        {
+            
         }
     }
 }

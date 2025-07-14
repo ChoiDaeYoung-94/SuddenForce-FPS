@@ -3,7 +3,7 @@ using UnityEngine.Audio;
 
 namespace AD
 {
-    public class SoundManager : MonoBehaviour
+    public class SoundManager : SingletonBase<SoundManager>, ISubManager
     {
         [Header("Audio Mixers")]
         [SerializeField] private AudioMixer _audioMixer;

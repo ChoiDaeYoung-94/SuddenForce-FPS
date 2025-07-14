@@ -33,7 +33,7 @@ public class ChatManager : MonoBehaviour
 
     public void AddMessage(string text)
     {
-        GameObject message = AD.Managers.PoolM.PopFromPool(AD.GameConstants.PoolObjects.Message.ToString());
+        GameObject message = AD.Managers.PoolManager.PopFromPool(AD.GameConstants.PoolObjects.Message.ToString());
         message.transform.SetParent(_content, false);
         message.GetComponent<TMP_Text>().text = text;
         Canvas.ForceUpdateCanvases();

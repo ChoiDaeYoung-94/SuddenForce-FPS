@@ -38,7 +38,7 @@ namespace AD
         {
             if (gameObject == null)
             {
-                AD.DebugLogger.LogError("Utility", "GetOrAddComponent: gameObject is null.");
+                AD.DebugLogger.LogError("GetOrAddComponent: gameObject is null.");
                 return null;
             }
 
@@ -52,12 +52,54 @@ namespace AD
         {
             if (string.IsNullOrEmpty(text.text) || text.text == "" || text.text.Length <= 1 || text.text.Replace(" ","").Length == 1)
             {
-                AD.Managers.PopupM.PopupMessage(message);
+                //AD.Managers.PopupManager.PopupMessage(message);
                 return false;
             }
             else
             {
                 return true;
+            }
+        }
+    }
+    
+    public class SingletonBase<T> : MonoBehaviour where T : MonoBehaviour
+    {
+        static private T _instance = null;
+    
+        static public T Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = GameObject.FindFirstObjectByType<T>();
+                    if (_instance == null)
+                    {
+                        string typeString = typeof(T).Name;
+    
+                        UnityEngine.Object obj = AD.Managers.ResourceManager.Load<GameObject>(GameConstants.ResourcesPath[1] + typeString);
+                        if (obj != null)
+                        {
+                            GameObject go = Instantiate(obj) as GameObject;
+                            go.name = typeString;
+                            _instance = go.GetComponent<T>();
+                            if (_instance == null)
+                            {
+                                AD.DebugLogger.LogWarning($"Prefab not found - {typeString}");
+                                _instance = go.AddComponent<T>();
+                            }
+                        }
+                        else
+                        {
+                            GameObject go = new GameObject(typeString);
+                            _instance = go.AddComponent<T>();
+                        }
+                    }
+    
+                    if (Application.isPlaying) DontDestroyOnLoad(_instance.gameObject);
+                }
+    
+                return _instance;
             }
         }
     }

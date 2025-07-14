@@ -38,6 +38,6 @@ public class InitializeLobby : MonoBehaviour
 
     private void Start()
     {
-        AD.Managers.PopupM.ReleaseException();
+        AD.Managers.PopupManager.ReleaseException();
     }
 }

@@ -13,81 +13,81 @@ namespace AD
         /// 로그 메시지를 출력
         /// </summary>
         [System.Diagnostics.Conditional("Debug")]
-        public static void Log(string where, string message)
+        public static void Log(string message)
         {
-            PrintLog("Log", where, message, "cyan");
+            PrintLog("Log", message, "cyan");
         }
 
         /// <summary>
         /// 경고 메시지를 출력
         /// </summary>
         [System.Diagnostics.Conditional("Debug")]
-        public static void LogWarning(string where, string message)
+        public static void LogWarning(string message)
         {
-            UnityEngine.Debug.LogWarning($"<color=yellow>LogWarning</color> - {where}\n<color=cyan>{message}</color>");
+            UnityEngine.Debug.LogWarning($"<color=yellow>LogWarning</color>\n<color=cyan>{message}</color>");
         }
 
         /// <summary>
         /// 오류 메시지를 출력
         /// </summary>
         [System.Diagnostics.Conditional("Debug")]
-        public static void LogError(string where, string message)
+        public static void LogError(string message)
         {
-            UnityEngine.Debug.LogError($"<color=red>LogError</color> - {where}\n<color=cyan>{message}</color>");
+            UnityEngine.Debug.LogError($"<color=red>LogError</color>\n<color=cyan>{message}</color>");
         }
 
         /// <summary>
         /// 데이터 가져오기 실패 로그
         /// </summary>
         [System.Diagnostics.Conditional("Debug")]
-        public static void LogDataError(string where, string message)
+        public static void LogDataError(string message)
         {
-            PrintLog("Data Error", where, $"Failed to get data: {message}", "red");
+            PrintLog("Data Error", $"Failed to get data: {message}", "red");
         }
 
         /// <summary>
         /// 파싱 실패 로그
         /// </summary>
         [System.Diagnostics.Conditional("Debug")]
-        public static void LogParseError(string where, string message)
+        public static void LogParseError(string message)
         {
-            PrintLog("Parse Error", where, $"Failed to parse: {message}", "red");
+            PrintLog("Parse Error", $"Failed to parse: {message}", "red");
         }
 
         /// <summary>
         /// 특정 값이 존재하지 않을 때 로그
         /// </summary>
         [System.Diagnostics.Conditional("Debug")]
-        public static void LogNotFound(string where, string item)
+        public static void LogNotFound(string item)
         {
-            PrintLog("Not Found", where, $"There is no \"{item}\"", "red");
+            PrintLog("Not Found", $"There is no \"{item}\"", "red");
         }
 
         /// <summary>
         /// 로드 실패 로그
         /// </summary>
         [System.Diagnostics.Conditional("Debug")]
-        public static void LogLoadError(string where, string path)
+        public static void LogLoadError(string path)
         {
-            PrintLog("Load Error", where, $"Failed to load - path: {path}", "red");
+            PrintLog("Load Error", $"Failed to load - path: {path}", "red");
         }
 
         /// <summary>
         /// 인스턴스화 실패 로그
         /// </summary>
         [System.Diagnostics.Conditional("Debug")]
-        public static void LogInstantiateError(string where, string path)
+        public static void LogInstantiateError(string path)
         {
-            PrintLog("Instantiate Error", where, $"Failed to instantiate - path: {path}", "red");
+            PrintLog("Instantiate Error", $"Failed to instantiate - path: {path}", "red");
         }
 
         /// <summary>
         /// 내부적으로 로그를 출력하는 공통 메서드
         /// </summary>
         [System.Diagnostics.Conditional("Debug")]
-        private static void PrintLog(string type, string where, string message, string color)
+        private static void PrintLog(string type, string message, string color)
         {
-            UnityEngine.Debug.Log($"<color={color}>{type}</color> - {where}\n{message}");
+            UnityEngine.Debug.Log($"<color={color}>{type}</color>\n{message}");
         }
     }
 }

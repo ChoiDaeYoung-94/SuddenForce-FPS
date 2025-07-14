@@ -65,9 +65,9 @@ public class RoomManager : NetworkBehaviour
     {
         foreach (RoomPlayerNetworkData player in RoomPlayers)
         {
-            AD.Managers.GameM.Players.Add(player.Object.InputAuthority);
-            AD.Managers.GameM.NickNames.Add(player.NickName);
-            AD.Managers.GameM.Teams.Add(player.Team);
+            // AD.Managers.GameM.Players.Add(player.Object.InputAuthority);
+            // AD.Managers.GameM.NickNames.Add(player.NickName);
+            // AD.Managers.GameM.Teams.Add(player.Team);
         }
     }
 

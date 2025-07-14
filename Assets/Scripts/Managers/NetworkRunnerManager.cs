@@ -37,7 +37,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private void Init()
     {
-        AD.Managers.PopupM.PopupLoading();
+        AD.Managers.PopupManager.PopupLoading();
         _networkRunner.AddCallbacks(this);
 
         JoinSessionLobby();
@@ -92,20 +92,20 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         var result = await _networkRunner.JoinSessionLobby(SessionLobby.ClientServer);
 
-        AD.Managers.PopupM.ClosePopupLoading();
+        AD.Managers.PopupManager.ClosePopupLoading();
 
         if (string.IsNullOrEmpty(_nickName))
         {
-            AD.Managers.PopupM.PopupSetNickName();
+            AD.Managers.PopupManager.PopupSetNickName();
         }
 
         if (result.Ok)
         {
-            AD.DebugLogger.Log("NetworkRunnerM", "JoinSessionLobby successfully.");
+            AD.DebugLogger.Log("JoinSessionLobby successfully.");
         }
         else
         {
-            AD.DebugLogger.LogError("NetworkRunnerM", $"Failed to JoinSessionLobby: {result.ShutdownReason}");
+            AD.DebugLogger.LogError($"Failed to JoinSessionLobby: {result.ShutdownReason}");
         }
     }
 
@@ -115,11 +115,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_sessionList.Any(s => s.Name == temp_value["RoomName"].ToString()))
         {
-            AD.Managers.PopupM.PopupMessage(_roomNameMessage);
+            AD.Managers.PopupManager.PopupMessage(_roomNameMessage);
             return;
         }
 
-        AD.Managers.PopupM.PopupLoading();
+        AD.Managers.PopupManager.PopupLoading();
 
         Dictionary<string, SessionProperty> sessionProperties = new Dictionary<string, SessionProperty>()
         {
@@ -137,7 +137,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager = _networkSceneM
         });
 
-        AD.Managers.PopupM.ClosePopupLoading();
+        AD.Managers.PopupManager.ClosePopupLoading();
 
         if (startGameResult.Ok)
         {
@@ -145,19 +145,19 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             _roomOptions.RoomName = temp_value["RoomName"].ToString();
             _roomOptions.MapName = temp_value["MapName"].ToString();
             _roomOptions.Players = $"{_roomOptions.PlayerCount} vs {_roomOptions.PlayerCount}";
-            AD.DebugLogger.Log("NetworkRunnerM", $"세션 생성 성공: {temp_value["RoomName"]}");
+            AD.DebugLogger.Log($"세션 생성 성공: {temp_value["RoomName"]}");
         }
         else
         {
-            AD.DebugLogger.LogError("NetworkRunnerM", $"세션 생성 실패: {startGameResult.ShutdownReason}");
+            AD.DebugLogger.LogError($"세션 생성 실패: {startGameResult.ShutdownReason}");
         }
     }
 
     public async void JoinRoom(SessionInfo sessionInfo)
     {
-        AD.Managers.PopupM.PopupLoading();
+        AD.Managers.PopupManager.PopupLoading();
 
-        AD.DebugLogger.Log("NetworkRunnerM", $"Attempting to join session: {sessionInfo.Name}");
+        AD.DebugLogger.Log($"Attempting to join session: {sessionInfo.Name}");
 
         var joinResult = await _networkRunner.StartGame(new StartGameArgs()
         {
@@ -167,7 +167,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager = _networkSceneM
         });
 
-        AD.Managers.PopupM.ClosePopupLoading();
+        AD.Managers.PopupManager.ClosePopupLoading();
 
         if (joinResult.Ok)
         {
@@ -176,11 +176,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             _roomOptions.MapName = sessionInfo.Properties["MapName"];
             _roomOptions.Players = $"{_roomOptions.PlayerCount} vs {_roomOptions.PlayerCount}";
 
-            AD.DebugLogger.Log("NetworkRunnerM", $"Joined session successfully: {sessionInfo.Name}");
+            AD.DebugLogger.Log($"Joined session successfully: {sessionInfo.Name}");
         }
         else
         {
-            AD.DebugLogger.LogError("NetworkRunnerM", "Failed to join session: " + joinResult.ShutdownReason);
+            AD.DebugLogger.LogError("Failed to join session: " + joinResult.ShutdownReason);
         }
     }
 
@@ -200,8 +200,8 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         RoomManager.Instance.RegisterPlayerInGame();
         RoomManager.Instance.UnregisterAllPlayer();
-        AD.Managers.PopupM.PopupSceneLoading();
-        AD.Managers.SoundM.PauseBGM();
+        AD.Managers.PopupManager.PopupSceneLoading();
+        AD.Managers.SoundManager.PauseBGM();
         _networkRunner.LoadScene(SceneRef.FromIndex(sceneIndex), LoadSceneMode.Additive);
     }
     #endregion
@@ -209,7 +209,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     #region Public Methods
     public void Shutdown()
     {
-        AD.Managers.PopupM.PopupLoading();
+        AD.Managers.PopupManager.PopupLoading();
 
         _networkRunner.Shutdown();
     }
@@ -237,12 +237,12 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         if (_networkRunner.SessionInfo.UpdateCustomProperties(customProps))
         {
             RoomManager.Instance.RpcMapChange(_roomOptions.MapName);
-            AD.DebugLogger.Log("NetworkRunnerManager", $"{mapName}으로 Map 업데이트 성공");
+            AD.DebugLogger.Log($"{mapName}으로 Map 업데이트 성공");
         }
         else
         {
             _roomOptions.MapName = originalMap;
-            AD.DebugLogger.Log("NetworkRunnerManager", $"{mapName}으로 Map 업데이트 실패");
+            AD.DebugLogger.Log($"{mapName}으로 Map 업데이트 실패");
         }
     }
 
@@ -312,9 +312,9 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-        AD.DebugLogger.Log("NetworkRunnerM", $"OnShutdown - {shutdownReason}");
+        AD.DebugLogger.Log($"OnShutdown - {shutdownReason}");
 
-        AD.Managers.PopupM.ClosePopupLoading();
+        AD.Managers.PopupManager.ClosePopupLoading();
 
         string name = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
@@ -324,7 +324,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
         else if (name == AD.GameConstants.Scene.Room.ToString())
         {
-            AD.Managers.SceneM.ChangeScene(AD.GameConstants.Scene.Lobby);
+            AD.Managers.SceneManager.ChangeScene(AD.GameConstants.Scene.Lobby);
         }
     }
 
@@ -336,7 +336,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        AD.DebugLogger.Log("NetworkRunnerM", $"Session list updated. Count: {sessionList.Count}");
+        AD.DebugLogger.Log($"Session list updated. Count: {sessionList.Count}");
         _sessionList = sessionList;
 
         string name = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
@@ -359,15 +359,15 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             if (name == AD.GameConstants.Scene.Room.ToString())
             {
-                AD.Managers.SoundM.UnpauseBGM();
+                AD.Managers.SoundManager.UnpauseBGM();
                 _networkRunner.ProvideInput = true;
 
                 if (_networkRunner.IsServer)
                 {
-                    AD.Managers.GameM.Init();
+                    //AD.Managers.GameM.Init();
                 }
                 SceneManager.UnloadSceneAsync(AD.GameConstants.Scene.Room.ToString());
-                AD.Managers.PopupM.ClosePopupSceneLoading();
+                AD.Managers.PopupManager.ClosePopupSceneLoading();
             }
             else if (isGameScene(name))
             {

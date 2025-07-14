@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace AD
 {
@@ -8,7 +9,7 @@ namespace AD
     /// 팝업 관리 클래스
     /// 게임 씬과 로비 씬에서 뒤로 가기 버튼 클릭 시 적절한 팝업을 표시
     /// </summary>
-    public class PopupManager : MonoBehaviour
+    public class PopupManager : SingletonBase<PopupManager>, ISubManager
     {
         [SerializeField] private GameObject _popupCommon;
         [SerializeField] TMP_Text _messageText;
@@ -38,8 +39,8 @@ namespace AD
         /// </summary>
         public void Init()
         {
-            AD.Managers.UpdateM.OnUpdateEvent -= OnUpdate;
-            AD.Managers.UpdateM.OnUpdateEvent += OnUpdate;
+            AD.Managers.UpdateManager.OnUpdateEvent -= OnUpdate;
+            AD.Managers.UpdateManager.OnUpdateEvent += OnUpdate;
 
             SetPopup();
         }
@@ -74,7 +75,7 @@ namespace AD
         public void EnablePop(GameObject popup)
         {
             _popupStack.Push(popup);
-            AD.DebugLogger.Log("PopupManager", $"_popupStack.Count: {_popupStack.Count}, 팝업 스택에 푸시됨");
+            AD.DebugLogger.Log($"_popupStack.Count: {_popupStack.Count}, 팝업 스택에 푸시됨");
         }
 
         /// <summary>
@@ -83,18 +84,18 @@ namespace AD
         /// </summary>
         public void DisablePop()
         {
-            AD.Managers.SoundM.UI_Click();
+            AD.Managers.SoundManager.UI_Click();
 
             if (_isException)
             {
-                AD.DebugLogger.Log("PopupManager", $"{_isException} - 예외 처리 활성");
+                AD.DebugLogger.Log($"{_isException} - 예외 처리 활성");
                 return;
             }
 
             if (_popupStack.Count > 0)
             {
                 GameObject popup = _popupStack.Pop();
-                AD.DebugLogger.Log("PopupManager", $"_popupStack.Count: {_popupStack.Count} 팝업 스택에서 팝업 제거됨");
+                AD.DebugLogger.Log($"_popupStack.Count: {_popupStack.Count} 팝업 스택에서 팝업 제거됨");
                 popup.SetActive(false);
             }
             else
@@ -208,7 +209,7 @@ namespace AD
                 bgm = 1f;
             }
 
-            AD.Managers.SoundM.SetBGMVolume(bgm);
+            AD.Managers.SoundManager.SetBGMVolume(bgm);
             PlayerPrefs.SetFloat("BGM", bgm);
         }
 
@@ -227,7 +228,7 @@ namespace AD
                 sfx = 1f;
             }
 
-            AD.Managers.SoundM.SetSFXVolume(sfx);
+            AD.Managers.SoundManager.SetSFXVolume(sfx);
             PlayerPrefs.SetFloat("SFX", sfx);
         }
         #endregion

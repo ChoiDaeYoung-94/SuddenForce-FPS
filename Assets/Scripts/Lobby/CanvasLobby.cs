@@ -43,7 +43,7 @@ public class CanvasLobby : MonoBehaviour
 
     public void ExitGame()
     {
-        AD.Managers.PopupM.PopupExit();
+        AD.Managers.PopupManager.PopupExit();
     }
 
     #endregion
@@ -64,7 +64,7 @@ public class CanvasLobby : MonoBehaviour
                 PanelJoinPrivateRoom();
                 break;
             default:
-                AD.DebugLogger.LogError("CanvasLobby", "UpdatePanelMain, index error");
+                AD.DebugLogger.LogError("UpdatePanelMain, index error");
                 break;
         }
     }
@@ -103,7 +103,7 @@ public class CanvasLobby : MonoBehaviour
 
         if (string.IsNullOrEmpty(_mapNameText.text) || _mapNameText.text == "none...")
         {
-            AD.Managers.PopupM.PopupMessage(_mapNameMessage);
+            AD.Managers.PopupManager.PopupMessage(_mapNameMessage);
             return;
         }
 
@@ -131,8 +131,8 @@ public class CanvasLobby : MonoBehaviour
 
     #endregion
 
-    public void ClickedUI() => AD.Managers.SoundM.UI_Click();
-    public void ClickedOK() => AD.Managers.SoundM.UI_Ok();
+    public void ClickedUI() => AD.Managers.SoundManager.UI_Click();
+    public void ClickedOK() => AD.Managers.SoundManager.UI_Ok();
 
     #endregion
 }

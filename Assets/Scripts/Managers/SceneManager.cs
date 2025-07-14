@@ -9,11 +9,16 @@ namespace AD
     /// Scene 전환을 관리
     /// 목표 씬을 additive로 로드한 후, 현재 씬을 언로드하는 방식
     /// </summary>
-    public class SceneManager : MonoBehaviour
+    public class SceneManager : ISubManager
     {
         private AD.GameConstants.Scene _targetScene;
         private CancellationTokenSource _ctsSceneChange;
 
+        public void Init()
+        {
+            
+        }
+        
         private void Awake()
         {
             _ctsSceneChange = new CancellationTokenSource();
@@ -28,10 +33,10 @@ namespace AD
 
         public void ChangeScene(AD.GameConstants.Scene targetScene)
         {
-            AD.DebugLogger.Log("SceneManager", "targetScene으로 전환");
+            AD.DebugLogger.Log("targetScene으로 전환");
 
-            AD.Managers.PopupM.PopupSceneLoading();
-            AD.Managers.SoundM.PauseBGM();
+            AD.Managers.PopupManager.PopupSceneLoading();
+            AD.Managers.SoundManager.PauseBGM();
 
             _targetScene = targetScene;
 
@@ -47,7 +52,7 @@ namespace AD
 
             while (!loadAsyncOp.isDone && !token.IsCancellationRequested)
             {
-                AD.DebugLogger.Log("SceneManager", $"{loadAsyncOp.progress} - load progress");
+                AD.DebugLogger.Log($"{loadAsyncOp.progress} - load progress");
 
                 if (loadAsyncOp.progress >= 0.9f)
                 {
@@ -66,14 +71,14 @@ namespace AD
             AsyncOperation unloadAsyncOp = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(currentScene);
             while (!unloadAsyncOp.isDone && !token.IsCancellationRequested)
             {
-                AD.DebugLogger.Log("SceneManager", $"{unloadAsyncOp.progress} - unload progress");
+                AD.DebugLogger.Log($"{unloadAsyncOp.progress} - unload progress");
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
 
             await Resources.UnloadUnusedAssets().ToUniTask(cancellationToken: token);
 
-            AD.Managers.PopupM.ClosePopupSceneLoading();
-            AD.Managers.SoundM.UnpauseBGM();
+            AD.Managers.PopupManager.ClosePopupSceneLoading();
+            AD.Managers.SoundManager.UnpauseBGM();
         }
     }
 }

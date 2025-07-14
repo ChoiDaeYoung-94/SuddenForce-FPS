@@ -22,14 +22,14 @@ namespace AD
             switch (_checkType)
             {
                 case CheckType.Normal:
-                    AD.Managers.PopupM.EnablePop(gameObject);
+                    AD.Managers.PopupManager.EnablePop(gameObject);
                     break;
                 case CheckType.Exception:
-                    AD.Managers.PopupM.SetException();
+                    AD.Managers.PopupManager.SetException();
                     break;
                 case CheckType.Flow:
-                    AD.Managers.PopupM.EnablePop(gameObject);
-                    AD.Managers.PopupM.SetFlow();
+                    AD.Managers.PopupManager.EnablePop(gameObject);
+                    AD.Managers.PopupManager.SetFlow();
                     break;
             }
         }
@@ -41,7 +41,7 @@ namespace AD
         {
             if (_checkType == CheckType.Normal)
             {
-                AD.Managers.PopupM.DisablePop();
+                AD.Managers.PopupManager.DisablePop();
             }
         }
 
@@ -49,15 +49,15 @@ namespace AD
         {
             if (_checkType == CheckType.Normal)
             {
-                AD.Managers.PopupM.DisablePop();
+                AD.Managers.PopupManager.DisablePop();
             }
             else if (_checkType == CheckType.Exception)
             {
-                AD.Managers.PopupM.ReleaseException();
+                AD.Managers.PopupManager.ReleaseException();
             }
             else if (_checkType == CheckType.Flow)
             {
-                AD.Managers.PopupM.ReleaseFlow();
+                AD.Managers.PopupManager.ReleaseFlow();
             }
         }
     }

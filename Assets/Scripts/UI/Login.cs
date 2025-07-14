@@ -110,11 +110,11 @@ namespace AD
         private async UniTask GoLobbyScene()
         {
             await UniTask.Delay(TimeSpan.FromSeconds(3));
-            AD.Managers.SceneM.ChangeScene(AD.GameConstants.Scene.Lobby);
+            AD.Managers.SceneManager.ChangeScene(AD.GameConstants.Scene.Lobby);
         }
 
         #endregion
 
-        public void ClickedOK() => AD.Managers.SoundM.UI_Ok();
+        public void ClickedOK() => AD.Managers.SoundManager.UI_Ok();
     }
 }
