@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build;
@@ -39,10 +38,12 @@ public class BuildScript : MonoBehaviour, IPostprocessBuildWithReport
 
     [MenuItem("Build/AOS/APK")]
     static void BuildAOSAPK() => SetAOS(form: CHECK_AOS_SETTING_APK);
+
     [MenuItem("Build/AOS/AAB")]
     static void BuildAOSAAB() => SetAOS(form: CHECK_AOS_SETTING_AAB);
 
     #region AOS
+
     /// <summary>
     /// AOS build Setting
     /// </summary>
@@ -58,9 +59,11 @@ public class BuildScript : MonoBehaviour, IPostprocessBuildWithReport
         bool isAAB = form.Equals(CHECK_AOS_SETTING_AAB) ? true : false;
 
         if (isAAB)
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, DEFINESYMBOLS_AAB);
+            PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.Android),
+                DEFINESYMBOLS_AAB);
         else
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, DEFINESYMBOLS_APK);
+            PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.Android),
+                DEFINESYMBOLS_APK);
 
         CheckCI();
     }
@@ -83,7 +86,8 @@ public class BuildScript : MonoBehaviour, IPostprocessBuildWithReport
         else
             _str_buildInfo = SetVersion(isAAB: isAAB);
 
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, IDENTIFIER);
+        PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.Android),
+            IDENTIFIER);
         PlayerSettings.bundleVersion = $"{VERSION}{_str_buildInfo[0]}";
         PlayerSettings.productName = PRODUCT_NAME;
 
@@ -94,8 +98,12 @@ public class BuildScript : MonoBehaviour, IPostprocessBuildWithReport
         PlayerSettings.Android.keyaliasName = KEYALIAS_NAME;
         PlayerSettings.Android.keyaliasPass = KEYALIAS_PASS;
 
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP);
-        PlayerSettings.SetApiCompatibilityLevel(BuildTargetGroup.Android, ApiCompatibilityLevel.NET_4_6);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.Android),
+            ScriptingImplementation.IL2CPP);
+        PlayerSettings.SetApiCompatibilityLevel(
+            NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.Android),
+            ApiCompatibilityLevel.NET_4_6
+        );
 
         string filePath = CHECK_BUILD;
         StreamWriter file = File.CreateText(filePath);
@@ -104,7 +112,8 @@ public class BuildScript : MonoBehaviour, IPostprocessBuildWithReport
         BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
 
         string extension = isAAB == true ? ".aab" : ".apk";
-        buildPlayerOptions.locationPathName = AOS_BUILD_PATH + "/" + $"{VERSION}{_str_buildInfo[0]}.{_str_buildInfo[1]}" + extension;
+        buildPlayerOptions.locationPathName =
+            AOS_BUILD_PATH + "/" + $"{VERSION}{_str_buildInfo[0]}.{_str_buildInfo[1]}" + extension;
 
 
         if (isAAB)
@@ -128,6 +137,7 @@ public class BuildScript : MonoBehaviour, IPostprocessBuildWithReport
         if (summary.result == BuildResult.Failed)
             Debug.Log("AOSBuild failed");
     }
+
     #endregion
 
     /// <summary>
@@ -143,7 +153,7 @@ public class BuildScript : MonoBehaviour, IPostprocessBuildWithReport
         string[] buildInfo = File.ReadAllText(BUILDINFO_PATH).Split(',');
         if (buildInfo.Length != 3)
             Debug.LogError("빌드 버전 정보의 형식이 잘못되었습니다.\n" +
-                                "weekNumber,buildNumber,bundleVersionCode");
+                           "weekNumber,buildNumber,bundleVersionCode");
 
         TimeSpan timeSpan = DateTime.Now - Convert.ToDateTime(DAY_CALCULATEVERSION);
         int weekNumber = timeSpan.Days / 7;
@@ -156,7 +166,8 @@ public class BuildScript : MonoBehaviour, IPostprocessBuildWithReport
         if (isAAB)
             ++bundleVersionCode;
 
-        File.WriteAllText(path: BUILDINFO_PATH, contents: string.Format("{0},{1},{2}", weekNumber, buildNumber, bundleVersionCode));
+        File.WriteAllText(path: BUILDINFO_PATH,
+            contents: string.Format("{0},{1},{2}", weekNumber, buildNumber, bundleVersionCode));
         buildInfo = File.ReadAllText(BUILDINFO_PATH).Split(',');
 
         if (isAAB)
@@ -228,7 +239,11 @@ public class BuildScript : MonoBehaviour, IPostprocessBuildWithReport
     /// <summary>
     /// https://docs.unity3d.com/ScriptReference/Build.IPostprocessBuildWithReport.OnPostprocessBuild.html
     /// </summary>
-    public int callbackOrder { get { return 0; } }
+    public int callbackOrder
+    {
+        get { return 0; }
+    }
+
     public void OnPostprocessBuild(BuildReport report)
     {
         if (File.Exists(CHECK_BUILD))
