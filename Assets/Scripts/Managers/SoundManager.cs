@@ -28,6 +28,11 @@ namespace AD
             SetSFXVolume(sfx);
         }
 
+        public void release()
+        {
+            
+        }
+
         #region Functions
         public void PlayBGM(AudioClip clip)
         {

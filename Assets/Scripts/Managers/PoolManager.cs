@@ -151,6 +151,11 @@ namespace AD
             // }
         }
 
+        public void release()
+        {
+            
+        }
+
         /// <summary>
         /// 특정 프리팹에 대해 풀을 생성하고 등록
         /// </summary>

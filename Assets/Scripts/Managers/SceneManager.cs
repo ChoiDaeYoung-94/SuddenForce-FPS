@@ -16,27 +16,22 @@ namespace AD
 
         public void Init()
         {
-            
-        }
-        
-        private void Awake()
-        {
             _ctsSceneChange = new CancellationTokenSource();
         }
 
-        private void OnDestroy()
+        public void release()
         {
             _ctsSceneChange?.Cancel();
             _ctsSceneChange?.Dispose();
             _ctsSceneChange = null;
         }
 
-        public void ChangeScene(AD.GameConstants.Scene targetScene)
+        public void ChangeScene(GameConstants.Scene targetScene)
         {
-            AD.DebugLogger.Log("targetScene으로 전환");
+            DebugLogger.Log("targetScene으로 전환");
 
-            AD.Managers.PopupManager.PopupSceneLoading();
-            AD.Managers.SoundManager.PauseBGM();
+            Managers.PopupManager.PopupSceneLoading();
+            Managers.SoundManager.PauseBGM();
 
             _targetScene = targetScene;
 
@@ -47,22 +42,26 @@ namespace AD
         {
             UnityEngine.SceneManagement.Scene currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
 
-            AsyncOperation loadAsyncOp = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(_targetScene.ToString(), UnityEngine.SceneManagement.LoadSceneMode.Additive);
+            AsyncOperation loadAsyncOp =
+                UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(_targetScene.ToString(),
+                    UnityEngine.SceneManagement.LoadSceneMode.Additive);
             loadAsyncOp.allowSceneActivation = false;
 
             while (!loadAsyncOp.isDone && !token.IsCancellationRequested)
             {
-                AD.DebugLogger.Log($"{loadAsyncOp.progress} - load progress");
+                DebugLogger.Log($"{loadAsyncOp.progress} - load progress");
 
                 if (loadAsyncOp.progress >= 0.9f)
                 {
                     await UniTask.Delay(TimeSpan.FromSeconds(1d), cancellationToken: token);
                     loadAsyncOp.allowSceneActivation = true;
                 }
+
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
-
-            UnityEngine.SceneManagement.Scene targetScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName(_targetScene.ToString());
+            
+            UnityEngine.SceneManagement.Scene targetScene =
+                UnityEngine.SceneManagement.SceneManager.GetSceneByName(_targetScene.ToString());
             if (targetScene.IsValid())
             {
                 UnityEngine.SceneManagement.SceneManager.SetActiveScene(targetScene);
@@ -71,14 +70,27 @@ namespace AD
             AsyncOperation unloadAsyncOp = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(currentScene);
             while (!unloadAsyncOp.isDone && !token.IsCancellationRequested)
             {
-                AD.DebugLogger.Log($"{unloadAsyncOp.progress} - unload progress");
+                DebugLogger.Log($"{unloadAsyncOp.progress} - unload progress");
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
 
             await Resources.UnloadUnusedAssets().ToUniTask(cancellationToken: token);
+            await UniTask.RunOnThreadPool(() =>
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            });
 
-            AD.Managers.PopupManager.ClosePopupSceneLoading();
-            AD.Managers.SoundManager.UnpauseBGM();
+            await SceneInit(_targetScene).InitAsync();
+            Managers.PopupManager.ClosePopupSceneLoading();
+            Managers.SoundManager.UnpauseBGM();
         }
+        
+        private IScene SceneInit(GameConstants.Scene scene)
+            => scene switch
+            {
+                GameConstants.Scene.Login => (LoginScene.Instance),
+                _ => (null),
+            };
     }
 }

@@ -33,7 +33,7 @@ public class InitializeLobby : MonoBehaviour
             }
         }
 
-        AD.Managers.CreateNetworkRunner();
+        //AD.Managers.CreateNetworkRunner();
     }
 
     private void Start()

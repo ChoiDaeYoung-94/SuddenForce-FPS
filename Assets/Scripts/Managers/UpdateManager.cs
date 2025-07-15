@@ -18,5 +18,10 @@ namespace AD
                 .Subscribe(_ => OnUpdateEvent?.Invoke())
                 .AddTo(Managers.Instance);
         }
+
+        public void release()
+        {
+            
+        }
     }
 }

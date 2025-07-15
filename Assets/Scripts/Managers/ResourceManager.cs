@@ -11,12 +11,17 @@ namespace AD
         {
             
         }
-        
+
+        public void release()
+        {
+            
+        }
+
         public T Load<T>(string path) where T : Object
         {
             T resource = Resources.Load<T>(path);
             if (resource == null)
-                AD.DebugLogger.LogLoadError(path);
+                DebugLogger.LogLoadError(path);
 
             return resource;
         }
@@ -26,7 +31,7 @@ namespace AD
             GameObject prefab = Load<GameObject>("Prefabs/" + path);
             if (prefab == null)
             {
-                AD.DebugLogger.LogInstantiateError(path);
+                DebugLogger.LogInstantiateError(path);
                 return null;
             }
 

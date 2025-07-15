@@ -6,6 +6,7 @@ namespace AD
     public interface ISubManager
     {
         void Init();
+        void release();
     }
 
     /// <summary>
@@ -29,8 +30,6 @@ namespace AD
         public static PopupManager PopupManager => PopupManager.Instance;
         public static SoundManager SoundManager => SoundManager.Instance;
         public static UIManager UIManager => UIManager.Instance;
-
-        [SerializeField] private GameObject _networkRunnerObject = null;
 
         private void Awake()
         {
@@ -57,11 +56,6 @@ namespace AD
         private void OnDestroy()
         {
             _instance = null;
-        }
-
-        public static void CreateNetworkRunner()
-        {
-            Instantiate(_instance._networkRunnerObject);
         }
     }
 }

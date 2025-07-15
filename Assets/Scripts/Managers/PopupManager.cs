@@ -45,6 +45,11 @@ namespace AD
             SetPopup();
         }
 
+        public void release()
+        {
+            
+        }
+
         /// <summary>
         /// 열려 있는 모든 팝업을 비활성화하고 팝업 스택을 초기화
         /// </summary>
