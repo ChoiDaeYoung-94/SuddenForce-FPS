@@ -293,11 +293,11 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         CustomPlayerInput data = new CustomPlayerInput();
 
-        var dir = UIManager.Instance.JoyStick.Direction;
+        var dir = GameUIManager.Instance.JoyStick.Direction;
         data.MoveX = dir.x;
         data.MoveZ = dir.y;
 
-        if (UIManager.Instance.JoyStick.Magnitude < 5f)
+        if (GameUIManager.Instance.JoyStick.Magnitude < 5f)
         {
             data.MoveX = 0f;
             data.MoveZ = 0f;

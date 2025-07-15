@@ -741,9 +741,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _networkRunnerObject: {fileID: 4772859800932114892, guid: fa035c28b86d4a94581288901fa5e7ab,
     type: 3}
-  PoolGameObjects: []
-  PoolUIs:
-  - {fileID: 8011118036421736625, guid: 0b06c67aac1723b469a76ffc8d8d9e91, type: 3}
 --- !u!1 &6627430439426141470
 GameObject:
   m_ObjectHideFlags: 0

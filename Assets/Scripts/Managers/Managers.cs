@@ -7,7 +7,7 @@ namespace AD
     {
         void Init();
     }
-    
+
     /// <summary>
     /// Manager 스크립트 관리
     /// </summary>
@@ -18,23 +18,19 @@ namespace AD
         /// Manager관련 script 모두 등록
         /// </summary>
         private static Managers _instance;
+
         public static Managers Instance => _instance;
-        
-        private List<ISubManager> _subManagers = new List<ISubManager>();
-        public static PoolManager PoolManager => new PoolManager();
-        public static ResourceManager ResourceManager => new ResourceManager();
-        public static SceneManager SceneManager => new SceneManager();
-        public static UpdateManager UpdateManager => new UpdateManager();
+
+        private List<ISubManager> _subManagers = new();
+        public static ResourceManager ResourceManager => new();
+        public static SceneManager SceneManager => new();
+        public static UpdateManager UpdateManager => new();
+        public static PoolManager PoolManager => PoolManager.Instance;
         public static PopupManager PopupManager => PopupManager.Instance;
         public static SoundManager SoundManager => SoundManager.Instance;
+        public static UIManager UIManager => UIManager.Instance;
 
         [SerializeField] private GameObject _networkRunnerObject = null;
-
-        [Header("--- Managers data ---")]
-        [Tooltip("Pool에 사용할 GameObject")]
-        public GameObject[] PoolGameObjects = null;
-        [Tooltip("Pool에 사용할 UI")]
-        public GameObject[] PoolUIs = null;
 
         private void Awake()
         {
@@ -44,15 +40,18 @@ namespace AD
 
         private void Start()
         {
-            _subManagers.Add(PoolManager);
             _subManagers.Add(ResourceManager);
             _subManagers.Add(SceneManager);
             _subManagers.Add(UpdateManager);
+            _subManagers.Add(PoolManager);
             _subManagers.Add(PopupManager);
             _subManagers.Add(SoundManager);
-            
+            _subManagers.Add(UIManager);
+
             foreach (var manager in _subManagers)
+            {
                 manager.Init();
+            }
         }
 
         private void OnDestroy()

@@ -20,7 +20,10 @@ namespace AD
         public static readonly string[] ResourcesPath =
         {
             "",
-            "Managers/"
+            "Managers/",
+            "UI/",
+            "Popup/",
+            "Prefabs/"
         };
 
         

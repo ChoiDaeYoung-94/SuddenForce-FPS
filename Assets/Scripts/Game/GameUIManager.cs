@@ -2,10 +2,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class GameUIManager : MonoBehaviour
 {
-    private static UIManager _instance;
-    public static UIManager Instance => _instance;
+    private static GameUIManager _instance;
+    public static GameUIManager Instance => _instance;
 
     public JoyStick JoyStick;
     [SerializeField] private Image _healthBar;

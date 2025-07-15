@@ -7,7 +7,7 @@ namespace AD
     /// 풀 관리 클래스
     /// 다양한 GameObject/UI 풀을 생성 및 관리하며 재사용성을 높임
     /// </summary>
-    public class PoolManager : ISubManager
+    public class PoolManager : SingletonBase<PoolManager>, ISubManager
     {
         #region Nested Pool Class
 
@@ -137,16 +137,18 @@ namespace AD
             Object.DontDestroyOnLoad(RootPlayer.gameObject);
 
             // Managers.Instance._go_poolGOs 배열에 있는 모든 GameObject에 대해 풀 생성 (기본 20개)
-            for (int i = 0; i < Managers.Instance.PoolGameObjects.Length; i++)
-            {
-                CreatePool(Managers.Instance.PoolGameObjects[i], isGameObjectPool: true, count: 20);
-            }
+            // 여기서 ResourcesManager로 로드해서 사요하도록 변경 필요
+            // for (int i = 0; i < Managers.Instance.PoolGameObjects.Length; i++)
+            // {
+            //     CreatePool(Managers.Instance.PoolGameObjects[i], isGameObjectPool: true, count: 20);
+            // }
 
             // Managers.Instance._go_poolUIs 배열에 있는 모든 GameObject에 대해 풀 생성 (기본 50개)
-            for (int i = 0; i < Managers.Instance.PoolUIs.Length; i++)
-            {
-                CreatePool(Managers.Instance.PoolUIs[i], isGameObjectPool: false, count: 50);
-            }
+            // 여기서 ResourcesManager로 로드해서 사요하도록 변경 필요
+            // for (int i = 0; i < Managers.Instance.PoolUIs.Length; i++)
+            // {
+            //     CreatePool(Managers.Instance.PoolUIs[i], isGameObjectPool: false, count: 50);
+            // }
         }
 
         /// <summary>
