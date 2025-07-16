@@ -45,7 +45,7 @@ namespace AD
             SetPopup();
         }
 
-        public void release()
+        public void Release()
         {
             
         }

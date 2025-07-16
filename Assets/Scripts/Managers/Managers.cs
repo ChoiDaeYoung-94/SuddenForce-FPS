@@ -6,7 +6,7 @@ namespace AD
     public interface ISubManager
     {
         void Init();
-        void release();
+        void Release();
     }
 
     /// <summary>
@@ -55,6 +55,11 @@ namespace AD
 
         private void OnDestroy()
         {
+            foreach (var manager in _subManagers)
+            {
+                manager?.Release();
+            }
+            
             _instance = null;
         }
     }

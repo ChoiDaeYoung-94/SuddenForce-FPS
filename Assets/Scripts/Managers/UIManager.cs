@@ -7,7 +7,7 @@ public class UIManager : SingletonBase<UIManager>, ISubManager
         
     }
 
-    public void release()
+    public void Release()
     {
         
     }

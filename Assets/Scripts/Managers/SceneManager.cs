@@ -11,7 +11,7 @@ namespace AD
     /// </summary>
     public class SceneManager : ISubManager
     {
-        private AD.GameConstants.Scene _targetScene;
+        private GameConstants.Scene _targetScene;
         private CancellationTokenSource _ctsSceneChange;
 
         public void Init()
@@ -19,7 +19,7 @@ namespace AD
             _ctsSceneChange = new CancellationTokenSource();
         }
 
-        public void release()
+        public void Release()
         {
             _ctsSceneChange?.Cancel();
             _ctsSceneChange?.Dispose();

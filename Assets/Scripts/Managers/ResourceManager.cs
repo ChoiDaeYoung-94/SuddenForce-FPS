@@ -12,7 +12,7 @@ namespace AD
             
         }
 
-        public void release()
+        public void Release()
         {
             
         }
@@ -28,7 +28,7 @@ namespace AD
 
         public GameObject InstantiatePrefab(string path, Transform parent = null)
         {
-            GameObject prefab = Load<GameObject>("Prefabs/" + path);
+            GameObject prefab = Load<GameObject>(path);
             if (prefab == null)
             {
                 DebugLogger.LogInstantiateError(path);

@@ -28,7 +28,7 @@ namespace AD
             SetSFXVolume(sfx);
         }
 
-        public void release()
+        public void Release()
         {
             
         }
