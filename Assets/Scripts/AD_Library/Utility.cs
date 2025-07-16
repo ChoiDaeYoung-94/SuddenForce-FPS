@@ -1,4 +1,5 @@
 using MiniJSON;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -38,7 +39,7 @@ namespace AD
         {
             if (gameObject == null)
             {
-                AD.DebugLogger.LogError("GetOrAddComponent: gameObject is null.");
+                DebugLogger.LogError("GetOrAddComponent: gameObject is null.");
                 return null;
             }
 
@@ -52,7 +53,7 @@ namespace AD
         {
             if (string.IsNullOrEmpty(text.text) || text.text == "" || text.text.Length <= 1 || text.text.Replace(" ","").Length == 1)
             {
-                //AD.Managers.PopupManager.PopupMessage(message);
+                //Managers.PopupManager.PopupMessage(message);
                 return false;
             }
             else
@@ -62,9 +63,26 @@ namespace AD
         }
     }
     
+    #region Singleton
+    
+    /// <summary>
+    /// Singleton이 manager가 아니라 따로 설정 시 사용
+    /// 예로 -> [SingletonPrefabPath("UI/CanvasRoom")]를 class위에 붙여 사용
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    public class SingletonPrefabPathAttribute : Attribute
+    {
+        public string Path { get; }
+
+        public SingletonPrefabPathAttribute(string path)
+        {
+            Path = path;
+        }
+    }
+    
     public class SingletonBase<T> : MonoBehaviour where T : MonoBehaviour
     {
-        static private T _instance = null;
+        static private T _instance;
     
         static public T Instance
         {
@@ -76,31 +94,43 @@ namespace AD
                     if (_instance == null)
                     {
                         string typeString = typeof(T).Name;
-    
-                        UnityEngine.Object obj = AD.Managers.ResourceManager.Load<GameObject>(GameConstants.ResourcesPath[1] + typeString);
-                        if (obj != null)
+                        string path = GetPrefabPathFromAttribute();
+
+                        GameObject prefab = AD.Managers.ResourceManager.Load<GameObject>(path);
+                        if (prefab != null)
                         {
-                            GameObject go = Instantiate(obj) as GameObject;
+                            GameObject go = GameObject.Instantiate(prefab);
                             go.name = typeString;
-                            _instance = go.GetComponent<T>();
-                            if (_instance == null)
-                            {
-                                AD.DebugLogger.LogWarning($"Prefab not found - {typeString}");
-                                _instance = go.AddComponent<T>();
-                            }
+                            _instance = go.GetComponent<T>() ?? go.AddComponent<T>();
                         }
                         else
                         {
                             GameObject go = new GameObject(typeString);
                             _instance = go.AddComponent<T>();
                         }
+
+                        if (Application.isPlaying)
+                            DontDestroyOnLoad(_instance.gameObject);
                     }
-    
-                    if (Application.isPlaying) DontDestroyOnLoad(_instance.gameObject);
                 }
     
                 return _instance;
             }
         }
+        
+        private static string GetPrefabPathFromAttribute()
+        {
+            // Singleton path 따로 설정 시
+            var attr = typeof(T).GetCustomAttributes(typeof(SingletonPrefabPathAttribute), false);
+            if (attr.Length > 0 && attr[0] is SingletonPrefabPathAttribute pathAttr)
+            {
+                return pathAttr.Path;
+            }
+
+            // 기본값
+            return $"Managers/{typeof(T).Name}";
+        }
     }
+    
+    #endregion
 }

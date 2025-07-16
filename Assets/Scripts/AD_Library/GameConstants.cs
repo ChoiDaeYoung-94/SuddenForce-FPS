@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace AD
 {
     /// <summary>
@@ -17,19 +19,35 @@ namespace AD
             DesertHouse
         }
 
-        public static readonly string[] ResourcesPath =
+        #region Resources Path
+
+        /// <summary>
+        /// Prefabs 폴더의 경우 각 씬별로 사용되는 prefab을 나열
+        /// -> Load시 GetPath 후 + 로 씬이름도 붙여서 사용
+        /// </summary>
+        public enum ResourceCategory
         {
-            "",
-            "Managers/",
-            "UI/",
-            "Popup/",
-            "Prefabs/"
+            Root,
+            Managers,
+            UI,
+            Popup,
+            Prefabs
+        }
+
+        private static readonly Dictionary<ResourceCategory, string> ResourcesPathMap = new()
+        {
+            { ResourceCategory.Root, "" },
+            { ResourceCategory.Managers, "Managers/" },
+            { ResourceCategory.UI, "Prefabs/UI/" },
+            { ResourceCategory.Popup, "Popup/" },
+            { ResourceCategory.Prefabs, "Prefabs/" },
         };
 
-        
-        public enum PoolObjects
+        public static string GetPath(ResourceCategory category)
         {
-            Message
+            return ResourcesPathMap.TryGetValue(category, out var path) ? path : "";
         }
+
+        #endregion
     }
 }
