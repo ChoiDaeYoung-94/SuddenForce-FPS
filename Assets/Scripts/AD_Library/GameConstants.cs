@@ -9,6 +9,7 @@ namespace AD
     {
         public enum Scene
         {
+            Bootstrap,
             Login,
             Lobby,
             Room

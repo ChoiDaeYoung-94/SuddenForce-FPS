@@ -15,8 +15,8 @@ public class RuntimeInitialize : MonoBehaviour
         if (SceneManager.GetActiveScene().name.CompareTo("Test") == 0)
             return;
 
-        if (SceneManager.GetActiveScene().name.CompareTo("Login") != 0)
-            SceneManager.LoadScene("Login");
+        if (SceneManager.GetActiveScene().name.CompareTo(AD.GameConstants.Scene.Bootstrap.ToString()) != 0)
+            SceneManager.LoadScene(AD.GameConstants.Scene.Bootstrap.ToString());
 #endif
     }
 

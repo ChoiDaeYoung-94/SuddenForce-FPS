@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using TMPro;
-using UnityEditor.EditorTools;
 using UnityEngine;
 
 namespace AD
@@ -18,7 +16,6 @@ namespace AD
         private GameObject _popupSceneLoading;
         private Stack<GameObject> _popupStack = new();
         private bool _isException = true;
-        private bool _isFlow = false;
 
         public void Init()
         {
@@ -37,7 +34,7 @@ namespace AD
         {
             if (Application.platform == RuntimePlatform.Android)
             {
-                if (Input.GetKeyDown(KeyCode.Escape) && !_isFlow)
+                if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     DisablePop();
                 }
@@ -61,37 +58,35 @@ namespace AD
         public void EnablePop(GameObject popup)
         {
             _popupStack.Push(popup);
-            AD.DebugLogger.Log($"_popupStack.Count: {_popupStack.Count}, 팝업 스택에 푸시됨");
+            DebugLogger.Log($"_popupStack.Count: {_popupStack.Count}, 팝업 스택에 푸시됨");
         }
         
         public void DisablePop()
         {
-            AD.Managers.SoundManager.UI_Click();
-
             if (_isException)
             {
-                AD.DebugLogger.Log($"{_isException} - 예외 처리 활성");
+                DebugLogger.Log($"{_isException} - 예외 처리 활성");
                 return;
             }
 
             if (_popupStack.Count > 0)
             {
                 GameObject popup = _popupStack.Pop();
-                AD.DebugLogger.Log($"_popupStack.Count: {_popupStack.Count} 팝업 스택에서 팝업 제거됨");
+                DebugLogger.Log($"_popupStack.Count: {_popupStack.Count} 팝업 스택에서 팝업 제거됨");
                 popup.SetActive(false);
             }
             else
             {
-                //if (!AD.Managers.GameM.IsGame)
+                //if (!Managers.GameM.IsGame)
                 //{
-                //    AD.DebugLogger.Log("PopupManager", "lobby scene -> quit popup");
+                //    DebugLogger.Log("PopupManager", "lobby scene -> quit popup");
 
                 //    if (!_popupExit.activeSelf)
                 //        PopupExit();
                 //}
                 //else
                 //{
-                //    AD.DebugLogger.Log("PopupManager", "game scene-> go lobby popup");
+                //    DebugLogger.Log("PopupManager", "game scene-> go lobby popup");
 
                 //    if (!_popupLobby.activeSelf)
                 //        PopupGoLobby();
@@ -102,10 +97,6 @@ namespace AD
         public void SetException() => _isException = true;
 
         public void ReleaseException() => _isException = false;
-
-        public void SetFlow() => _isFlow = true;
-
-        public void ReleaseFlow() => _isFlow = false;
 
         #endregion
 

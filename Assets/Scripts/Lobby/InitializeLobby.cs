@@ -35,9 +35,4 @@ public class InitializeLobby : MonoBehaviour
 
         //AD.Managers.CreateNetworkRunner();
     }
-
-    private void Start()
-    {
-        AD.Managers.PopupManager.ReleaseException();
-    }
 }
