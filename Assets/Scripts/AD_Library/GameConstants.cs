@@ -38,7 +38,7 @@ namespace AD
         {
             { ResourceCategory.Root, "" },
             { ResourceCategory.Managers, "Managers/" },
-            { ResourceCategory.UI, "Prefabs/UI/" },
+            { ResourceCategory.UI, "UI/" },
             { ResourceCategory.Popup, "Popup/" },
             { ResourceCategory.Prefabs, "Prefabs/" },
         };

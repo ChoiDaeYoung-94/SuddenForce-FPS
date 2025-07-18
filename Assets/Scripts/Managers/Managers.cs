@@ -19,7 +19,6 @@ namespace AD
         /// Manager관련 script 모두 등록
         /// </summary>
         private static Managers _instance;
-
         public static Managers Instance => _instance;
 
         private List<ISubManager> _subManagers = new();

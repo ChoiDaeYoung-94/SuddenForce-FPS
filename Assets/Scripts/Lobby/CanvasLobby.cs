@@ -43,7 +43,7 @@ public class CanvasLobby : MonoBehaviour
 
     public void ExitGame()
     {
-        AD.Managers.PopupManager.PopupExit();
+        //AD.Managers.PopupManager.PopupExit();
     }
 
     #endregion

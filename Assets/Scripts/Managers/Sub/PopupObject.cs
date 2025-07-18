@@ -4,10 +4,18 @@ namespace AD
 {
     /// <summary>
     /// PopupObject는 팝업 관리와 관련된 컴포넌트로, 
-    /// 활성화 시 PopupManager와 상호작용하여 팝업 스택에 등록하거나 예외/Flow 상태를 설정
+    /// 활성화 시 PopupManager와 상호작용하여 팝업 기능 및 flow 담당
     /// </summary>
     public class PopupObject : MonoBehaviour
     {
+        #region Functions
+        
+        
+        
+        #endregion
+        
+        #region Flow
+        
         private enum CheckType
         {
             Normal,
@@ -22,14 +30,14 @@ namespace AD
             switch (_checkType)
             {
                 case CheckType.Normal:
-                    AD.Managers.PopupManager.EnablePop(gameObject);
+                    Managers.PopupManager.EnablePop(gameObject);
                     break;
                 case CheckType.Exception:
-                    AD.Managers.PopupManager.SetException();
+                    Managers.PopupManager.SetException();
                     break;
                 case CheckType.Flow:
-                    AD.Managers.PopupManager.EnablePop(gameObject);
-                    AD.Managers.PopupManager.SetFlow();
+                    Managers.PopupManager.EnablePop(gameObject);
+                    Managers.PopupManager.SetFlow();
                     break;
             }
         }
@@ -41,7 +49,7 @@ namespace AD
         {
             if (_checkType == CheckType.Normal)
             {
-                AD.Managers.PopupManager.DisablePop();
+                Managers.PopupManager.DisablePop();
             }
         }
 
@@ -49,16 +57,18 @@ namespace AD
         {
             if (_checkType == CheckType.Normal)
             {
-                AD.Managers.PopupManager.DisablePop();
+                Managers.PopupManager.DisablePop();
             }
             else if (_checkType == CheckType.Exception)
             {
-                AD.Managers.PopupManager.ReleaseException();
+                Managers.PopupManager.ReleaseException();
             }
             else if (_checkType == CheckType.Flow)
             {
-                AD.Managers.PopupManager.ReleaseFlow();
+                Managers.PopupManager.ReleaseFlow();
             }
         }
+        
+        #endregion
     }
 }

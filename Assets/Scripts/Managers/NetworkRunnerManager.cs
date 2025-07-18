@@ -96,7 +96,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (string.IsNullOrEmpty(_nickName))
         {
-            AD.Managers.PopupManager.PopupSetNickName();
+            //AD.Managers.PopupManager.PopupSetNickName();
         }
 
         if (result.Ok)
