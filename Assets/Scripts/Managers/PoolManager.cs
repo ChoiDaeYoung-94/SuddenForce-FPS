@@ -60,7 +60,7 @@ namespace AD
 
         #endregion
 
-        private readonly Dictionary<string, Dictionary<string, Pool>> _scenePoolMap = new();
+        private readonly Dictionary<GameConstants.Scene, Dictionary<string, Pool>> _scenePoolMap = new();
 
         public void Init()
         {
@@ -74,18 +74,18 @@ namespace AD
                 return;
             }
 
-            var sceneKeys = new List<string>(_scenePoolMap.Keys);
-            foreach (var sceneName in sceneKeys)
+            var sceneKeys = new List<GameConstants.Scene>(_scenePoolMap.Keys);
+            foreach (var scene in sceneKeys)
             {
-                ClearScenePools(sceneName);
+                ClearScenePools(scene);
             }
 
             _scenePoolMap.Clear();
         }
 
-        public void ClearScenePools(string sceneName)
+        public void ClearScenePools(GameConstants.Scene scene)
         {
-            if (_scenePoolMap.TryGetValue(sceneName, out var poolDict))
+            if (_scenePoolMap.TryGetValue(scene, out var poolDict))
             {
                 var keys = new List<string>(poolDict.Keys);
 
@@ -99,18 +99,18 @@ namespace AD
                     poolDict.Remove(poolKey);
                 }
 
-                _scenePoolMap.Remove(sceneName);
+                _scenePoolMap.Remove(scene);
             }
         }
 
         #region Pool root
 
-        private Transform GetOrCreateSceneRoot(string sceneName)
+        private Transform GetOrCreateSceneRoot(GameConstants.Scene scene)
         {
-            Transform sceneRoot = gameObject.transform.Find(sceneName)?.transform;
+            Transform sceneRoot = gameObject.transform.Find(scene.ToString())?.transform;
             if (sceneRoot == null)
             {
-                GameObject go = new GameObject(sceneName);
+                GameObject go = new GameObject(scene.ToString());
                 go.transform.SetParent(gameObject.transform);
                 sceneRoot = go.transform;
             }
@@ -118,9 +118,9 @@ namespace AD
             return sceneRoot;
         }
 
-        private Transform GetOrCreateSceneCategoryRoot(string sceneName, PoolType type)
+        private Transform GetOrCreateSceneCategoryRoot(GameConstants.Scene scene, PoolType type)
         {
-            Transform sceneRoot = GetOrCreateSceneRoot(sceneName);
+            Transform sceneRoot = GetOrCreateSceneRoot(scene);
             string categoryName = type == PoolType.GameObject ? "GameObject" : "UI";
 
             Transform categoryRoot = sceneRoot.Find(categoryName);
@@ -134,9 +134,9 @@ namespace AD
             return categoryRoot;
         }
 
-        private Transform CreatePoolRoot(string sceneName, PoolType type, string poolName)
+        private Transform CreatePoolRoot(GameConstants.Scene scene, PoolType type, string poolName)
         {
-            Transform categoryRoot = GetOrCreateSceneCategoryRoot(sceneName, type);
+            Transform categoryRoot = GetOrCreateSceneCategoryRoot(scene, type);
             GameObject poolRootGO = new(poolName);
             Transform poolRoot = poolRootGO.transform;
             poolRoot.SetParent(categoryRoot);
@@ -147,7 +147,7 @@ namespace AD
 
         #region Pool Functions
 
-        public void CreatePool(string sceneName, GameObject prefab, bool isGameObjectPool, int count = 20)
+        public void CreatePool(GameConstants.Scene scene, GameObject prefab, bool isGameObjectPool, int count = 20)
         {
             if (prefab == null)
             {
@@ -155,28 +155,28 @@ namespace AD
                 return;
             }
 
-            if (!_scenePoolMap.ContainsKey(sceneName))
+            if (!_scenePoolMap.ContainsKey(scene))
             {
-                _scenePoolMap[sceneName] = new Dictionary<string, Pool>();
+                _scenePoolMap[scene] = new Dictionary<string, Pool>();
             }
 
-            var poolDict = _scenePoolMap[sceneName];
+            var poolDict = _scenePoolMap[scene];
             if (poolDict.ContainsKey(prefab.name))
             {
-                DebugLogger.LogWarning($"Pool for {prefab.name} already exists in {sceneName}.");
+                DebugLogger.LogWarning($"Pool for {prefab.name} already exists in {scene}.");
                 return;
             }
 
             Pool pool = new()
             {
-                Root = CreatePoolRoot(sceneName, isGameObjectPool ? PoolType.GameObject : PoolType.UI, prefab.name)
+                Root = CreatePoolRoot(scene, isGameObjectPool ? PoolType.GameObject : PoolType.UI, prefab.name)
             };
             pool.Init(prefab, count);
 
             poolDict[prefab.name] = pool;
         }
 
-        public void PushToPool(string sceneName, GameObject go)
+        public void PushToPool(GameConstants.Scene scene, GameObject go)
         {
             if (go == null) return;
 
@@ -187,7 +187,7 @@ namespace AD
                 return;
             }
 
-            if (!_scenePoolMap.TryGetValue(sceneName, out var poolDict) || !poolDict.TryGetValue(go.name, out var pool))
+            if (!_scenePoolMap.TryGetValue(scene, out var poolDict) || !poolDict.TryGetValue(go.name, out var pool))
             {
                 Object.Destroy(go);
                 return;
@@ -196,12 +196,12 @@ namespace AD
             pool.PushToPool(poolObj);
         }
 
-        public GameObject PopFromPool(string sceneName, string prefabName, Transform parent = null)
+        public GameObject PopFromPool(GameConstants.Scene scene, string prefabName, Transform parent = null)
         {
-            if (!_scenePoolMap.TryGetValue(sceneName, out var poolDict) ||
+            if (!_scenePoolMap.TryGetValue(scene, out var poolDict) ||
                 !poolDict.TryGetValue(prefabName, out var pool))
             {
-                DebugLogger.LogNotFound($"Pool not found: {sceneName}/{prefabName}");
+                DebugLogger.LogNotFound($"Pool not found: {scene}/{prefabName}");
                 return null;
             }
 

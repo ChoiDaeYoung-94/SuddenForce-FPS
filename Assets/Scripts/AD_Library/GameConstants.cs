@@ -12,7 +12,8 @@ namespace AD
             Bootstrap,
             Login,
             Lobby,
-            Room
+            Room,
+            DesertHouse
         }
 
         public enum GameScene

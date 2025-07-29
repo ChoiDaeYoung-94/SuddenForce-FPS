@@ -96,7 +96,7 @@ namespace AD
                         string typeString = typeof(T).Name;
                         string path = GetPrefabPathFromAttribute();
 
-                        GameObject prefab = AD.Managers.ResourceManager.Load<GameObject>(path);
+                        GameObject prefab = Managers.ResourceManager.Load<GameObject>(path);
                         if (prefab != null)
                         {
                             GameObject go = GameObject.Instantiate(prefab);
@@ -120,14 +120,12 @@ namespace AD
         
         private static string GetPrefabPathFromAttribute()
         {
-            // Singleton path 따로 설정 시
             var attr = typeof(T).GetCustomAttributes(typeof(SingletonPrefabPathAttribute), false);
             if (attr.Length > 0 && attr[0] is SingletonPrefabPathAttribute pathAttr)
             {
                 return pathAttr.Path;
             }
 
-            // 기본값
             return $"Managers/{typeof(T).Name}";
         }
     }

@@ -28,7 +28,6 @@ namespace AD
                 return cached as T;
             }
 
-
             T resource = Resources.Load<T>(path);
             if (resource == null)
             {
@@ -54,8 +53,8 @@ namespace AD
             ResourceRequest request = Resources.LoadAsync<T>(path);
             await request.ToUniTask();
 
-            T result = request.asset as T;
-            if (result == null)
+            T resource = request.asset as T;
+            if (resource == null)
             {
                 DebugLogger.LogLoadError(path);
                 return null;
@@ -63,10 +62,10 @@ namespace AD
 
             if (useCache)
             {
-                _resourceCache[path] = result;
+                _resourceCache[path] = resource;
             }
 
-            return result;
+            return resource;
         }
 
         public GameObject InstantiatePrefab(string path, Transform parent = null, bool useCache = false)

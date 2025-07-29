@@ -59,7 +59,7 @@ namespace AD
 
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
-            
+
             UnityEngine.SceneManagement.Scene targetScene =
                 UnityEngine.SceneManagement.SceneManager.GetSceneByName(_targetScene.ToString());
             if (targetScene.IsValid())
@@ -67,6 +67,8 @@ namespace AD
                 UnityEngine.SceneManagement.SceneManager.SetActiveScene(targetScene);
             }
 
+            await GetIScene((GameConstants.Scene)Enum.Parse(typeof(GameConstants.Scene), currentScene.name))
+                .ReleaseAsync();
             AsyncOperation unloadAsyncOp = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(currentScene);
             while (!unloadAsyncOp.isDone && !token.IsCancellationRequested)
             {
@@ -81,12 +83,12 @@ namespace AD
                 GC.WaitForPendingFinalizers();
             });
 
-            await SceneInit(_targetScene).InitAsync();
+            await GetIScene(_targetScene).InitAsync();
             Managers.PopupManager.ClosePopupSceneLoading();
             Managers.SoundManager.UnpauseBGM();
         }
-        
-        private IScene SceneInit(GameConstants.Scene scene)
+
+        private IScene GetIScene(GameConstants.Scene scene)
             => scene switch
             {
                 GameConstants.Scene.Login => (LoginScene.Instance),
