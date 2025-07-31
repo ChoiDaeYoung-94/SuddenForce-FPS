@@ -115,6 +115,6 @@ namespace AD
 
         #endregion
 
-        public void ClickedOK() => AD.Managers.SoundManager.UI_Ok();
+        //public void ClickedOK() => AD.Managers.SoundManager.UI_Ok();
     }
 }

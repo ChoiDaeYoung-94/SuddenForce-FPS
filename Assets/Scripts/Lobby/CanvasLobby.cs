@@ -131,8 +131,8 @@ public class CanvasLobby : MonoBehaviour
 
     #endregion
 
-    public void ClickedUI() => AD.Managers.SoundManager.UI_Click();
-    public void ClickedOK() => AD.Managers.SoundManager.UI_Ok();
+    // public void ClickedUI() => AD.Managers.SoundManager.UI_Click();
+    // public void ClickedOK() => AD.Managers.SoundManager.UI_Ok();
 
     #endregion
 }

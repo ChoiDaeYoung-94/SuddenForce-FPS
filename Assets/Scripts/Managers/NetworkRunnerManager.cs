@@ -201,7 +201,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         RoomManager.Instance.RegisterPlayerInGame();
         RoomManager.Instance.UnregisterAllPlayer();
         AD.Managers.PopupManager.PopupSceneLoading();
-        AD.Managers.SoundManager.PauseBGM();
+        //AD.Managers.SoundManager.PauseBGM();
         _networkRunner.LoadScene(SceneRef.FromIndex(sceneIndex), LoadSceneMode.Additive);
     }
     #endregion
@@ -359,7 +359,7 @@ public class NetworkRunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             if (name == AD.GameConstants.Scene.Room.ToString())
             {
-                AD.Managers.SoundManager.UnpauseBGM();
+                //AD.Managers.SoundManager.UnpauseBGM();
                 _networkRunner.ProvideInput = true;
 
                 if (_networkRunner.IsServer)
