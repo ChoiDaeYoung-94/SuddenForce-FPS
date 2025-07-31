@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace AD
@@ -9,12 +11,6 @@ namespace AD
     /// </summary>
     public class PoolManager : SingletonBase<PoolManager>, ISubManager
     {
-        private enum PoolType
-        {
-            GameObject,
-            UI
-        }
-
         #region Nested Pool Class
 
         private class Pool
@@ -62,9 +58,9 @@ namespace AD
 
         private readonly Dictionary<GameConstants.Scene, Dictionary<string, Pool>> _scenePoolMap = new();
 
-        public void Init()
+        public async UniTask InitAsync()
         {
-            
+            await UniTask.Yield();
         }
 
         public void Release()
@@ -118,10 +114,10 @@ namespace AD
             return sceneRoot;
         }
 
-        private Transform GetOrCreateSceneCategoryRoot(GameConstants.Scene scene, PoolType type)
+        private Transform GetOrCreateSceneCategoryRoot(GameConstants.Scene scene, GameConstants.PoolType type)
         {
             Transform sceneRoot = GetOrCreateSceneRoot(scene);
-            string categoryName = type == PoolType.GameObject ? "GameObject" : "UI";
+            string categoryName = type == GameConstants.PoolType.GameObject ? "GameObject" : "UI";
 
             Transform categoryRoot = sceneRoot.Find(categoryName);
             if (categoryRoot == null)
@@ -134,7 +130,7 @@ namespace AD
             return categoryRoot;
         }
 
-        private Transform CreatePoolRoot(GameConstants.Scene scene, PoolType type, string poolName)
+        private Transform CreatePoolRoot(GameConstants.Scene scene, GameConstants.PoolType type, string poolName)
         {
             Transform categoryRoot = GetOrCreateSceneCategoryRoot(scene, type);
             GameObject poolRootGO = new(poolName);
@@ -169,7 +165,8 @@ namespace AD
 
             Pool pool = new()
             {
-                Root = CreatePoolRoot(scene, isGameObjectPool ? PoolType.GameObject : PoolType.UI, prefab.name)
+                Root = CreatePoolRoot(scene,
+                    isGameObjectPool ? GameConstants.PoolType.GameObject : GameConstants.PoolType.UI, prefab.name)
             };
             pool.Init(prefab, count);
 
@@ -208,6 +205,25 @@ namespace AD
             return pool.PopFromPool(parent);
         }
 
+        public async UniTask InitPoolsForScene(GameConstants.Scene scene)
+        {
+            var poolDatas = Managers.TableManager
+                .GetTable<GameData.PoolTableData>()
+                .Where(data => data.Scene == scene);
+
+            foreach (var data in poolDatas)
+            {
+                string path = $"{GameConstants.GetPath(GameConstants.ResourceCategory.Prefabs)}{data.GetKey()}";
+                bool isGameObjectPool = data.Type == GameConstants.PoolType.UI;
+
+                GameObject prefab = await Managers.ResourceManager.LoadAsync<GameObject>(path);
+                if (prefab != null)
+                {
+                    Managers.PoolManager.CreatePool(scene, prefab, isGameObjectPool, data.Count);
+                }
+            }
+        }
+        
         #endregion
     }
 }

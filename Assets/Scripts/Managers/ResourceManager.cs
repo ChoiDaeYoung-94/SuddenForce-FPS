@@ -11,8 +11,9 @@ namespace AD
     {
         private readonly Dictionary<string, object> _resourceCache = new();
 
-        public void Init()
+        public async UniTask InitAsync()
         {
+            await UniTask.Yield();
         }
 
         public void Release()

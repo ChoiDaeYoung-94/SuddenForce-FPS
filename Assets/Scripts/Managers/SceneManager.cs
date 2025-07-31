@@ -14,9 +14,11 @@ namespace AD
         private GameConstants.Scene _targetScene;
         private CancellationTokenSource _ctsSceneChange;
 
-        public void Init()
+        public async UniTask InitAsync()
         {
             _ctsSceneChange = new CancellationTokenSource();
+            
+            await UniTask.Yield();
         }
 
         public void Release()
@@ -67,8 +69,9 @@ namespace AD
                 UnityEngine.SceneManagement.SceneManager.SetActiveScene(targetScene);
             }
 
-            await GetIScene((GameConstants.Scene)Enum.Parse(typeof(GameConstants.Scene), currentScene.name))
-                .ReleaseAsync();
+            GameConstants.Scene curScene = (GameConstants.Scene)Enum.Parse(typeof(GameConstants.Scene), currentScene.name);
+            Managers.PoolManager.ClearScenePools(curScene);
+            await GetIScene(curScene).ReleaseAsync();
             AsyncOperation unloadAsyncOp = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(currentScene);
             while (!unloadAsyncOp.isDone && !token.IsCancellationRequested)
             {
@@ -83,6 +86,7 @@ namespace AD
                 GC.WaitForPendingFinalizers();
             });
 
+            await Managers.PoolManager.InitPoolsForScene(_targetScene);
             await GetIScene(_targetScene).InitAsync();
             Managers.PopupManager.ClosePopupSceneLoading();
             Managers.SoundManager.UnpauseBGM();

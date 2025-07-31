@@ -7,4 +7,9 @@ namespace AD
         UniTask InitAsync();
         UniTask ReleaseAsync();
     }
+    
+    public interface ITableData
+    {
+        string GetKey();
+    }
 }

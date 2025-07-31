@@ -21,7 +21,7 @@ namespace AD
             DesertHouse
         }
 
-        #region Resources Path
+        #region Resources
 
         /// <summary>
         /// Prefabs 폴더의 경우 각 씬별로 사용되는 prefab을 나열
@@ -33,7 +33,8 @@ namespace AD
             Managers,
             UI,
             Popup,
-            Prefabs
+            Prefabs,
+            Table
         }
 
         private static readonly Dictionary<ResourceCategory, string> ResourcesPathMap = new()
@@ -43,11 +44,18 @@ namespace AD
             { ResourceCategory.UI, "UI/" },
             { ResourceCategory.Popup, "Popup/" },
             { ResourceCategory.Prefabs, "Prefabs/" },
+            { ResourceCategory.Table, "Table/" },
         };
 
         public static string GetPath(ResourceCategory category)
         {
             return ResourcesPathMap.TryGetValue(category, out var path) ? path : "";
+        }
+        
+        public enum PoolType
+        {
+            GameObject,
+            UI
         }
 
         #endregion

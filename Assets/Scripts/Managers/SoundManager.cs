@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -19,13 +20,15 @@ namespace AD
         public AudioClip SFXUIClickClip;
         public AudioClip SFXUIOkClip;
 
-        public void Init()
+        public async UniTask InitAsync()
         {
             float bgm = PlayerPrefs.GetFloat("BGM", 1f);
             float sfx = PlayerPrefs.GetFloat("SFX", 1f);
 
             SetBGMVolume(bgm);
             SetSFXVolume(sfx);
+            
+            await UniTask.Yield();
         }
 
         public void Release()

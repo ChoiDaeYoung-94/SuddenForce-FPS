@@ -1,11 +1,14 @@
 using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
+using NUnit.Framework.Internal;
 using UnityEngine;
 
 namespace AD
 {
     public interface ISubManager
     {
-        void Init();
+        UniTask InitAsync();
         void Release();
     }
 
@@ -22,9 +25,10 @@ namespace AD
         public static Managers Instance => _instance;
 
         private List<ISubManager> _subManagers = new();
-        public static ResourceManager ResourceManager => new();
-        public static SceneManager SceneManager => new();
-        public static UpdateManager UpdateManager => new();
+        public static ResourceManager ResourceManager { get; } = new();
+        public static SceneManager SceneManager { get; } = new();
+        public static TableManager TableManager { get; } = new();
+        public static UpdateManager UpdateManager { get; } = new();
         public static PoolManager PoolManager => PoolManager.Instance;
         public static PopupManager PopupManager => PopupManager.Instance;
         public static SoundManager SoundManager => SoundManager.Instance;
@@ -40,15 +44,20 @@ namespace AD
         {
             _subManagers.Add(ResourceManager);
             _subManagers.Add(SceneManager);
+            _subManagers.Add(TableManager);
             _subManagers.Add(UpdateManager);
             _subManagers.Add(PoolManager);
             _subManagers.Add(PopupManager);
             _subManagers.Add(SoundManager);
             _subManagers.Add(UIManager);
+            SubManagerInit().Forget();
+        }
 
+        private async UniTask SubManagerInit()
+        {
             foreach (var manager in _subManagers)
             {
-                manager.Init();
+                await manager.InitAsync();
             }
         }
 
@@ -58,7 +67,7 @@ namespace AD
             {
                 manager?.Release();
             }
-            
+
             _instance = null;
         }
     }

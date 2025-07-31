@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace AD
@@ -17,11 +18,13 @@ namespace AD
         private Stack<GameObject> _popupStack = new();
         private bool _isException = true;
 
-        public void Init()
+        public async UniTask InitAsync()
         {
             Managers.UpdateManager.OnUpdateEvent -= OnUpdate;
             Managers.UpdateManager.OnUpdateEvent += OnUpdate;
             CommonPopupInit();
+            
+            await UniTask.Yield();
         }
 
         public void Release()

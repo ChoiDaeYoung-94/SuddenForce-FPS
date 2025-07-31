@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UniRx;
 
 namespace AD
@@ -11,10 +12,12 @@ namespace AD
         public event Action OnUpdateEvent;
         private IDisposable _updateDisposable;
 
-        public void Init()
+        public async UniTask InitAsync()
         {
             _updateDisposable = Observable.EveryUpdate()
                 .Subscribe(_ => OnUpdateEvent?.Invoke());
+            
+            await UniTask.Yield();
         }
 
         public void Release()
