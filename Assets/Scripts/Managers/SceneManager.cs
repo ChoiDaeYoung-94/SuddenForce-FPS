@@ -71,7 +71,12 @@ namespace AD
 
             GameConstants.Scene curScene = (GameConstants.Scene)Enum.Parse(typeof(GameConstants.Scene), currentScene.name);
             Managers.PoolManager.ClearScenePools(curScene);
-            await GetIScene(curScene).ReleaseAsync();
+            var sceneInstance = GetIScene(curScene);
+            if (sceneInstance != null)
+            {
+                await sceneInstance.ReleaseAsync();
+            }
+
             AsyncOperation unloadAsyncOp = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(currentScene);
             while (!unloadAsyncOp.isDone && !token.IsCancellationRequested)
             {
@@ -88,6 +93,11 @@ namespace AD
 
             await Managers.PoolManager.InitPoolsForScene(_targetScene);
             await GetIScene(_targetScene).InitAsync();
+            sceneInstance = GetIScene(_targetScene);
+            if (sceneInstance != null)
+            {
+                await sceneInstance.InitAsync();
+            }
             Managers.PopupManager.ClosePopupSceneLoading();
             //Managers.SoundManager.UnpauseBGM();
         }
@@ -95,6 +105,7 @@ namespace AD
         private IScene GetIScene(GameConstants.Scene scene)
             => scene switch
             {
+                GameConstants.Scene.Bootstrap => null,
                 GameConstants.Scene.Login => (LoginScene.Instance),
                 _ => (null),
             };

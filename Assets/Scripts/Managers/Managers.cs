@@ -42,6 +42,11 @@ namespace AD
 
         private void Start()
         {
+            InitAsync().Forget();
+        }
+
+        private async UniTask InitAsync()
+        {
             _subManagers.Add(ResourceManager);
             _subManagers.Add(SceneManager);
             _subManagers.Add(TableManager);
@@ -50,15 +55,13 @@ namespace AD
             _subManagers.Add(PopupManager);
             _subManagers.Add(SoundManager);
             _subManagers.Add(UIManager);
-            SubManagerInit().Forget();
-        }
-
-        private async UniTask SubManagerInit()
-        {
+            
             foreach (var manager in _subManagers)
             {
                 await manager.InitAsync();
             }
+
+            SceneManager.ChangeScene(GameConstants.Scene.Login);
         }
 
         private void OnDestroy()

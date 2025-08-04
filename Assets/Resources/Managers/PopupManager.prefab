@@ -77,7 +77,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1080, y: 1920}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -114,14 +114,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67b9ac53b066fd4d9f2b6d69b35180a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _popupCommon: {fileID: 0}
-  _messageText: {fileID: 0}
-  _popupExit: {fileID: 0}
-  _popupGameOver: {fileID: 0}
-  _popupLoading: {fileID: 0}
-  _popupLobby: {fileID: 0}
-  _popupSetting: {fileID: 0}
-  _popupSceneLoading: {fileID: 0}
-  _popupSetNickName: {fileID: 0}
-  _bgmToggle: {fileID: 0}
-  _sfxToggle: {fileID: 0}
