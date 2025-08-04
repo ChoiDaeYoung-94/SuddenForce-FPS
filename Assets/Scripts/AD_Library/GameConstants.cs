@@ -34,6 +34,7 @@ namespace AD
             UI,
             Popup,
             Prefabs,
+            Sound,
             Table
         }
 
@@ -44,6 +45,7 @@ namespace AD
             { ResourceCategory.UI, "UI/" },
             { ResourceCategory.Popup, "Popup/" },
             { ResourceCategory.Prefabs, "Prefabs/" },
+            { ResourceCategory.Sound, "Sound/" },
             { ResourceCategory.Table, "Table/" },
         };
 

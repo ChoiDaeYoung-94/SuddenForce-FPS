@@ -48,12 +48,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audioMixer: {fileID: 24100000, guid: b47b64c85f9926b45b0646f6ec585f5f, type: 2}
   _bgmAudioSource: {fileID: 2914372994267934123}
-  _sfxAudioSource: {fileID: 7928100558226719068}
-  BgmLoginClip: {fileID: 0}
-  BgmLobbyClip: {fileID: 0}
-  BgmGameClip: {fileID: 0}
-  SFXUIClickClip: {fileID: 0}
-  SFXUIOkClip: {fileID: 0}
+  _sfxSources:
+  - {fileID: 7928100558226719068}
+  - {fileID: 1734283688656985688}
+  - {fileID: 3685058123839779886}
+  - {fileID: 838049003789271136}
+  - {fileID: 5777092638927437973}
 --- !u!1 &6309333067976654140
 GameObject:
   m_ObjectHideFlags: 0

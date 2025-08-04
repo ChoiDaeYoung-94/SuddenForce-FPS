@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -9,14 +8,10 @@ namespace AD
 {
     public class SoundManager : SingletonBase<SoundManager>, ISubManager
     {
-        [Header("Audio Mixers")]
         [SerializeField] private AudioMixer _audioMixer;
-
-        [Header("Audio Sources")]
         [SerializeField] private AudioSource _bgmAudioSource;
         [SerializeField] private List<AudioSource> _sfxSources = new();
 
-        private int _sfxIndex = 0;
         private Dictionary<BGMType, AudioClip> _bgmClips = new();
         private Dictionary<SFXType, AudioClip> _sfxClips = new();
 
@@ -28,71 +23,60 @@ namespace AD
             SetBGMVolume(bgm);
             SetSFXVolume(sfx);
 
-            await LoadSoundTableAsync();
+            await InitSoundTableAsync();
         }
 
-        public void Release() { }
+        public void Release()
+        {
+        }
 
         #region Sound Table Loading
-        private async UniTask LoadSoundTableAsync()
+
+        private async UniTask InitSoundTableAsync()
         {
-            TextAsset csv = Resources.Load<TextAsset>("Table/SoundTable_ByEnum");
-            if (csv == null)
+            var table = Managers.TableManager.GetTable<GameData.SoundTableData>();
+            if (table == null || table.Count == 0)
             {
-                Debug.LogError("SoundTable_ByEnum.csv not found in Resources/Table/");
+                DebugLogger.LogError("SoundTableData가 비어있습니다.");
                 return;
             }
 
-            using (StringReader reader = new(csv.text))
+            foreach (var row in table)
             {
-                string line;
-                bool skipHeader = true;
-                while ((line = await reader.ReadLineAsync()) != null)
+                if (string.IsNullOrWhiteSpace(row.Type) || string.IsNullOrWhiteSpace(row.Name))
                 {
-                    if (skipHeader) { skipHeader = false; continue; }
-                    string[] parts = line.Split(',');
-                    if (parts.Length < 2) continue;
+                    continue;
+                }
 
-                    string type = parts[0];
-                    string name = parts[1];
+                string path = $"{GameConstants.GetPath(GameConstants.ResourceCategory.Sound)}{row.GetKey()}";
+                AudioClip clip = await Managers.ResourceManager.LoadAsync<AudioClip>(path);
+                if (clip == null)
+                {
+                    DebugLogger.LogWarning($"{row.Type} clip not found at: {path}");
+                    continue;
+                }
 
-                    if (type.Equals("BGM", StringComparison.OrdinalIgnoreCase) && Enum.TryParse(name, out BGMType bgmType))
+                if (row.Type.Equals("BGM", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (Enum.TryParse(row.Name, out BGMType bgmType))
                     {
-                        string path = $"Sounds/BGM/{name}";
-                        AudioClip clip = Resources.Load<AudioClip>(path);
-                        if (clip != null)
-                            _bgmClips[bgmType] = clip;
-                        else
-                            Debug.LogWarning($"BGM clip not found at: {path}");
+                        _bgmClips[bgmType] = clip;
                     }
-                    else if (type.Equals("SFX", StringComparison.OrdinalIgnoreCase) && Enum.TryParse(name, out SFXType sfxType))
+                }
+                else if (row.Type.Equals("SFX", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (Enum.TryParse(row.Name, out SFXType sfxType))
                     {
-                        string path = $"Sounds/SFX/{name}";
-                        AudioClip clip = Resources.Load<AudioClip>(path);
-                        if (clip != null)
-                            _sfxClips[sfxType] = clip;
-                        else
-                            Debug.LogWarning($"SFX clip not found at: {path}");
+                        _sfxClips[sfxType] = clip;
                     }
                 }
             }
         }
+
         #endregion
 
-        #region SFX
-        public void PlaySFX(SFXType type)
-        {
-            if (!_sfxClips.TryGetValue(type, out var clip)) return;
+        #region Play Sound
 
-            var source = _sfxSources[_sfxIndex];
-            source.clip = clip;
-            source.Play();
-
-            _sfxIndex = (_sfxIndex + 1) % _sfxSources.Count;
-        }
-        #endregion
-
-        #region BGM
         public async UniTask PlayBGM(BGMType type, float fadeTime = 1f)
         {
             if (!_bgmClips.TryGetValue(type, out var newClip)) return;
@@ -100,7 +84,6 @@ namespace AD
 
             float originalVol = _bgmAudioSource.volume;
 
-            // Fade out
             for (float t = 0; t < fadeTime; t += Time.deltaTime)
             {
                 _bgmAudioSource.volume = Mathf.Lerp(originalVol, 0, t / fadeTime);
@@ -120,9 +103,29 @@ namespace AD
 
             _bgmAudioSource.volume = originalVol;
         }
+
+        public void PlaySFX(SFXType type, float volume = 1f)
+        {
+            if (!_sfxClips.TryGetValue(type, out var clip)) return;
+
+            int count = _sfxSources.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (!_sfxSources[i].isPlaying)
+                {
+                    var source = _sfxSources[i];
+                    source.clip = clip;
+                    source.volume = volume;
+                    source.Play();
+                    break;
+                }
+            }
+        }
+
         #endregion
 
         #region Volume
+
         public void SetBGMVolume(float volume)
         {
             _audioMixer.SetFloat("BGM", Mathf.Log10(Mathf.Clamp(volume, 0.0001f, 1f)) * 20);
@@ -134,6 +137,7 @@ namespace AD
             _audioMixer.SetFloat("SFX", Mathf.Log10(Mathf.Clamp(volume, 0.0001f, 1f)) * 20);
             PlayerPrefs.SetFloat("SFX", volume);
         }
+
         #endregion
     }
 }
