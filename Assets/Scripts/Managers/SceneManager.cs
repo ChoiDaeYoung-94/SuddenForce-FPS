@@ -33,7 +33,6 @@ namespace AD
             DebugLogger.Log("targetScene으로 전환");
 
             Managers.PopupManager.PopupSceneLoading();
-            //Managers.SoundManager.PauseBGM();
 
             _targetScene = targetScene;
 
@@ -92,14 +91,12 @@ namespace AD
             });
 
             await Managers.PoolManager.InitPoolsForScene(_targetScene);
-            await GetIScene(_targetScene).InitAsync();
             sceneInstance = GetIScene(_targetScene);
             if (sceneInstance != null)
             {
                 await sceneInstance.InitAsync();
             }
             Managers.PopupManager.ClosePopupSceneLoading();
-            //Managers.SoundManager.UnpauseBGM();
         }
 
         private IScene GetIScene(GameConstants.Scene scene)
