@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace AD
@@ -12,7 +13,13 @@ namespace AD
         /// </summary>
         public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
         {
-            return AD.Utility.GetOrAddComponent<T>(gameObject);
+            return Utility.GetOrAddComponent<T>(gameObject);
+        }
+
+        public static Component GetOrAddComponent(this GameObject gameObject, Type type)
+        {
+            var comp = gameObject.GetComponent(type);
+            return comp != null ? comp : gameObject.AddComponent(type);
         }
     }
 }

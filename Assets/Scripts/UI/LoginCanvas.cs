@@ -12,14 +12,14 @@ namespace AD
     /// <summary>
     /// 로그인 관리 클래스 (Google Play)
     /// </summary>
-    public class Login : MonoBehaviour
+    public class LoginCanvas : UIBase
     {
         [Header("--- UI Elements ---")]
         [SerializeField] private GameObject _loading;
         [SerializeField] private TMPro.TMP_Text _loadingText;
         [SerializeField] private GameObject _retry;
 
-        private void Awake()
+        protected override void Awake()
         {
 #if UNITY_ANDROID
             PlayGamesPlatform.DebugLogEnabled = true;

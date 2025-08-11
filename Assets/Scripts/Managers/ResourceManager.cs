@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace AD
 {
@@ -32,7 +34,11 @@ namespace AD
             T resource = Resources.Load<T>(path);
             if (resource == null)
             {
-                DebugLogger.LogLoadError(path);
+                if (!ShouldSkipMissingLogForPath(path))
+                {
+                    DebugLogger.LogLoadError(path);
+                }
+
                 return null;
             }
 
@@ -57,7 +63,11 @@ namespace AD
             T resource = request.asset as T;
             if (resource == null)
             {
-                DebugLogger.LogLoadError(path);
+                if (!ShouldSkipMissingLogForPath(path))
+                {
+                    DebugLogger.LogLoadError(path);
+                }
+
                 return null;
             }
 
@@ -79,6 +89,29 @@ namespace AD
             }
 
             return Object.Instantiate(prefab, parent);
+        }
+
+        // path 기반 로그 생략 규칙
+        private readonly string[] _skipMissingLogTokens = { "IScene" };
+
+        private bool ShouldSkipMissingLogForPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return false;
+            }
+
+            // LINQ/Regex 없이 소량 토큰에 대해 O(n) IndexOf 검사
+            for (int i = 0; i < _skipMissingLogTokens.Length; i++)
+            {
+                // Unity .NET 환경 호환을 위해 IndexOf(StringComparison) 사용
+                if (path.IndexOf(_skipMissingLogTokens[i], StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
