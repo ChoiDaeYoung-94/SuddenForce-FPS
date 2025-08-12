@@ -61,7 +61,7 @@ namespace AD
                 await manager.InitAsync();
             }
 
-            SceneManager.ChangeScene(GameConstants.Scene.Login);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(nameof(GameConstants.Scene.Login));
         }
 
         private void OnDestroy()

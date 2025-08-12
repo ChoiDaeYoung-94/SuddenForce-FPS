@@ -103,7 +103,8 @@ namespace AD
             => scene switch
             {
                 GameConstants.Scene.Bootstrap => null,
-                GameConstants.Scene.Login => (LoginScene.Instance),
+                GameConstants.Scene.Login => null,
+                //GameConstants.Scene.Lobby => (LobbyScene.Instance)
                 _ => (null),
             };
     }
