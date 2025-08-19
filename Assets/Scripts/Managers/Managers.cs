@@ -6,12 +6,6 @@ using UnityEngine;
 
 namespace AD
 {
-    public interface ISubManager
-    {
-        UniTask InitAsync();
-        void Release();
-    }
-
     /// <summary>
     /// Manager 스크립트 관리
     /// </summary>
@@ -25,6 +19,7 @@ namespace AD
         public static Managers Instance => _instance;
 
         private List<ISubManager> _subManagers = new();
+        public static PlayFabManager PlayFabManager { get; } = new();
         public static ResourceManager ResourceManager { get; } = new();
         public static SceneManager SceneManager { get; } = new();
         public static TableManager TableManager { get; } = new();
@@ -47,6 +42,7 @@ namespace AD
 
         private async UniTask InitAsync()
         {
+            _subManagers.Add(PlayFabManager);
             _subManagers.Add(ResourceManager);
             _subManagers.Add(SceneManager);
             _subManagers.Add(TableManager);
