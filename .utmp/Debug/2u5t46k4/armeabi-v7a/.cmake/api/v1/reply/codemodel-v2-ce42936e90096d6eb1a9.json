@@ -1,0 +1,87 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "FramePacing",
+					"jsonFile" : "directory-FramePacing-Debug-7f9c8865fd027a154c90.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4.1"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "FramePacing",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Unity"
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "swappywrapper",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "swappywrapper::@7e25bd1f32ce224db4e9",
+					"jsonFile" : "target-swappywrapper-Debug-f64884961ee06f2d77ab.json",
+					"name" : "swappywrapper",
+					"projectIndex" : 1
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/meee/git/SuddenForce-FPS/.utmp/Debug/2u5t46k4/armeabi-v7a",
+		"source" : "D:/meee/git/SuddenForce-FPS/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

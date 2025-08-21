@@ -27,7 +27,6 @@ namespace AD
 
         public void Release()
         {
-            
         }
 
         private static void EnsureTitleId()
@@ -36,22 +35,30 @@ namespace AD
                 throw new Exception("PlayFab TitleId is not set.");
         }
 
-        /// <summary>GPGS v2의 ServerAuthCode로 PlayFab 로그인</summary>
+        /// <summary>
+        /// GPGS v2의 ServerAuthCode로 PlayFab 로그인.
+        /// 내부 구현은 Google *Play Games Services* 전용 API(LoginWithGooglePlayGamesServices)를 사용합니다.
+        /// </summary>
         public async UniTask<LoginResult> LoginWithGoogleAuthCodeAsync(string serverAuthCode, bool createAccount = true)
         {
             EnsureTitleId();
 
+            if (string.IsNullOrEmpty(serverAuthCode))
+                throw new Exception("ServerAuthCode is empty. Check Web Client ID & RequestServerSideAccess.");
+
             var tcs = new UniTaskCompletionSource<LoginResult>();
-            var req = new LoginWithGoogleAccountRequest
+            var req = new LoginWithGooglePlayGamesServicesRequest
             {
                 TitleId = PlayFabSettings.staticSettings.TitleId,
                 ServerAuthCode = serverAuthCode,
                 CreateAccount = createAccount
             };
 
-            PlayFabClientAPI.LoginWithGoogleAccount(req,
+            PlayFabClientAPI.LoginWithGooglePlayGamesServices(
+                req,
                 r => tcs.TrySetResult(r),
-                e => tcs.TrySetException(new Exception(e.GenerateErrorReport())));
+                e => tcs.TrySetException(new Exception(e.GenerateErrorReport()))
+            );
 
             return await tcs.Task;
         }
@@ -69,9 +76,11 @@ namespace AD
                 CreateAccount = createAccount
             };
 
-            PlayFabClientAPI.LoginWithCustomID(req,
+            PlayFabClientAPI.LoginWithCustomID(
+                req,
                 r => tcs.TrySetResult(r),
-                e => tcs.TrySetException(new Exception(e.GenerateErrorReport())));
+                e => tcs.TrySetException(new Exception(e.GenerateErrorReport()))
+            );
 
             return await tcs.Task;
         }

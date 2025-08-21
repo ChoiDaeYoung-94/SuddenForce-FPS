@@ -1,6 +1,9 @@
 using AD;
 using Cysharp.Threading.Tasks;
 
+/// <summary>
+/// Login scene의 경우 Bootstrap이후 AD.Manager를 통해 진입하지 않기 때문에 해당 코드는 예시용
+/// </summary>
 [SingletonPrefabPath("Empty, IScene")]
 public class LoginScene : SingletonBase<LoginScene>, IScene
 {

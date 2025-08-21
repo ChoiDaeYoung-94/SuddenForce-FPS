@@ -172,9 +172,9 @@ PlayerSettings:
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
-  AndroidBundleVersionCode: 2
+  AndroidBundleVersionCode: 3
   AndroidMinSdkVersion: 24
-  AndroidTargetSdkVersion: 34
+  AndroidTargetSdkVersion: 35
   AndroidPreferredInstallLocation: 1
   aotOptions: 
   stripEngineCode: 1
@@ -266,7 +266,7 @@ PlayerSettings:
   AndroidTargetArchitectures: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: '{inproject}: src/AeDeong.keystore'
+  AndroidKeystoreName: '{inproject}: src/SuddenForce.keystore'
   AndroidKeyaliasName: aedeong
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidEnableArm64MTE: 0
